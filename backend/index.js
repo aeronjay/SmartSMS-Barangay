@@ -1,11 +1,6 @@
 const express = require('express')
-
-const app = express();
-
-app.get('/', (req, res) => {
-    res.send("hello")
-})
+const app = require('./app')
 
 app.listen(3001, () => {
-    console.log('port running in ', 3001)
+    console.log(`Server Is running on PORT ${3001}`)
 })
