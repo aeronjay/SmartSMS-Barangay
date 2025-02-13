@@ -1,8 +1,8 @@
 const routes = require('express').Router()
 const mongoose = require('mongoose')
+const user = require('./models/User')
 
-
-routes.get('/', (req, res) => {
+routes.get('/api', (req, res) => {
     res.send('hello')
 })
 
