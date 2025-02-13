@@ -1,0 +1,21 @@
+POST http://localhost:3001/api/login
+Content-Type: application/json
+
+{
+    "username": "user",
+    "password": "password"
+}
+
+###
+
+POST http://localhost:3001/api/register
+Content-Type: application/json
+
+{
+    "username": "user",
+    "password": "password"
+}
+
+###
+
+GET http://localhost:3001/protected
