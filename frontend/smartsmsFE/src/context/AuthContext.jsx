@@ -8,9 +8,9 @@ export const AuthProvider = ({ children }) => {
 
   // Load user from localStorage when the app starts
   useEffect(() => {
-    const storedUser = localStorage.getItem("user");
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
+    const storedToken = localStorage.getItem("token");
+    if(storedToken){
+      setUser(storedToken)
     }
   }, []);
 
@@ -21,9 +21,9 @@ export const AuthProvider = ({ children }) => {
         password,
       });
 
-      const userData = res.data; 
-      localStorage.setItem("user", JSON.stringify(userData)); 
-      setUser(userData);
+      const token = res.data.token; 
+      localStorage.setItem("user", token); 
+      setUser(token);
     } catch (error) {
       console.error("Login failed:", error);
     }

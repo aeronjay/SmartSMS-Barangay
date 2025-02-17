@@ -43,16 +43,19 @@ routes.post('/api/login', async (req, res) => {
 })
 
 const authMiddleware = (req, res, next) => {
-    const token = req.header("Authorization");
-    if (!token) return res.status(401).json({ error: "Access denied" });
-  
+    const authHeader = req.header("Authorization");
+    if(!authHeader) return res.status(401).json({  error: "access denied"  });
+
+    const token = authHeader.split(" ")[1];
+    if(!token)return res.status(401).json({  error: "access denied"  });
+
     try {
       const verified = jwt.verify(token, process.env.SECRET_KEY);
       req.user = verified;
       next();
-    } catch (err) {
+  } catch (err) {
       res.status(400).json({ error: "Invalid token" });
-    }
+  }
 };
 
 routes.get("/protected", authMiddleware, (req, res) => {
