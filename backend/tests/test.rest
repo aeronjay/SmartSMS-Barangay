@@ -19,3 +19,8 @@ Content-Type: application/json
 ###
 
 GET http://localhost:3001/protected
+
+###
+
+GET http://localhost:3001/protected
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2N2FkNzk2YTVjNTg3ZjJhNTFhYmU3MDYiLCJpYXQiOjE3Mzk3ODQzODcsImV4cCI6MTczOTc4Nzk4N30.3Y8ess8YlEnIZo8iGynSXayLDBSWLz794xSFyAeIPKI
