@@ -4,20 +4,24 @@ import HomePage from '../routes/HomePage'
 import AdminDashboard from '../routes/AdminDashboard'
 import LoginPage from '../routes/LoginPage'
 import UserRegistration from '../routes/UserRegistration'
+import PrivateRoute from '../routes/PrivateRoute'
+import { AuthProvider } from "./context/AuthContext";
 
 function App() {
 
   return (
-    <>
+    <AuthProvider>
       <Router>
         <Routes>
           <Route path='/' element={<HomePage />} />
-          <Route path='/admindashboard' element={<AdminDashboard />} />
+          <Route element={<PrivateRoute />}>
+            <Route path='/admindashboard' element={<AdminDashboard />} />
+          </Route>
           <Route path='/loginpage' element={<LoginPage />} />
           <Route path='/user' element={<UserRegistration />} />
         </Routes>
       </Router>
-    </>
+    </AuthProvider>
   )
 }
 
