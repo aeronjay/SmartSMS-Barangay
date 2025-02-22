@@ -1,8 +1,17 @@
+import CustomSidebar from "../ components/Sidebar";
 
 function AdminDashboard() {
 
     return(
-        <div>AdminDashboard</div>
+        <div style={{
+            display: 'flex',
+            width: '100vw',
+            height: '100vh',
+            background: '#eee'
+        }}>
+            <CustomSidebar></CustomSidebar>
+        </div>
+        
     )
 }
 
