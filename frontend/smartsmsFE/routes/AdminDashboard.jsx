@@ -1,4 +1,4 @@
-import CustomSidebar from "../ components/Sidebar";
+import CustomSidebar from "../components/Sidebar";
 
 function AdminDashboard() {
 
