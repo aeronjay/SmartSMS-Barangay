@@ -3,7 +3,7 @@ import { Home, Schedule, Announcement, People, AdminPanelSettings } from "@mui/i
 import { FaBirthdayCake, FaTrash, FaGift, FaPills, FaTv, FaExclamationTriangle } from "react-icons/fa";
 import { IoPeopleCircleSharp } from "react-icons/io5";
 import {  Navigate  } from 'react-router-dom'
-import '../styles/Sidebar.css'
+import '../../styles/Sidebar.css'
 
 
 export default function CustomSidebar() {

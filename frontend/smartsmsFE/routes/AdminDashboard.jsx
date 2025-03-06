@@ -1,5 +1,5 @@
-import CustomSidebar from "../components/Sidebar";
-import Local from './adminroutes/adminLocal'
+import CustomSidebar from "../components/sidebar/Sidebar";
+import Local from '../components/admindashboard/adminLocal'
 import { Routes, Route, Navigate } from "react-router-dom";
 
 function AdminDashboard() {
