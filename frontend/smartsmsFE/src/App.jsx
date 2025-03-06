@@ -5,7 +5,7 @@ import AdminDashboard from '../routes/AdminDashboard'
 import LoginPage from '../routes/LoginPage'
 import UserRegistration from '../routes/UserRegistration'
 import PrivateRoute from '../routes/PrivateRoute'
-import { AuthProvider } from "./context/AuthContext";
+import { AuthProvider } from "../context/AuthContext";
 
 function App() {
 
@@ -15,7 +15,7 @@ function App() {
         <Routes>
           <Route path='/' element={<HomePage />} />
           <Route element={<PrivateRoute />}>
-            <Route path='/admindashboard' element={<AdminDashboard />} />
+            <Route path='/admindashboard/*' element={<AdminDashboard />} />
           </Route>
           <Route path='/loginpage' element={<LoginPage />} />
           <Route path='/user' element={<UserRegistration />} />

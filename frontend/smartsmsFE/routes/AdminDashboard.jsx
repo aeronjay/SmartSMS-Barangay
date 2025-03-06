@@ -1,4 +1,6 @@
 import CustomSidebar from "../components/Sidebar";
+import Local from './adminroutes/adminLocal'
+import { Routes, Route, Navigate } from "react-router-dom";
 
 function AdminDashboard() {
 
@@ -9,7 +11,13 @@ function AdminDashboard() {
             height: '100vh',
             background: '#eee'
         }}>
-            <CustomSidebar></CustomSidebar>
+            <CustomSidebar />
+            <div style={{flex: '1', background: '#eee'}}>
+                <Routes>
+                    <Route path="/" element={<Navigate to="announcements" />} />
+                    <Route path="announcements" element={<Local />}/>
+                </Routes>
+            </div>
         </div>
         
     )
