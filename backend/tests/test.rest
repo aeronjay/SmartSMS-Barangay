@@ -16,11 +16,57 @@ Content-Type: application/json
     "password": "password"
 }
 
+
+### Create a New Resident
+POST http://localhost:3001/api/resident/register
+Content-Type: application/json
+
+{
+    "first_name": "test2",
+    "middle_name": "test2",
+    "last_name": "test2",
+    "suffix": "test2",
+    "birthdate": "1990-05-15",
+    "gender": "Male",
+    "marital_status": "Single",
+    "nationality": "Filipino",
+    "contact": {
+        "phone": "+639695192609",
+        "email": "test1"
+    },
+    "address": {
+        "house_number": "123",
+        "street": "Mabini Street",
+        "barangay": "Barangay 1",
+        "city": "Quezon City",
+        "province": "Metro Manila",
+        "zip_code": "1100"
+    },
+    "medical_info": {
+        "blood_type": "O+",
+        "medical_conditions": ["asthma", "diabetes"],
+        "disabilities": ["none"],
+        "emergency_contact": {
+            "name": "Maria Dela Cruz",
+            "relationship": "Mother",
+            "phone": "09234567890"
+        }
+    },
+    "employment": {
+        "occupation": "Software Developer",
+        "employer": "Tech Solutions Inc.",
+        "income_range": "40000-50000"
+    },
+    "education": {
+        "highest_education": "Bachelor's Degree",
+        "field_of_study": "Computer Science"
+    },
+    "registration": {
+        "resident_type": "Permanent",
+        "date_registered": "2025-03-09",
+        "status": "active"
+    }
+}
+
 ###
-
-GET http://localhost:3001/protected
-
-###
-
-GET http://localhost:3001/protected
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2N2FkNzk2YTVjNTg3ZjJhNTFhYmU3MDYiLCJpYXQiOjE3Mzk3OTU3NDgsImV4cCI6MTczOTc5OTM0OH0.kg7_gc8ip0Y_iWlsjVc4CET41VaCcr5UEpNGOLRVugQ
+GET http://localhost:3001/api/resident/all

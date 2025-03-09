@@ -1,7 +1,7 @@
 import { Sidebar, Menu, MenuItem, SubMenu } from 'react-pro-sidebar';
 import { Home, Schedule, Announcement, People, AdminPanelSettings } from "@mui/icons-material";
-import { FaBirthdayCake, FaTrash, FaGift, FaPills, FaTv, FaExclamationTriangle } from "react-icons/fa";
-import { IoPeopleCircleSharp } from "react-icons/io5";
+import { FaBirthdayCake, FaTrash, FaGift, FaHistory, FaTv, FaExclamationTriangle } from "react-icons/fa";
+import { IoPeopleCircleSharp, IoMegaphoneOutline, IoChatboxEllipses } from "react-icons/io5";
 import {  Navigate  } from 'react-router-dom'
 import '../../styles/Sidebar.css'
 
@@ -21,13 +21,10 @@ export default function CustomSidebar() {
         >
           <Menu>
             <SubMenu defaultOpen label='Announcements' icon={<Announcement />}>
-              <MenuItem icon={<IoPeopleCircleSharp />}>Local</MenuItem>
-              <MenuItem icon={<FaGift />}>Gift Giving</MenuItem>
-              <MenuItem icon={<FaPills />}>Medicine</MenuItem>
-              <MenuItem icon={<FaTrash />}>Garbage Collection</MenuItem>
-              <MenuItem icon={<Home />}>Promotion</MenuItem>
-              <MenuItem icon={<FaBirthdayCake />}>Birthday</MenuItem>
+              <MenuItem icon={<IoMegaphoneOutline />}>Broadcast</MenuItem>
+              <MenuItem icon={<FaHistory />}>History</MenuItem>
             </SubMenu>
+            <MenuItem icon={<IoChatboxEllipses />}>Chats</MenuItem>
             <SubMenu defaultOpen label='Scheduling' icon={<Schedule />}>
               <MenuItem icon={<FaTv />}>CCTV</MenuItem>
               <MenuItem icon={<FaExclamationTriangle />}>Complaint</MenuItem>
@@ -37,6 +34,7 @@ export default function CustomSidebar() {
               <MenuItem>Admin Accounts</MenuItem>
               <MenuItem>Residents Accounts</MenuItem>
             </SubMenu>
+
           </Menu>
         </Sidebar>
         <div className="sidebar-footer">
