@@ -42,10 +42,13 @@ div.main-content{
     border-radius: 20px;
 }
 
-.broadcast-settings div{
+.broadcast-settings .broadcast-settings-content{
     background-color: white;
     height: 100%;
     width: 100%;
     border-radius: 20px;
+    padding: 20px;
 
 }
+
+  

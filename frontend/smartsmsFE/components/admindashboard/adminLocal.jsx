@@ -1,6 +1,15 @@
 import '../../styles/adminLocal.css'
+import {  useState  } from 'react'
+import SettingsCard from './settingCard'
 
 export default function Local(){
+
+    const [selectedValue, setSelectedValue] = useState("local");
+    const broadcastTypes = ["Local", "Gift Giving", "Medicine", "Garbage Collection"]
+    const setBroadcastOnChange = (e) => {
+        setSelectedValue(e.target.value)
+    }
+
 
     return(
         <>
@@ -10,8 +19,10 @@ export default function Local(){
                 </div>
                 <div className='main-content'>
                     <div className='broadcast-settings'>
-                        <div>
-                            
+                        <div className='broadcast-settings-content'>
+                            <SettingsCard label="Broadcast Type" optionValues={broadcastTypes} setOnChange={setBroadcastOnChange} selectedValue={selectedValue}/>
+                            <SettingsCard label="Template"/>
+                            <SettingsCard label="Recipients"/>
                         </div>
                     </div>
                     <div className='broadcast'>
