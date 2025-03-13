@@ -4,6 +4,24 @@ const Resident = require('../models/resident')
 const bcrypt = require('bcryptjs')
 const jwt = require("jsonwebtoken");
 
+
+const authMiddleware = (req, res, next) => {
+    const authHeader = req.header("Authorization");
+    if(!authHeader) return res.status(401).json({  error: "access denied"  });
+
+    const token = authHeader.split(" ")[1];
+    if(!token)return res.status(401).json({  error: "access denied"  });
+
+    try {
+      const verified = jwt.verify(token, process.env.SECRET_KEY);
+      req.user = verified;
+      next();
+  } catch (err) {
+      res.status(400).json({ error: "Invalid token" });
+  }
+};
+
+
 routes.get('/api', (req, res) => {
     res.send('hello')
 })
@@ -43,21 +61,46 @@ routes.post('/api/admin/login', async (req, res) => {
     }
 })
 
-const authMiddleware = (req, res, next) => {
-    const authHeader = req.header("Authorization");
-    if(!authHeader) return res.status(401).json({  error: "access denied"  });
-
-    const token = authHeader.split(" ")[1];
-    if(!token)return res.status(401).json({  error: "access denied"  });
-
+routes.post('/api/admin/broadcast', async (req, res) => {
+    // not working yet, need API KEY AND DEVICEID
     try {
-      const verified = jwt.verify(token, process.env.SECRET_KEY);
-      req.user = verified;
-      next();
-  } catch (err) {
-      res.status(400).json({ error: "Invalid token" });
-  }
-};
+        const { recipients, message } = req.body;
+
+        // Validate input
+        if (!Array.isArray(recipients) || recipients.length === 0) {
+            return res.status(400).json({ error: 'Recipients array is required and must not be empty.' });
+        }
+        if (typeof message !== 'string' || message.trim() === '') {
+            return res.status(400).json({ error: 'Message is required and must not be empty.' });
+        }
+
+        const apiData = {
+            recipients: recipients,
+            message: message,
+        };
+
+        const apiUrl = `https://api.textbee.dev/api/v1/gateway/devices/${DEVICE_ID}/send-sms`;
+
+        const response = await axios.post(apiUrl, apiData, {
+            headers: {
+                'x-api-key': API_KEY,
+            },
+        });
+
+        if (response.status === 200) {
+            res.status(200).json({ success: true, message: 'SMS broadcast successful', data: response.data });
+        } else {
+            res.status(response.status).json({ success: false, message: 'SMS broadcast failed', error: response.data });
+        }
+    } catch (error) {
+        console.error('Error broadcasting SMS:', error);
+        res.status(500).json({ success: false, message: 'Internal server error', error: error.message });
+    }
+});
+
+
+
+
 
 // routes.get("/protected", authMiddleware, (req, res) => {
 //     res.json({ message: "You are authorized!" });
@@ -81,7 +124,6 @@ routes.get('/api/resident/all', async (req, res) => {
         console.error("ERROR:", error);
         res.status(500).json({ message: "Server error", error: error.message });
       }
-    
 })
 
 

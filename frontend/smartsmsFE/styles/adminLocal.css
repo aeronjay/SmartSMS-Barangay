@@ -35,11 +35,15 @@ div.main-content{
     flex: 1;
     padding: 30px 15px 30px 5px;
 }
-.broadcast div{
+.broadcast > div{
     background-color: white;
     height: 100%;
     width: 100%;
     border-radius: 20px;
+
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
 }
 
 .broadcast-settings .broadcast-settings-content{
@@ -51,4 +55,36 @@ div.main-content{
 
 }
 
+/* Create Announcement */
+    
+  div > textarea {
+    width: 95%;
+    height: 70%;
+    padding: 10px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    border: 1px solid #007bff; /* Blue border */
+    border-radius: 5px;
+    resize: none;
+
+    margin: auto;
+  }
+  
+  div.broadcast-main button {
+    width: 200px;
+    padding: 10px;
+    background-color: #007bff; /* Blue background */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+
+    align-self: flex-end;
+    margin-right: 30px;
+  }
+  
+  button:hover {
+    background-color: #0056b3; /* Darker blue on hover */
+  }
   
