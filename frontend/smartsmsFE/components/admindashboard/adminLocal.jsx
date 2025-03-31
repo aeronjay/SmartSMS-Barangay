@@ -29,26 +29,20 @@ export default function Local(){
                     <h2>BROADCAST</h2>
                 </div>
                 <div className='main-content'>
-                    <div className='broadcast-settings'>
-                        <div className='broadcast-settings-content'>
-                            <SettingsCard label="Broadcast Type" optionValues={broadcastTypes} setOnChange={setBroadcastOnChange} selectedValue={selectedValue}/>
-                            <SettingsCard label="Device"/>
-                            <SettingsCard label="Template"/>
-                            <SettingsCard label="Recipients"/>
+                    <div className='main-content-card'>
+                        <div className='main-content-announcement-title'>
+                            Create New Announcement
                         </div>
-                    </div>
-                    <div className='broadcast'>
-                        <div className='broadcast-main'>
-                            <h1>Create Announcement</h1>
-                            <textarea
-                                id="announcement-text"
-                                value={announcement}
-                                onChange={handleAnnouncementInputChange}
-                                placeholder="Enter your announcement here..."
-                            ></textarea>
-                            <button id="publish-button" onClick={handlePublish}>
-                                Send Announcement
-                            </button>
+                        <div className='main-content-section'>
+                            <div className='broadcast-category'>
+
+                            </div>
+                            <div className='broadcast-recipients'>
+
+                            </div>
+                            <div className='broadcast-main'>
+
+                            </div>
                         </div>
                     </div>
                 </div>
