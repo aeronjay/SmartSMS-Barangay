@@ -27,25 +27,60 @@ h6{
 .broadcast-recipients{
     flex: 4;
     border-left: 1px solid var(--border-color);
-    border-right: 1px solid var(--border-color);
-    padding: 10px 20px;
+    border-right: 1px solid var(--border-color);    
 
-    
+    flex-direction: column; /* Stack child elements vertically */
+    height: 100%; /* Ensure it takes full height */
 }
 .broadcast-main{
     flex: 5;
 }
 
-.receipients-filter{
+.receipients-filter {
+    padding: 10px 20px;
     display: flex;
     flex-flow: row nowrap;
+    justify-content: space-between; /* This will push items to the edges */
+}
 
-    background-color: #ccc;
+.filter-actions {
+    display: flex;
+    align-items: center; /* This vertically centers the link */
 }
-.filter-actions{
-    margin-left: auto;
-}
-.filter-actions a{
+
+.filter-actions a {
     text-decoration: none;
     color: var(--main-color);
+    white-space: nowrap; /* "text-wrap: nowrap" is not standard, this is the correct property */
+}
+.main-border{
+    border-bottom: 1px solid var(--border-color);
+}
+.check-sample {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    gap: 15px;
+    border-bottom: 1px solid var(--border-color);
+    cursor: pointer; /* Makes it clear it's clickable */
+    user-select: none; /* Prevents text selection */
+}
+.check-sample:hover {
+    background-color: #f5f5f5; /* Highlight on hover */
+}
+.receipient-name{
+    font-weight: 500;
+}
+.receipient-name-infos{
+    font-size: 13px;
+    color: rgba(0, 0, 0, .5);
+}
+
+.receipients {
+    flex-grow: 1; /* Allows it to take up remaining space */
+    min-height: 200px;
+    max-height: 60vh; /* Adjust to prevent excessive height */
+    overflow-y: auto; /* Enables scrolling */
+    border: 1px solid var(--border-color);
+    padding: 10px;
 }
