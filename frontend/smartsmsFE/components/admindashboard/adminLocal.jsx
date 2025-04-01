@@ -1,6 +1,7 @@
 import '../../styles/adminLocal.css'
 import {  useState  } from 'react'
 import SettingsCard from './settingCard'
+import AnnouncementOptions from './announcementOptions'
 
 export default function Local(){
 
@@ -34,9 +35,7 @@ export default function Local(){
                             Create New Announcement
                         </div>
                         <div className='main-content-section'>
-                            <div className='broadcast-category'>
-
-                            </div>
+                            <AnnouncementOptions broadcastTypes={broadcastTypes}/>
                             <div className='broadcast-recipients'>
 
                             </div>
