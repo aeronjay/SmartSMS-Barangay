@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { BrowserRouter as Router ,Routes, Route } from 'react-router-dom'
 import HomePage from '../routes/HomePage'
-import AdminDashboard from '../routes/AdminDashboard'
+import Admin from '../routes/Admin'
 import LoginPage from '../routes/LoginPage'
 import UserRegistration from '../routes/UserRegistration'
 import PrivateRoute from '../routes/PrivateRoute'
@@ -15,7 +15,7 @@ function App() {
         <Routes>
           <Route path='/' element={<HomePage />} />
           <Route element={<PrivateRoute />}>
-            <Route path='/admindashboard/*' element={<AdminDashboard />} />
+            <Route path='/admindashboard/*' element={<Admin />} />
           </Route>
           <Route path='/loginpage' element={<LoginPage />} />
           <Route path='/user' element={<UserRegistration />} />

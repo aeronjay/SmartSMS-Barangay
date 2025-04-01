@@ -1,5 +1,5 @@
 import CustomSidebar from "../components/sidebar/Sidebar";
-import Local from '../components/admindashboard/adminLocal'
+import Broadcast from '../components/Broadcast/Broadcast'
 import { Routes, Route, Navigate } from "react-router-dom";
 
 function AdminDashboard() {
@@ -15,7 +15,7 @@ function AdminDashboard() {
             <div style={{flex: '1', background: '#eee'}}>
                 <Routes>
                     <Route path="/" element={<Navigate to="announcements" />} />
-                    <Route path="announcements" element={<Local />}/>
+                    <Route path="announcements" element={<Broadcast />}/>
                 </Routes>
             </div>
         </div>

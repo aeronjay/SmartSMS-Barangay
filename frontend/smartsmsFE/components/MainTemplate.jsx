@@ -1,8 +1,9 @@
-import '../../styles/adminLocal.css'
+import '../styles/MainTemplateStyle.css'
+
 import {  useState  } from 'react'
-import SettingsCard from './settingCard'
-import AnnouncementOptions from './announcementOptions'
-import Receipients from './Receipients'
+import SettingsCard from './Broadcast/settingCard'
+import AnnouncementOptions from './Broadcast/announcementOptions'
+import Receipients from './Broadcast/Receipients'
 
 export default function Local({  children, headerName, cardHeader  }){
 
