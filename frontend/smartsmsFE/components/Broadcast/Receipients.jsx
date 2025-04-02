@@ -10,11 +10,11 @@ export default function Receipients() {
     { id: 5, name: "Roberto Lim", street: "street 142", age: 70, checked: true },
     { id: 6, name: "Elena Cruz", street: "street 142", age: 35 , priority: true, checked: false },
     { id: 7, name: "Jose Garcia", street: "street 142", age: 28, checked: true },
-    { id: 8, name: "Carmen Reyes", street: "street 142", age: 68, checked: false },
-    { id: 8, name: "Carmen Reyes", street: "street 142", age: 68, checked: false },
-    { id: 8, name: "Carmen Reyes", street: "street 142", age: 68, checked: false },
-    { id: 8, name: "Carmen Reyes", street: "street 142", age: 68, checked: false },
-    { id: 8, name: "Carmen Reyes", street: "street 142", age: 68, checked: false },
+    { id: 9, name: "Carmen Reyes", street: "street 142", age: 68, checked: false },
+    { id: 10, name: "Carmen Reyes", street: "street 142", age: 68, checked: false },
+    { id: 11, name: "Carmen Reyes", street: "street 142", age: 68, checked: false },
+    { id: 12, name: "Carmen Reyes", street: "street 142", age: 68, checked: false },
+    { id: 13, name: "Carmen Reyes", street: "street 142", age: 68, checked: false },
 ];
 
 

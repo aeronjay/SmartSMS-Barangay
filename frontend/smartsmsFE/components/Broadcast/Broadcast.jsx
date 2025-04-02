@@ -4,7 +4,9 @@ import { useState, useEffect } from 'react'
 import SettingsCard from './settingCard'
 import AnnouncementOptions from './announcementOptions'
 import Receipients from './Receipients'
+import SendMessage from './SendMessage'
 import MainTemplate from '../MainTemplate'
+
 
 export default function Broadcast() {
     
@@ -27,9 +29,7 @@ export default function Broadcast() {
                 <div className='main-content-section'>
                     <AnnouncementOptions broadcastTypes={broadcastTypes} broadcastValue={broadcastValue} setBroadcastOnChange={setBroadcastOnChange}/>
                     <Receipients />
-                    <div className='broadcast-main'>
-
-                    </div>
+                    <SendMessage /> 
                 </div>
             </MainTemplate>
         </>

@@ -84,3 +84,61 @@ h6{
     border: 1px solid var(--border-color);
     padding: 10px;
 }
+.broadcast-main{
+    display: flex;
+    flex-flow: column nowrap;
+    gap: 20px;
+
+    padding: 10px 20px;
+
+}
+.section-headder{
+    display: flex;
+    justify-content: space-between;
+
+
+}
+.message-length-display{
+    color: rgba(0, 0, 0, .55);
+    font-size: .9rem;
+}
+.broadcast-main textarea{
+    width: 100%;
+    resize: vertical;
+    height: 30vh;
+    max-height: 400px;
+
+    border-radius: 5px;
+    padding: 15px;
+    font-size: 1.3rem;
+    outline: none;
+}
+textarea:focus {
+    border: 2px solid #007bff; 
+}
+
+.receipients-selected-number{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    padding: 10px;
+    border-radius: 5px;
+    width: 100%;
+    background-color: rgba(0, 0, 0, .088);
+    color: rgba(0, 0, 0, .55);
+}
+.send-announcement-button{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    justify-content: center;
+
+    padding: 10px;
+    border-radius: 5px;
+    width: 100%;
+    background-color: navy;
+    color: white;
+    font-weight: 500;
+}
+
