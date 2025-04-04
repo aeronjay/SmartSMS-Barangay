@@ -1,46 +1,47 @@
 import SearchInput from "../SearchInput";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
-export default function Receipients() {
-  const recipients = [
-    { id: 1, name: "Juan Dela Cruz", street: "st mary", age: 65 , priority: true, checked: true },
-    { id: 2, name: "Maria Santos", street: "st lukes", age: 25 , priority: true, checked: false },
-    { id: 3, name: "Pedro Reyes", street: "street 142", age: 42 , priority: true, checked: true },
-    { id: 4, name: "Ana Gonzales", street: "street 142", age: 18, checked: false },
-    { id: 5, name: "Roberto Lim", street: "street 142", age: 70, checked: true },
-    { id: 6, name: "Elena Cruz", street: "street 142", age: 35 , priority: true, checked: false },
-    { id: 7, name: "Jose Garcia", street: "street 142", age: 28, checked: true },
-    { id: 9, name: "Carmen Reyes", street: "street 142", age: 68, checked: false },
-    { id: 10, name: "Carmen Reyes", street: "street 142", age: 68, checked: false },
-    { id: 11, name: "Carmen Reyes", street: "street 142", age: 68, checked: false },
-    { id: 12, name: "Carmen Reyes", street: "street 142", age: 68, checked: false },
-    { id: 13, name: "Carmen Reyes", street: "street 142", age: 68, checked: false },
-];
+export default function Receipients({ receipients = [], selectedResidentsNumber = [], setselectedResidentsNumber }) {
 
+  const [search, setSearch] = useState('');
+  const addNumber = (number) => {
+    setselectedResidentsNumber([...selectedResidentsNumber, number])
+
+  }
+  const removeNumber = (number) => {
+    if (selectedResidentsNumber.some((residentNum) => residentNum === number)) {
+      const newNumbers = selectedResidentsNumber.filter((residentNum) => residentNum !== number)
+      setselectedResidentsNumber(newNumbers)
+    }
+  }
 
   return (
     <div className='broadcast-recipients'>
       <div className="upper-filter">
-        <UpperFilter />
+        <UpperFilter search={search} setSearch={setSearch} />
         <div className="receipients">
           {/* Receipeints */}
-          {recipients.map(person => {
-            return (<ReceipientsCard 
-                        key={person.id} 
-                        id={person.id} 
-                        name={person.name} 
-                        street={person.street} 
-                        age={person.age} 
-                        priority={person.priority} 
-                        />)
+          {receipients.map(person => {
+            return (<ReceipientsCard
+              key={person.id}
+              id={person.id}
+              name={person.name}
+              street={person.street}
+              age={person.age}
+              number={person.phone}
+              addNumber={addNumber}
+              removeNumber={removeNumber}
+              selectedResidentsNumber={selectedResidentsNumber}
+            />)
           })}
+
         </div>
       </div>
     </div>
   )
 }
 
-const UpperFilter = () => {
+const UpperFilter = ({ search, setSearch }) => {
 
   return (
     <div className="main-border">
@@ -53,29 +54,39 @@ const UpperFilter = () => {
         </div>
       </div>
       <div style={{ padding: "10px 20px" }}>
-        <SearchInput />
+        <SearchInput search={search} setSearch={setSearch} />
       </div>
     </div>
   )
 }
 
-const ReceipientsCard = ({ id, name, street, age, priority, }) => {
+const ReceipientsCard = ({ id, name, street, age, priority, number, addNumber, removeNumber, selectedResidentsNumber }) => {
   const [isChecked, setIsChecked] = useState(false); // Initialize state from prop
 
-  // Toggle function for checkbox
   const handleToggle = () => {
-    setIsChecked(!isChecked);
+    const newCheckedState = !isChecked
+    setIsChecked(newCheckedState)
+
+    if (newCheckedState) {  
+      addNumber(number)
+    } else {  
+      removeNumber(number)
+    }
   };
+
+  useEffect(() => {
+    setIsChecked(selectedResidentsNumber.includes(number));
+  }, [selectedResidentsNumber, number]);
 
   return (
     <div className="check-sample" onClick={handleToggle} style={{ cursor: "pointer" }}>
       <div>
-        <input 
-          type="checkbox" 
-          id={id} 
-          name={id} 
-          checked={isChecked} 
-          onChange={handleToggle} 
+        <input
+          type="checkbox"
+          id={id}
+          name={id}
+          checked={isChecked}
+          onChange={handleToggle}
         />
       </div>
       <div className="Infos">

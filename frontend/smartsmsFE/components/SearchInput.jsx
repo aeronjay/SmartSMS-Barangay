@@ -3,8 +3,7 @@ import TextField from "@mui/material/TextField";
 import InputAdornment from "@mui/material/InputAdornment";
 import SearchIcon from "@mui/icons-material/Search";
 
-export default function SearchInput() {
-    const [search, setSearch] = useState("");
+export default function SearchInput({  search, setSearch  }) {
 
     return (
         <TextField

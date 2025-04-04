@@ -6,6 +6,7 @@ const ResidentSchema = new mongoose.Schema({
     last_name: { type: String, required: true },
     suffix: { type: String },
     birthdate: { type: Date, required: true },
+    age: { type: Number, required: true},
     gender: { type: String, enum: ["Male", "Female", "Other"], required: true },
     marital_status: { type: String, enum: ["Single", "Married", "Widowed", "Divorced"], required: true },
     nationality: { type: String, default: "Filipino" },
