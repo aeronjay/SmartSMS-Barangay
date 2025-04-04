@@ -67,7 +67,7 @@ export default function Broadcast() {
     }, [])
 
     const [selectedResidentsNumber, setselectedResidentsNumber] = useState([])
-
+    
 
 
     return (

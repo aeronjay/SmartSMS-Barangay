@@ -21,19 +21,7 @@ export default function Receipients({ receipients = [], selectedResidentsNumber 
         <UpperFilter search={search} setSearch={setSearch} />
         <div className="receipients">
           {/* Receipeints */}
-          {receipients.map(person => {
-            return (<ReceipientsCard
-              key={person.id}
-              id={person.id}
-              name={person.name}
-              street={person.street}
-              age={person.age}
-              number={person.phone}
-              addNumber={addNumber}
-              removeNumber={removeNumber}
-              selectedResidentsNumber={selectedResidentsNumber}
-            />)
-          })}
+          {displayResidents(receipients, search, addNumber, removeNumber, selectedResidentsNumber)}
 
         </div>
       </div>
@@ -67,9 +55,9 @@ const ReceipientsCard = ({ id, name, street, age, priority, number, addNumber, r
     const newCheckedState = !isChecked
     setIsChecked(newCheckedState)
 
-    if (newCheckedState) {  
+    if (newCheckedState) {
       addNumber(number)
-    } else {  
+    } else {
       removeNumber(number)
     }
   };
@@ -99,4 +87,26 @@ const ReceipientsCard = ({ id, name, street, age, priority, number, addNumber, r
       </div>
     </div>
   );
+};
+
+const displayResidents = (receipients, search, addNumber, removeNumber, selectedResidentsNumber) => {
+  // If search is not empty, filter residents whose name includes the search term
+  const filteredResidents = search !== "" 
+    ? receipients.filter(person => person.name.toLowerCase().includes(search.toLowerCase()))
+    : receipients;
+    
+  // Map the filtered residents to components
+  return filteredResidents.map(person => (
+    <ReceipientsCard
+      key={person.id}
+      id={person.id}
+      name={person.name}
+      street={person.street}
+      age={person.age}
+      number={person.phone}
+      addNumber={addNumber}
+      removeNumber={removeNumber}
+      selectedResidentsNumber={selectedResidentsNumber}
+    />
+  ));
 };
