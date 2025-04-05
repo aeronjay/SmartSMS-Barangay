@@ -20,9 +20,7 @@ export default function Receipients({ receipients = [], selectedResidentsNumber 
       <div className="upper-filter">
         <UpperFilter search={search} setSearch={setSearch} />
         <div className="receipients">
-          {/* Receipeints */}
           {displayResidents(receipients, search, addNumber, removeNumber, selectedResidentsNumber)}
-
         </div>
       </div>
     </div>
