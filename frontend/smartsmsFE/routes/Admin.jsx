@@ -15,7 +15,8 @@ function AdminDashboard() {
             display: 'flex',
             width: '100vw',
             height: '100vh',
-            background: '#eee'
+            background: '#eee',
+            overflow: 'hidden'
         }}>
             <CustomSidebar />
             <div style={{flex: '1', background: '#eee'}}>

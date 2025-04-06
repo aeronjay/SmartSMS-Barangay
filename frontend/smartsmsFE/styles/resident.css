@@ -1,0 +1,90 @@
+.main-section {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.resident-options {
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 30px;
+    height: 90px;
+    border-bottom: 1px solid rgba(128, 128, 128, 0.381);
+    flex-shrink: 0; /* Prevent this from shrinking */
+}
+
+.resident-options > div {
+    width: 50%;
+}
+
+.residents {
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    flex: 1; /* Take remaining space */
+    overflow: hidden; /* Hide overflow from the container */
+    min-height: 300px; /* Minimum height as requested */
+}
+
+/* Table container with fixed height and scroll */
+.table-container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
+}
+
+table {
+    width: 100%;
+    border-collapse: separate; /* Changed from collapse to allow sticky header */
+    border-spacing: 0;
+    table-layout: fixed;
+}
+
+thead {
+    background-color: rgba(0, 0, 0, .04);
+    position: sticky;
+    top: 0;
+    z-index: 1;
+}
+
+th {
+    height: 40px;
+    padding: 10px 28px;
+    text-align: left;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+td {
+    padding: 20px 28px;
+    text-align: left;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+tbody {
+    display: block;
+    overflow-y: auto;
+    overflow-x: hidden;
+    max-height: calc(100% - 40px); /* Subtract header height */
+}
+
+thead, tbody tr {
+    display: table;
+    width: 100%;
+    table-layout: fixed;
+}
+
+tbody tr {
+    border-bottom: 1px solid rgba(128, 128, 128, 0.15);
+}
+
+tbody tr:hover {
+    background-color: rgba(0, 0, 0, 0.02);
+}
