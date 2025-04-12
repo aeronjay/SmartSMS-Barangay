@@ -34,6 +34,7 @@ Content-Type: application/json
         "phone": "+639695192609",
         "email": "test1"
     },
+    "age": 123,
     "address": {
         "house_number": "123",
         "street": "Mabini Street",

@@ -26,13 +26,13 @@ const ResidentSchema = new mongoose.Schema({
     },
 
     medical_info: {
-        blood_type: { type: String, enum: ["O+", "O-", "A+", "A-", "B+", "B-", "AB+", "AB-"] },
+        blood_type: { type: String, enum: ["O+", "O-", "A+", "A-", "B+", "B-", "AB+", "AB-", "N/A",], default: "N/A" },
         medical_conditions: { type: [String], default: [] },
         disabilities: { type: [String], default: [] },
         emergency_contact: {
-            name: { type: String, required: true },
-            relationship: { type: String, required: true },
-            phone: { type: String, required: true }
+            name: { type: String },
+            relationship: { type: String },
+            phone: { type: String }
         }
     },
 
@@ -48,7 +48,7 @@ const ResidentSchema = new mongoose.Schema({
     },
 
     registration: {
-        resident_type: { type: String, enum: ["Permanent", "Temporary"], required: true },
+        resident_type: { type: String, enum: ["Permanent", "Temporary"], required: true, default: "Permanent" },
         date_registered: { type: Date, default: Date.now },
         status: { type: String, enum: ["active", "inactive"], default: "active" }
     }

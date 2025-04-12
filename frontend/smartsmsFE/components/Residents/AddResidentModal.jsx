@@ -18,6 +18,7 @@ import {
   Divider,
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
+import service from "../../services/service";
 
 export default function AddResidentModal({ open, onClose }) {
   const [formData, setFormData] = useState({
@@ -31,19 +32,19 @@ export default function AddResidentModal({ open, onClose }) {
     marital_status: "",
     nationality: "Filipino",
     contact: {
-      phone: "",
+      phone: "+639",
       email: "",
     },
     address: {
       house_number: "",
       street: "",
-      barangay: "",
-      city: "",
-      province: "",
+      barangay: "551 ZONE 54",
+      city: "MANILA",
+      province: "METRO MANILA",
       zip_code: "",
     },
     medical_info: {
-      blood_type: "",
+      blood_type: "N/A",
       medical_conditions: [],
       disabilities: [],
       emergency_contact: {
@@ -62,7 +63,7 @@ export default function AddResidentModal({ open, onClose }) {
       field_of_study: "",
     },
     registration: {
-      resident_type: "",
+      resident_type: "Permanent",
     },
   });
 
@@ -104,58 +105,72 @@ export default function AddResidentModal({ open, onClose }) {
     }));
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     console.log("Submitting:", formData);
 
-    
+    try {
+      // Call the registerResident function from service.js
+      const newResident = await service.registerResident(formData);
 
-    // Reset form
-    setFormData({
-      first_name: "",
-      middle_name: "",
-      last_name: "",
-      suffix: "",
-      birthdate: "",
-      age: "",
-      gender: "",
-      marital_status: "",
-      nationality: "Filipino",
-      contact: {
-        phone: "",
-        email: "",
-      },
-      address: {
-        house_number: "",
-        street: "",
-        barangay: "",
-        city: "",
-        province: "",
-        zip_code: "",
-      },
-      medical_info: {
-        blood_type: "",
-        medical_conditions: [],
-        disabilities: [],
-        emergency_contact: {
-          name: "",
-          relationship: "",
+      // Log success message
+      console.log("Resident added successfully:", newResident);
+
+      // Reset the form
+      setFormData({
+        first_name: "",
+        middle_name: "",
+        last_name: "",
+        suffix: "",
+        birthdate: "",
+        age: "",
+        gender: "",
+        marital_status: "",
+        nationality: "Filipino",
+        contact: {
           phone: "",
+          email: "",
         },
-      },
-      employment: {
-        occupation: "",
-        employer: "",
-        income_range: "",
-      },
-      education: {
-        highest_education: "",
-        field_of_study: "",
-      },
-      registration: {
-        resident_type: "",
-      },
-    });
-    onClose();
+        address: {
+          house_number: "",
+          street: "",
+          barangay: "",
+          city: "",
+          province: "",
+          zip_code: "",
+        },
+        medical_info: {
+          blood_type: "",
+          medical_conditions: [],
+          disabilities: [],
+          emergency_contact: {
+            name: "",
+            relationship: "",
+            phone: "",
+          },
+        },
+        employment: {
+          occupation: "",
+          employer: "",
+          income_range: "",
+        },
+        education: {
+          highest_education: "",
+          field_of_study: "",
+        },
+        registration: {
+          resident_type: "",
+        },
+      });
+
+      // Close the modal
+      onClose();
+      window.location.reload();
+      // Optionally, show a success notification to the user
+      alert("Resident added successfully!");
+    } catch (err) {
+      console.error("Error adding resident:", err);
+      alert("Failed to add resident. Please try again.");
+    }
   };
 
   return (
@@ -426,7 +441,7 @@ export default function AddResidentModal({ open, onClose }) {
                 value={formData.medical_info.emergency_contact.name}
                 onChange={(e) => handleEmergencyContactChange("name", e.target.value)}
                 fullWidth
-                required
+                
               />
             </Grid>
             <Grid size={{ xs: 12, md: 4 }}>
@@ -435,7 +450,7 @@ export default function AddResidentModal({ open, onClose }) {
                 value={formData.medical_info.emergency_contact.relationship}
                 onChange={(e) => handleEmergencyContactChange("relationship", e.target.value)}
                 fullWidth
-                required
+                
               />
             </Grid>
             <Grid size={{ xs: 12, md: 4 }}>
@@ -444,7 +459,7 @@ export default function AddResidentModal({ open, onClose }) {
                 value={formData.medical_info.emergency_contact.phone}
                 onChange={(e) => handleEmergencyContactChange("phone", e.target.value)}
                 fullWidth
-                required
+                
               />
             </Grid>
           </Grid>
