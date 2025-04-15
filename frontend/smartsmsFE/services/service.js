@@ -20,11 +20,14 @@ export const registerResident = async (residentData) => {
         console.error("Error registering resident:", error);
         throw error; // Re-throw the error for handling in the calling function
     }
-};
+}
 
-
+const deleteResident = async (residentId) => {
+    return axios.delete(`${baseUrl}/resident/delete/${residentId}`);
+}
 
 export default {
     getResidents,
-    registerResident
+    registerResident,
+    deleteResident
 }

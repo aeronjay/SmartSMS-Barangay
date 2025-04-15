@@ -105,6 +105,25 @@ routes.post('/api/admin/broadcast', async (req, res) => {
 // routes.get("/protected", authMiddleware, (req, res) => {
 //     res.json({ message: "You are authorized!" });
 // });
+routes.delete('/api/resident/delete/:id', async (req, res) => {
+    try {
+        const residentId = req.params.id;
+        
+        // Check if resident exists
+        const resident = await Resident.findById(residentId);
+        if (!resident) {
+            return res.status(404).json({ message: 'Resident not found' });
+        }
+        
+        // Delete the resident
+        await Resident.findByIdAndDelete(residentId);
+        
+        res.json({ message: 'Resident deleted successfully' });
+    } catch (err) {
+        console.error('Error deleting resident:', err);
+        res.status(500).json({ message: err.message });
+    }
+})
 
 routes.post('/api/resident/register', async (req, res) => {
     try {

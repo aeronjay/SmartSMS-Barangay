@@ -71,3 +71,8 @@ Content-Type: application/json
 
 ###
 GET http://localhost:3001/api/resident/all
+
+###
+
+DELETE http://localhost:3001/api/resident/delete/67cd9ffd6e3ce7236ccda673
+Content-Type: application/json
