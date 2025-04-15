@@ -4,6 +4,12 @@ import '../../styles/resident.css'
 import SearchInput from '../SearchInput'
 import service from '../../services/service'
 import AddResidentModal from './AddResidentModal'
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
+import IconButton from '@mui/material/IconButton';
+import AddIcon from '@mui/icons-material/Add';
+import Button from '@mui/material/Button';
+
 
 export default function Residents() {
 
@@ -58,13 +64,15 @@ export default function Residents() {
         </>
     )
 }
-const ResidentOptions = ({ search, setSearch,handleOpenDialog }) => {
+const ResidentOptions = ({ search, setSearch, handleOpenDialog }) => {
     return (
         <div className='resident-options'>
             <div>
                 <SearchInput search={search} setSearch={setSearch} />
             </div>
-            <button onClick={handleOpenDialog}>+ Add New Resident</button>
+            <Button onClick={handleOpenDialog} variant="contained" startIcon={<AddIcon />}>
+                Add New Resident
+            </Button>
         </div>
     )
 }
@@ -107,7 +115,14 @@ const displayResidents = (receipients, search,) => {
             <td>{resident.contact.email}</td>
             <td>{resident.address.street}</td>
             <td>{resident.registration.status}</td>
-            <td>✎  🗑</td>
+            <td className='Actions'>
+                <IconButton aria-label='Edit-Icon' className='Icon' size="small" color="primary">
+                    <EditIcon fontSize="small" />
+                </IconButton>
+                <IconButton aria-label='Delete-Icon' className='Icon' size="small" color="error">
+                    <DeleteIcon fontSize="small" />
+                </IconButton>
+            </td>
         </tr>
     ));
 };

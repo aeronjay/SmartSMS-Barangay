@@ -13,10 +13,11 @@
     padding: 0 30px;
     height: 90px;
     border-bottom: 1px solid rgba(128, 128, 128, 0.381);
-    flex-shrink: 0; /* Prevent this from shrinking */
+    flex-shrink: 0;
+    /* Prevent this from shrinking */
 }
 
-.resident-options > div {
+.resident-options>div {
     width: 50%;
 }
 
@@ -24,9 +25,12 @@
     padding: 10px;
     display: flex;
     flex-direction: column;
-    flex: 1; /* Take remaining space */
-    overflow: hidden; /* Hide overflow from the container */
-    min-height: 300px; /* Minimum height as requested */
+    flex: 1;
+    /* Take remaining space */
+    overflow: hidden;
+    /* Hide overflow from the container */
+    min-height: 300px;
+    /* Minimum height as requested */
 }
 
 /* Table container with fixed height and scroll */
@@ -39,7 +43,8 @@
 
 table {
     width: 100%;
-    border-collapse: separate; /* Changed from collapse to allow sticky header */
+    border-collapse: separate;
+    /* Changed from collapse to allow sticky header */
     border-spacing: 0;
     table-layout: fixed;
 }
@@ -72,10 +77,12 @@ tbody {
     display: block;
     overflow-y: auto;
     overflow-x: hidden;
-    max-height: calc(100% - 40px); /* Subtract header height */
+    max-height: calc(100% - 40px);
+    /* Subtract header height */
 }
 
-thead, tbody tr {
+thead,
+tbody tr {
     display: table;
     width: 100%;
     table-layout: fixed;
@@ -87,4 +94,22 @@ tbody tr {
 
 tbody tr:hover {
     background-color: rgba(0, 0, 0, 0.02);
+}
+
+.Actions {
+    display: flex;
+    flex-direction: row;
+    gap: 5px;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.Actions .Icon {
+    padding: 6px;
+    margin: -8px 0;
+    font-size: 0.9rem;
+}
+
+.Actions .Icon svg {
+    font-size: 23px;
 }
