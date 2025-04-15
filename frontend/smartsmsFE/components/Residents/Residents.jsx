@@ -38,7 +38,6 @@ export default function Residents() {
     const handleCloseDeleteDialog = () => {
         setDeleteDialogOpen(false);
         setSelectedResident(null);
-        alert(`Successfully Deleted Resident`)
     };
 
     const handleDeleteSuccess = () => {
@@ -51,6 +50,7 @@ export default function Residents() {
             }
         };
         fetchResidents();
+        alert(`Successfully Deleted Resident`)
     };
 
     const tryResidents = [
