@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 
-const baseUrl = 'http://localhost:3001/api'
+const baseUrl = '/api'
 
 const getResidents = async () => {
     try {
@@ -25,9 +25,19 @@ export const registerResident = async (residentData) => {
 const deleteResident = async (residentId) => {
     return axios.delete(`${baseUrl}/resident/delete/${residentId}`);
 }
+const updateResident = async (residentId, residentData) => {
+    try {
+        const response = await axios.put(`${baseUrl}/resident/update/${residentId}`, residentData);
+        return response.data;
+    } catch (error) {
+        console.error("Error updating resident:", error);
+        throw error;
+    }
+};
 
 export default {
     getResidents,
     registerResident,
-    deleteResident
+    deleteResident,
+    updateResident
 }

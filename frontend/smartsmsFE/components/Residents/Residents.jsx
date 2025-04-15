@@ -10,7 +10,7 @@ import IconButton from '@mui/material/IconButton';
 import AddIcon from '@mui/icons-material/Add';
 import Button from '@mui/material/Button';
 import DeleteResidentModal from './DeleteResidentModal'
-
+import EditResidentModal from './EditResidentModal';
 
 export default function Residents() {
 
@@ -53,6 +53,18 @@ export default function Residents() {
         alert(`Successfully Deleted Resident`)
     };
 
+    // edit resident
+    const [editDialogOpen, setEditDialogOpen] = useState(false);
+
+    const handleOpenEditDialog = (resident) => {
+        setSelectedResident(resident);
+        setEditDialogOpen(true);
+    };
+
+    const handleCloseEditDialog = () => {
+        setEditDialogOpen(false);
+        setSelectedResident(null);
+    };
     const tryResidents = [
         { first_name: "asd", last_name: "asd", middle_name: "asd", contact: { phone: "1231", email: "asdasd@gam" }, registration: { status: "active" }, address: { street: "asdas" } },
         { first_name: "asd", last_name: "asd", middle_name: "asd", contact: { phone: "1231", email: "asdasd@gam" }, registration: { status: "active" }, address: { street: "asdas" } },
@@ -84,7 +96,12 @@ export default function Residents() {
             <MainTemplate headerName={"Residents"} cardHeader={"Resident Management"}>
                 <div className='main-section'>
                     <ResidentOptions search={search} setSearch={setSearch} handleOpenDialog={handleOpenDialog} />
-                    <ResidentsTable residents={allResidents} search={search} onDeleteClick={handleOpenDeleteDialog} />
+                    <ResidentsTable
+                        residents={allResidents}
+                        search={search}
+                        onDeleteClick={handleOpenDeleteDialog}
+                        onEditClick={handleOpenEditDialog}
+                    />
                 </div>
                 <AddResidentModal open={isDialogOpen} onClose={handleCloseDialog} />
                 <DeleteResidentModal
@@ -92,6 +109,11 @@ export default function Residents() {
                     onClose={handleCloseDeleteDialog}
                     resident={selectedResident}
                     onDeleteSuccess={handleDeleteSuccess}
+                />
+                <EditResidentModal
+                    open={editDialogOpen}
+                    onClose={handleCloseEditDialog}
+                    resident={selectedResident}
                 />
             </MainTemplate>
         </>
@@ -110,7 +132,7 @@ const ResidentOptions = ({ search, setSearch, handleOpenDialog }) => {
     )
 }
 
-const ResidentsTable = ({ residents, search, onDeleteClick }) => {
+const ResidentsTable = ({ residents, search, onDeleteClick, onEditClick }) => {
     return (
         <div className='residents'>
             <table>
@@ -125,14 +147,13 @@ const ResidentsTable = ({ residents, search, onDeleteClick }) => {
                     </tr>
                 </thead>
                 <tbody>
-                    {displayResidents(residents, search, onDeleteClick)}
+                    {displayResidents(residents, search, onDeleteClick, onEditClick)}
                 </tbody>
             </table>
         </div>
     )
 }
-const displayResidents = (recipients, search, onDeleteClick) => {
-    // If search is not empty, filter residents whose name includes the search term
+const displayResidents = (recipients, search, onDeleteClick, onEditClick) => {
     const filteredResidents = search !== ""
         ? recipients.filter(person => {
             const fullName = `${person.first_name} ${person.middle_name || ''} ${person.last_name}`.toLowerCase();
@@ -140,7 +161,6 @@ const displayResidents = (recipients, search, onDeleteClick) => {
         })
         : recipients;
 
-    // Map the filtered residents to components
     return filteredResidents.map(resident => (
         <tr key={resident._id}>
             <td>{resident.first_name} {resident.middle_name} {resident.last_name}</td>
@@ -149,7 +169,13 @@ const displayResidents = (recipients, search, onDeleteClick) => {
             <td>{resident.address.street}</td>
             <td>{resident.registration.status}</td>
             <td className='Actions'>
-                <IconButton aria-label='Edit-Icon' className='Icon' size="small" color="primary">
+                <IconButton
+                    aria-label='Edit-Icon'
+                    className='Icon'
+                    size="small"
+                    color="primary"
+                    onClick={() => onEditClick(resident)}
+                >
                     <EditIcon fontSize="small" />
                 </IconButton>
                 <IconButton
