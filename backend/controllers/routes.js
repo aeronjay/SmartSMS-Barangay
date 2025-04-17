@@ -61,42 +61,42 @@ routes.post('/api/admin/login', async (req, res) => {
     }
 })
 
-routes.post('/api/admin/broadcast', async (req, res) => {
-    // not working yet, need API KEY AND DEVICEID
-    try {
-        const { recipients, message } = req.body;
+// routes.post('/api/admin/broadcast', async (req, res) => {
+//     // not working yet, need API KEY AND DEVICEID
+//     try {
+//         const { recipients, message } = req.body;
 
-        // Validate input
-        if (!Array.isArray(recipients) || recipients.length === 0) {
-            return res.status(400).json({ error: 'Recipients array is required and must not be empty.' });
-        }
-        if (typeof message !== 'string' || message.trim() === '') {
-            return res.status(400).json({ error: 'Message is required and must not be empty.' });
-        }
+//         // Validate input
+//         if (!Array.isArray(recipients) || recipients.length === 0) {
+//             return res.status(400).json({ error: 'Recipients array is required and must not be empty.' });
+//         }
+//         if (typeof message !== 'string' || message.trim() === '') {
+//             return res.status(400).json({ error: 'Message is required and must not be empty.' });
+//         }
 
-        const apiData = {
-            recipients: recipients,
-            message: message,
-        };
+//         const apiData = {
+//             recipients: recipients,
+//             message: message,
+//         };
 
-        const apiUrl = `https://api.textbee.dev/api/v1/gateway/devices/${DEVICE_ID}/send-sms`;
+//         const apiUrl = `https://api.textbee.dev/api/v1/gateway/devices/${DEVICE_ID}/send-sms`;
 
-        const response = await axios.post(apiUrl, apiData, {
-            headers: {
-                'x-api-key': API_KEY,
-            },
-        });
+//         const response = await axios.post(apiUrl, apiData, {
+//             headers: {
+//                 'x-api-key': API_KEY,
+//             },
+//         });
 
-        if (response.status === 200) {
-            res.status(200).json({ success: true, message: 'SMS broadcast successful', data: response.data });
-        } else {
-            res.status(response.status).json({ success: false, message: 'SMS broadcast failed', error: response.data });
-        }
-    } catch (error) {
-        console.error('Error broadcasting SMS:', error);
-        res.status(500).json({ success: false, message: 'Internal server error', error: error.message });
-    }
-});
+//         if (response.status === 200) {
+//             res.status(200).json({ success: true, message: 'SMS broadcast successful', data: response.data });
+//         } else {
+//             res.status(response.status).json({ success: false, message: 'SMS broadcast failed', error: response.data });
+//         }
+//     } catch (error) {
+//         console.error('Error broadcasting SMS:', error);
+//         res.status(500).json({ success: false, message: 'Internal server error', error: error.message });
+//     }
+// });
 
 
 

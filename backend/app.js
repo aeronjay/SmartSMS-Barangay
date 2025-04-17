@@ -2,6 +2,7 @@ require("dotenv").config();
 const express = require('express')
 const app = express()
 const routes = require('./controllers/routes')
+const apiClient = require('./controllers/apiClient')
 const cors = require('cors')
 const mongoose = require('mongoose')
 
@@ -19,6 +20,7 @@ mongoose
 
 
 app.use('/', routes);
+app.use('/api', apiClient())
 app.use(express.static(path.join(__dirname, "dist")));
 app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "dist", "index.html")); // Serve index.html correctly

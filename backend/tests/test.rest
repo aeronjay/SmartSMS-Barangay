@@ -76,3 +76,18 @@ GET http://localhost:3001/api/resident/all
 
 DELETE http://localhost:3001/api/resident/delete/67cd9ffd6e3ce7236ccda673
 Content-Type: application/json
+
+###
+
+POST http://localhost:3001/api/send-sms
+Content-Type: application/json
+
+{
+    "phoneNumbers": ["+639453674856"],
+    "message": "TRY 1",
+    "createdBy": "ADMIN"
+}
+
+###
+
+GET http://localhost:3001/api/message-status/hMCjSLzHvOBfgrX4DjBK5
