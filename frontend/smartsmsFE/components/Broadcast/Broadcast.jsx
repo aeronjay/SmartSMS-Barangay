@@ -38,7 +38,6 @@ export default function Broadcast() {
                     checked: false
                 }));
 
-                console.log('Fetched residents:', mappedResidents);
                 setallResidents(mappedResidents); 
             } catch (err) {
                 console.error('Error fetching residents:', err);

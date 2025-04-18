@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 
-const baseUrl = '/api'
+const baseUrl = 'http://localhost:3001/api'
 
 const getResidents = async () => {
     try {
@@ -35,9 +35,38 @@ const updateResident = async (residentId, residentData) => {
     }
 };
 
+const sendSms = async (phoneNumbers, message, createdBy) => {
+    try {
+        // Validate input before making the API call
+        if (!Array.isArray(phoneNumbers) || phoneNumbers.length === 0) {
+            throw new Error('Phone numbers must be a non-empty array');
+        }
+        if (!message || typeof message !== 'string' || message.trim() === '') {
+            throw new Error('Message is required and must be a non-empty string');
+        }
+        if (!createdBy || typeof createdBy !== 'string' || createdBy.trim() === '') {
+            throw new Error('Created by field is required and must be a non-empty string');
+        }
+
+        // Make the POST request to the backend
+        const response = await axios.post(`${baseUrl}/send-sms`, {
+            phoneNumbers,
+            message,
+            createdBy
+        });
+
+        // Return the server's response
+        return response.data;
+    } catch (error) {
+        console.error('Error sending SMS:', error);
+        throw error; // Re-throw the error for handling in the calling function
+    }
+};
+
 export default {
     getResidents,
     registerResident,
     deleteResident,
-    updateResident
+    updateResident,
+    sendSms
 }

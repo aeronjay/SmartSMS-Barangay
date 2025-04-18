@@ -1,15 +1,35 @@
 import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
 import CampaignIcon from '@mui/icons-material/Campaign';
 import { useState } from 'react';
+import service from '../../services/service';
 
 export default function SendMessage({ selectedResidentsNumber = [] }) {
 
     const [message, setMessage] = useState("")
 
-    const handleBroadcast = () => {
-        alert("SENDING BROADCAST TO NUMNBERS")
-        console.log(selectedResidentsNumber)
-    }
+    const handleBroadcast = async () => {
+        if (!message.trim()) {
+            alert("Message cannot be empty!");
+            return;
+        }
+
+        if (selectedResidentsNumber.length === 0) {
+            alert("No recipients selected!");
+            return;
+        }
+
+        try {
+            // Call the sendSms function from the service layer
+            const response = await service.sendSms(selectedResidentsNumber, message, "Admin");
+
+            // Handle success
+            alert("Broadcast sent successfully!");
+        } catch (error) {
+            // Handle errors
+            console.error("Error sending broadcast:", error);
+            alert("Failed to send broadcast. Please try again.");
+        }
+    };
 
     return (
         <div className='broadcast-main'>
