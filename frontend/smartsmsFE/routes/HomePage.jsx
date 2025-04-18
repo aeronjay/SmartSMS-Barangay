@@ -48,20 +48,20 @@ const HomePage = () => {
     }, []);
 
     // API key for OpenWeatherMap
-    const apiKey = 'f4702a34386d654ad32429d8bf2f5d66';
-    const [currentWeather, setCurrentWeather] = useState(null);
+    // const apiKey = '';
+    // const [currentWeather, setCurrentWeather] = useState(null);
 
-    useEffect(() => {
-        // Fetch real-time weather for Manila using your API key
-        fetch(`https://api.openweathermap.org/data/2.5/weather?q=Manila,ph&units=metric&appid=${apiKey}`)
-            .then(response => response.json())
-            .then(data => {
-                setCurrentWeather(data);
-            })
-            .catch(error => {
-                console.error("Error fetching weather data:", error);
-            });
-    }, [apiKey]);
+    // useEffect(() => {
+    //     // Fetch real-time weather for Manila using your API key
+    //     fetch(`https://api.openweathermap.org/data/2.5/weather?q=Manila,ph&units=metric&appid=${apiKey}`)
+    //         .then(response => response.json())
+    //         .then(data => {
+    //             setCurrentWeather(data);
+    //         })
+    //         .catch(error => {
+    //             console.error("Error fetching weather data:", error);
+    //         });
+    // }, [apiKey]);
 
     return (
         <div className="site-container">
@@ -90,7 +90,7 @@ const HomePage = () => {
                 </div>
             </div>
 
-            {/* Main navigation header */}
+            {/* Main na`vi`gation header */}
             <header className="header">
                 <div className="header-content">
                     <div className="logo-container">
