@@ -73,11 +73,57 @@ const getBroadcastHistory = async () => {
     }
 };
 
+// DOCUMENT REQUEST FUNCTIONS
+const submitDocumentRequest = async (requestData) => {
+    try {
+        const response = await axios.post(`${baseUrl}/requests`, requestData);
+        return response.data;
+    } catch (error) {
+        console.error('Error submitting document request:', error);
+        throw error;
+    }
+};
+
+const getAllDocumentRequests = async () => {
+    try {
+        const response = await axios.get(`${baseUrl}/admin/pendingrequest`);
+        return response.data;
+    } catch (error) {
+        console.error('Error fetching document requests:', error);
+        throw error;
+    }
+};
+
+const getPendingDocumentRequests = async () => {
+    try {
+        const response = await axios.get(`${baseUrl}/requests/pending`);
+        return response.data;
+    } catch (error) {
+        console.error('Error fetching pending document requests:', error);
+        throw error;
+    }
+};
+
+const updateDocumentRequestStatus = async (requestId, status) => {
+    try {
+        const response = await axios.put(`${baseUrl}/requests/${requestId}`, { status });
+        return response.data;
+    } catch (error) {
+        console.error('Error updating document request status:', error);
+        throw error;
+    }
+};
+
 export default {
     getResidents,
     registerResident,
     deleteResident,
     updateResident,
     sendSms,
-    getBroadcastHistory, 
+    getBroadcastHistory,
+    // Document request exports
+    submitDocumentRequest,
+    getAllDocumentRequests,
+    getPendingDocumentRequests,
+    updateDocumentRequestStatus
 };

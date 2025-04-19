@@ -95,3 +95,21 @@ GET http://localhost:3001/api/message-status/hMCjSLzHvOBfgrX4DjBK5
 ###
 
 GET http://localhost:3001/api/history/getall
+
+### Submit a Document Request
+
+# POST request to /api/resident/documentRequest
+POST http://localhost:3001/api/resident/documentRequest
+Content-Type: application/json
+
+{
+    "email": "testuser@example.com",
+    "phoneNumber": "1234567890",
+    "address": "123 Barangay Street, City",
+    "fullName": "John Doe",
+    "purpose": "Employment",
+    "documentType": "Barangay Clearance"
+}
+
+### 
+GET http://localhost:3001/api/admin/pendingrequest

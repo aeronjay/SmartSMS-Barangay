@@ -1,0 +1,242 @@
+/* DocumentRequest.css */
+
+.document-request-container {
+    width: 100%;
+    padding: 10px;
+}
+
+/* Filter styles */
+.filter-container {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.filter-label {
+    font-weight: 500;
+    margin-right: 10px;
+}
+
+.filter-options {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.filter-button {
+    padding: 6px 12px;
+    border: 1px solid #e2e8f0;
+    background-color: #f8fafc;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.filter-button:hover {
+    background-color: #e2e8f0;
+}
+
+.filter-button.active {
+    background-color: #3b82f6;
+    color: white;
+    border-color: #2563eb;
+}
+
+/* Loading styles */
+.loading-container {
+    display: flex;
+    justify-content: center;
+    padding: 32px;
+}
+
+.loading-spinner {
+    border: 4px solid rgba(0, 0, 0, 0.1);
+    border-radius: 50%;
+    border-top: 4px solid #3498db;
+    width: 32px;
+    height: 32px;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Error message */
+.error-message {
+    color: #e74c3c;
+    text-align: center;
+    padding: 16px;
+    font-weight: 500;
+    background-color: #fdf2f2;
+    border-radius: 4px;
+    margin-bottom: 16px;
+}
+
+/* Table styles */
+.table-container {
+    overflow-x: auto;
+    margin-bottom: 20px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    border-radius: 6px;
+}
+
+.requests-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.requests-table th,
+.requests-table td {
+    padding: 12px 16px;
+    text-align: left;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.requests-table th {
+    background-color: #f8f9fa;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 12px;
+    color: #4a5568;
+    position: sticky;
+    top: 0;
+}
+
+.requests-table tr:hover {
+    background-color: #f7fafc;
+}
+
+.requests-table tr:last-child td {
+    border-bottom: none;
+}
+
+/* Requester info */
+.requester-name {
+    font-weight: 500;
+    color: #2d3748;
+    margin-bottom: 2px;
+}
+
+.requester-email {
+    font-size: 12px;
+    color: #718096;
+    margin-bottom: 2px;
+}
+
+.requester-phone {
+    font-size: 12px;
+    color: #718096;
+}
+
+/* Status badges */
+.status-badge {
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: 16px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.status-pending {
+    background-color: #fefcbf;
+    color: #975a16;
+}
+
+.status-approved {
+    background-color: #c6f6d5;
+    color: #2f855a;
+}
+
+.status-rejected {
+    background-color: #fed7d7;
+    color: #c53030;
+}
+
+.status-default {
+    background-color: #edf2f7;
+    color: #4a5568;
+}
+
+/* Action buttons */
+.action-buttons {
+    display: flex;
+    gap: 8px;
+}
+
+.approve-button,
+.reject-button,
+.refresh-button {
+    padding: 6px 12px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: background-color 0.2s;
+}
+
+.approve-button {
+    background-color: #48bb78;
+    color: white;
+}
+
+.approve-button:hover {
+    background-color: #38a169;
+}
+
+.reject-button {
+    background-color: #f56565;
+    color: white;
+}
+
+.reject-button:hover {
+    background-color: #e53e3e;
+}
+
+.refresh-button {
+    background-color: #4299e1;
+    color: white;
+    padding: 8px 16px;
+    font-size: 14px;
+}
+
+.refresh-button:hover {
+    background-color: #3182ce;
+}
+
+.action-container {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 16px;
+    padding: 0 16px;
+}
+
+.no-actions {
+    color: #a0aec0;
+    font-style: italic;
+}
+
+.no-requests-message {
+    text-align: center;
+    color: #718096;
+    padding: 16px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .filter-container {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .filter-options {
+        margin-top: 8px;
+    }
+    
+    .action-container {
+        justify-content: center;
+    }
+}
