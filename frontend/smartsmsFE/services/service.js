@@ -86,7 +86,8 @@ const submitDocumentRequest = async (requestData) => {
 
 const getAllDocumentRequests = async () => {
     try {
-        const response = await axios.get(`${baseUrl}/admin/pendingrequest`);
+        const response = await axios.get(`${baseUrl}/admin/allrequest`);
+        
         return response.data;
     } catch (error) {
         console.error('Error fetching document requests:', error);
@@ -96,10 +97,10 @@ const getAllDocumentRequests = async () => {
 
 const getPendingDocumentRequests = async () => {
     try {
-        const response = await axios.get(`${baseUrl}/requests/pending`);
+        const response = await axios.get(`${baseUrl}/admin/pendingrequest`);
         return response.data;
     } catch (error) {
-        console.error('Error fetching pending document requests:', error);
+        console.error('Error fetching document requests:', error);
         throw error;
     }
 };

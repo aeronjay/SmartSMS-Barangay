@@ -16,7 +16,7 @@ export default function DocumentRequest() {
     const fetchRequests = async () => {
         try {
             setLoading(true);
-            const response = await apiService.getAllDocumentRequests();
+            const response = await apiService.getPendingDocumentRequests();
 
             // Check the structure of the response and handle accordingly
             // If response.requests exists, use it, otherwise check if response itself is an array

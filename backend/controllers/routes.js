@@ -231,6 +231,23 @@ routes.post('/api/resident/documentRequest', async (req, res) => {
         });
     }
 });
+routes.get('/api/admin/allrequest', async (req, res) => {
+    try {
+        // Fetch all pending requests
+        const pendingRequests = await Request.find({})
+            .sort({ createdAt: -1 }); // Sort by creation date, newest first
+
+        return res.status(200).json({
+            count: pendingRequests.length,
+            requests: pendingRequests
+        });
+    } catch (error) {
+        console.error('Error fetching pending requests:', error);
+        return res.status(500).json({
+            message: 'An error occurred while fetching pending requests'
+        });
+    }
+});
 
 // Route 2: Admin views pending requests
 routes.get('/api/admin/pendingrequest', async (req, res) => {
