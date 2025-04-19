@@ -63,10 +63,21 @@ const sendSms = async (phoneNumbers, message, createdBy) => {
     }
 };
 
+const getBroadcastHistory = async () => {
+    try {
+        const response = await axios.get(`${baseUrl}/history/getall`);
+        return response.data; // Return only the data
+    } catch (error) {
+        console.error('Error fetching broadcast history:', error);
+        throw error; // Re-throw the error for handling in the calling function
+    }
+};
+
 export default {
     getResidents,
     registerResident,
     deleteResident,
     updateResident,
-    sendSms
-}
+    sendSms,
+    getBroadcastHistory, 
+};

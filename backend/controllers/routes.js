@@ -1,6 +1,7 @@
 const routes = require('express').Router()
 const User = require('../models/User')
 const Resident = require('../models/resident')
+const History = require('../models/History')
 const bcrypt = require('bcryptjs')
 const jwt = require("jsonwebtoken");
 
@@ -166,6 +167,18 @@ routes.put('/api/resident/update/:id', async (req, res) => {
     }
 });
 
+
+routes.get('/api/history/getall', async (req, res) => {
+    try {
+        const history = await History.find()
+            .select('phoneNumbers message messageId status createdAt') // Select only needed fields
+            .sort({ createdAt: -1 }); // Sort by newest first
+        res.json(history);
+    } catch (error) {
+        console.error('Error fetching history:', error);
+        res.status(500).json({ message: 'Server error' });
+    }
+});
 
 // add middleware to handle unknown route and error handler
 
