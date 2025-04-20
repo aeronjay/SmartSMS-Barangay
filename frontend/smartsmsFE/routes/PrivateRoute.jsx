@@ -3,12 +3,15 @@ import { Navigate, Outlet } from "react-router-dom";
 import AuthContext from "../context/AuthContext";
 
 const PrivateRoute = () => {
-  const { user } = useContext(AuthContext);
-  const storedUser = localStorage.getItem("user");
+  const { user, loading } = useContext(AuthContext);
   
-  // must check first if stored token is valid.
-
-  return user || storedUser ? <Outlet /> : <Navigate to="/loginpage" />;
+  // Show loading state while verifying token
+  if (loading) {
+    return <div>Loading...</div>; // Or a proper loading component
+  }
+  
+  // Redirect if not authenticated
+  return user ? <Outlet /> : <Navigate to="/loginpage" />;
 };
 
 export default PrivateRoute;

@@ -23,6 +23,11 @@ const authMiddleware = (req, res, next) => {
         res.status(400).json({ error: "Invalid token" });
     }
 };
+routes.get('/api/admin/verify-token', authMiddleware, (req, res) => {
+    // If the request gets this far, it means the authMiddleware has verified the token
+    res.status(200).json({ valid: true });
+});
+
 
 
 // routes.get('/api', (req, res) => {
