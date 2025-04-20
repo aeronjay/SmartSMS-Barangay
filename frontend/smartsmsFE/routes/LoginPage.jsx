@@ -1,6 +1,7 @@
 import { useContext, useState } from "react";
 import AuthContext from "../context/AuthContext";
 import { useNavigate } from "react-router-dom"
+import '../styles/loginpage.css'
 
 function LoginPage() {
     const [username, setUsername] = useState('');
@@ -20,17 +21,38 @@ function LoginPage() {
         
     }
     
-    return(
-        <form onSubmit={handleSubmit}>
-            <label htmlFor="username">Username</label>
-            <input type="text" name="username" id="username" value={username} onChange={(e) => setUsername(e.target.value)}/>
-            <br />
-            <label htmlFor="password">password</label>
-            <input type="password" name="password" id="password" value={password} onChange={(e) => setPassword(e.target.value)}/>
-            <br />
-            <button type="submit">Submit</button>
-        </form>
-    )
+    return (
+        <div className="login-container">
+            <div className="login-card">
+                <h2 className="login-title">Admin Login</h2>
+                <div className="login-form" onSubmit={handleSubmit}>
+                    <div className="input-group">
+                        <label htmlFor="username">Username</label>
+                        <input
+                            type="text"
+                            name="username"
+                            id="username"
+                            value={username}
+                            onChange={(e) => setUsername(e.target.value)}
+                            className="login-input"
+                        />
+                    </div>
+                    <div className="input-group">
+                        <label htmlFor="password">Password</label>
+                        <input
+                            type="password"
+                            name="password"
+                            id="password"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            className="login-input"
+                        />
+                    </div>
+                    <button type="submit" className="login-button">Sign In</button>
+                </div>
+            </div>
+        </div>
+    );
 }
 
 export default LoginPage;
