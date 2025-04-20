@@ -1,10 +1,13 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import '../../styles/ServiceSection.css';
+import RequestModal from './RequestModal'; // Import the new modal component
 
 const ServicesSection = () => {
     const [hoveredService, setHoveredService] = useState(null);
     const [requestSubmitted, setRequestSubmitted] = useState(false);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [selectedService, setSelectedService] = useState(null);
 
     const handleServiceHover = (index) => {
         setHoveredService(index);
@@ -14,9 +17,16 @@ const ServicesSection = () => {
         setHoveredService(null);
     };
 
-    const handleRequestNow = (serviceName) => {
-        // In the future, this could be connected to a form submission or redirection
-        console.log(`Request submitted for ${serviceName}`);
+    const handleRequestNow = (service) => {
+        setSelectedService(service);
+        setIsModalOpen(true);
+    };
+
+    const handleModalClose = () => {
+        setIsModalOpen(false);
+    };
+
+    const handleRequestSuccess = () => {
         setRequestSubmitted(true);
         
         // Reset the submitted state after showing confirmation
@@ -100,7 +110,7 @@ const ServicesSection = () => {
                             <p className="service-description">{service.description}</p>
                             <button 
                                 className="request-button"
-                                onClick={() => handleRequestNow(service.title)}
+                                onClick={() => handleRequestNow(service)}
                             >
                                 <i className="fas fa-paper-plane"></i> Request Now
                             </button>
@@ -108,6 +118,16 @@ const ServicesSection = () => {
                     </div>
                 ))}
             </div>
+
+            {/* Modal Component */}
+            {selectedService && (
+                <RequestModal 
+                    isOpen={isModalOpen}
+                    onClose={handleModalClose}
+                    documentType={selectedService.title}
+                    onSubmit={handleRequestSuccess}
+                />
+            )}
 
             {requestSubmitted && (
                 <div className="request-confirmation">

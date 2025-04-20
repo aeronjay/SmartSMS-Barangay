@@ -1,6 +1,5 @@
 import axios from 'axios'
 
-
 const baseUrl = 'http://localhost:3001/api'
 
 const getResidents = async () => {
@@ -12,6 +11,7 @@ const getResidents = async () => {
         throw err
     }
 }
+
 export const registerResident = async (residentData) => {
     try {
         const response = await axios.post(`${baseUrl}/resident/register`, residentData);
@@ -25,6 +25,7 @@ export const registerResident = async (residentData) => {
 const deleteResident = async (residentId) => {
     return axios.delete(`${baseUrl}/resident/delete/${residentId}`);
 }
+
 const updateResident = async (residentId, residentData) => {
     try {
         const response = await axios.put(`${baseUrl}/resident/update/${residentId}`, residentData);
@@ -76,7 +77,7 @@ const getBroadcastHistory = async () => {
 // DOCUMENT REQUEST FUNCTIONS
 const submitDocumentRequest = async (requestData) => {
     try {
-        const response = await axios.post(`${baseUrl}/requests`, requestData);
+        const response = await axios.post(`${baseUrl}/resident/documentRequest`, requestData);
         return response.data;
     } catch (error) {
         console.error('Error submitting document request:', error);
@@ -87,7 +88,6 @@ const submitDocumentRequest = async (requestData) => {
 const getAllDocumentRequests = async () => {
     try {
         const response = await axios.get(`${baseUrl}/admin/allrequest`);
-
         return response.data;
     } catch (error) {
         console.error('Error fetching document requests:', error);
@@ -126,7 +126,6 @@ const updateDocumentRequestStatus = async (id, status) => {
         throw error;
     }
 }
-
 
 export default {
     getResidents,
