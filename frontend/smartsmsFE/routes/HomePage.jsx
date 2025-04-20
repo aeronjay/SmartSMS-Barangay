@@ -4,9 +4,8 @@ import '../styles/Homepage.css';
 import ServicesSection from '../components/Homepage/ServiceSection'; 
 
 const HomePage = () => {
-    // Your existing code...
+
     
-    // Get current date and time for the header
     const today = new Date();
     const options = { 
         weekday: 'long', 
