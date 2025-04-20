@@ -87,7 +87,7 @@ const submitDocumentRequest = async (requestData) => {
 const getAllDocumentRequests = async () => {
     try {
         const response = await axios.get(`${baseUrl}/admin/allrequest`);
-        
+
         return response.data;
     } catch (error) {
         console.error('Error fetching document requests:', error);
@@ -105,15 +105,28 @@ const getPendingDocumentRequests = async () => {
     }
 };
 
-const updateDocumentRequestStatus = async (requestId, status) => {
+const updateDocumentRequestStatus = async (id, status) => {
     try {
-        const response = await axios.put(`${baseUrl}/requests/${requestId}`, { status });
-        return response.data;
+        const response = await fetch(`${baseUrl}/admin/updaterequests/${id}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ status }),
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.message || 'Failed to update status');
+        }
+
+        return await response.json();
     } catch (error) {
-        console.error('Error updating document request status:', error);
+        console.error('Error in updateDocumentRequestStatus:', error);
         throw error;
     }
-};
+}
+
 
 export default {
     getResidents,

@@ -268,40 +268,68 @@ routes.get('/api/admin/pendingrequest', async (req, res) => {
     }
 });
 
-// Route 3: Admin approves or rejects a request
-routes.put('/api/admin/requests/:id', async (req, res) => {
-    try {
-        // Check for validation errors
-        // const errors = validationResult(req);
-        // if (!errors.isEmpty()) {
-        //     return res.status(400).json({ errors: errors.array() });
-        // }
+// // Route 3: Admin approves or rejects a request
+// routes.put('/api/admin/requests/:id', async (req, res) => {
+//     try {
+//         // Check for validation errors
+//         // const errors = validationResult(req);
+//         // if (!errors.isEmpty()) {
+//         //     return res.status(400).json({ errors: errors.array() });
+//         // }
 
+//         const { id } = req.params;
+//         const { status } = req.body;
+
+//         // Find and update the request
+//         const updatedRequest = await Request.findByIdAndUpdate(
+//             id,
+//             { status },
+//             { new: true, runValidators: true }
+//         );
+
+//         // Check if request exists
+//         if (!updatedRequest) {
+//             return res.status(404).json({ message: 'Request not found' });
+//         }
+
+//         // Return the updated request
+//         return res.status(200).json({
+//             message: `Request ${status} successfully`,
+//             request: updatedRequest
+//         });
+//     } catch (error) {
+//         console.error('Error updating request status:', error);
+//         return res.status(500).json({
+//             message: 'An error occurred while updating the request status'
+//         });
+//     }
+// });
+
+routes.put('/api/admin/updaterequests/:id', async (req, res) => {
+    try {
         const { id } = req.params;
         const { status } = req.body;
 
-        // Find and update the request
+        // Validate status
+        if (!['pending', 'approved', 'rejected'].includes(status)) {
+            return res.status(400).json({ success: false, message: 'Invalid status value' });
+        }
+
+        // Find and update the document
         const updatedRequest = await Request.findByIdAndUpdate(
             id,
             { status },
-            { new: true, runValidators: true }
+            { new: true } // Return the updated document
         );
 
-        // Check if request exists
         if (!updatedRequest) {
-            return res.status(404).json({ message: 'Request not found' });
+            return res.status(404).json({ success: false, message: 'Document request not found' });
         }
 
-        // Return the updated request
-        return res.status(200).json({
-            message: `Request ${status} successfully`,
-            request: updatedRequest
-        });
+        return res.status(200).json({ success: true, data: updatedRequest });
     } catch (error) {
-        console.error('Error updating request status:', error);
-        return res.status(500).json({
-            message: 'An error occurred while updating the request status'
-        });
+        console.error('Error updating document status:', error);
+        return res.status(500).json({ success: false, message: 'Server error' });
     }
 });
 
