@@ -26,6 +26,7 @@ export const AuthProvider = ({ children }) => {
       setUser(token);
     } catch (error) {
       console.error("Login failed:", error);
+      throw error
     }
   };
 

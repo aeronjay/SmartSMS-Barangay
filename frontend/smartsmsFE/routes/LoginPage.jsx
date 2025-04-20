@@ -16,6 +16,7 @@ function LoginPage() {
             await login(username, password);
             navigate("/admin");
         }catch(err){
+            alert("LOGIN Failed")
             console.error("Login failed", err);
         }
         
@@ -25,7 +26,7 @@ function LoginPage() {
         <div className="login-container">
             <div className="login-card">
                 <h2 className="login-title">Admin Login</h2>
-                <div className="login-form" onSubmit={handleSubmit}>
+                <form className="login-form" onSubmit={handleSubmit}>
                     <div className="input-group">
                         <label htmlFor="username">Username</label>
                         <input
@@ -49,7 +50,7 @@ function LoginPage() {
                         />
                     </div>
                     <button type="submit" className="login-button">Sign In</button>
-                </div>
+                </form>
             </div>
         </div>
     );
