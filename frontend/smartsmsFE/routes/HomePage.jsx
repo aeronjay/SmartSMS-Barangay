@@ -173,7 +173,7 @@ const HomePage = () => {
                                 <div className="slogan">
                                     <p className="slogan-line">TODAY'S INNOVATIONS,</p>
                                     <p className="slogan-line">TOMORROW'S COMMUNITY.</p>
-                                    <p className="website-url">www.Barangay551Manila.ph</p>
+                                    <p className="website-url">www.Barangay551zone54.ph</p>
                                 </div>
                             </div>
                         </div>
@@ -183,11 +183,7 @@ const HomePage = () => {
                                 <img src="BRGY_BG.png" alt="Barangay 551 Seal" className='brgylogo'/>
                             </div>
                         </div>
-                        
-                        <div className="banner-captain">
-                            <div className="captain-label">Barangay Captain</div>
-                            <img src="/path-to-captain-image.png" alt="Barangay Captain" className="captain-image" />
-                        </div>
+
                     </div>
                 </div>
             </main>

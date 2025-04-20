@@ -28,47 +28,48 @@ const ServicesSection = () => {
     const services = [
         {
             id: 1,
-            title: "4P's Validation",
-            icon: "fas fa-check-double",
-            description: "Validate registration for the government's 4P's program.",
-            bgImage: "4PS.png"
+            title: "Barangay Clearance",
+            icon: "fas fa-file-alt",
+            description: "Proof of good standing within the barangay; required for employment, business, and other legal purposes.",
+            bgImage: "cert1.jpg"
         },
         {
             id: 2,
-            title: "Common Law",
-            icon: "fas fa-balance-scale",
-            description: "Certification for common law unions and relationships.",
-            bgImage: "LAW.png"
-        },
-        {
-            id: 3,
-            title: "Identification",
-            icon: "fas fa-id-card",
-            description: "Barangay ID issuance and verification services.",
-            bgImage: "IDENTIFICATION.jpg"
+            title: "Certificate of Residency",
+            icon: "fas fa-map-marker-alt",
+            description: "Certification proving residency within the barangay for various legal and government requirements.",
+            bgImage: "cert2.jpg"
         },
         {
             id: 4,
-            title: "Indigency",
+            title: "Certificate of Indigency",
             icon: "fas fa-hand-holding-heart",
-            description: "Certificate of indigency for qualified residents.",
-            bgImage: "/images/services/indigency-bg.jpg"
+            description: "Document issued to low-income individuals for access to social welfare and financial aid programs.",
+            bgImage: "cert3.jpg"
         },
         {
             id: 5,
             title: "Medical Assistance",
             icon: "fas fa-medkit",
-            description: "Support for medical needs and healthcare services.",
+            description: "Endorsement and support for healthcare and medical-related concerns.",
             bgImage: "MEDS.jpg"
         },
         {
             id: 6,
-            title: "Other Purposes",
-            icon: "fas fa-ellipsis-h",
-            description: "Additional services and certifications.",
-            bgImage: "OPTION.jpg"
+            title: "Health Certificate",
+            icon: "fas fa-notes-medical",
+            description: "Certificate issued after a barangay-level health screening, commonly required for work or school.",
+            bgImage: "cert4.jpg"
+        },
+        {
+            id: 7,
+            title: "Barangay Blotter Certificate",
+            icon: "fas fa-clipboard-list",
+            description: "Documentation of incidents or filed complaints within the barangay for legal and record purposes.",
+            bgImage: "cert5.jpg"
         }
     ];
+    
 
     return (
         <div className="services-section">
