@@ -28,7 +28,7 @@ function AdminDashboard() {
                     <Route path="document-request" element={<DocumentRequest />}/>
                     <Route path="request-history" element={<RequestHistory />}/>
                     <Route path="residents" element={<Residents />}/>
-                    <Route path="admin-accounts" element={<AdminAccounts />}/>
+                    {/* <Route path="admin-accounts" element={<AdminAccounts />}/> */}
                 </Routes>
             </div>
         </div>

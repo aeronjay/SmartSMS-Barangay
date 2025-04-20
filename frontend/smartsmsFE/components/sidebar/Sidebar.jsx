@@ -4,19 +4,26 @@ import ReceiptLongIcon from '@mui/icons-material/ReceiptLong';
 import { FaBirthdayCake, FaTrash, FaGift, FaHistory, FaTv, FaExclamationTriangle } from "react-icons/fa";
 import { IoPeopleCircleSharp, IoMegaphoneOutline, IoChatboxEllipses } from "react-icons/io5";
 import { useNavigate, useLocation } from 'react-router-dom';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
+import AuthContext from '../../context/AuthContext';
 import '../../styles/Sidebar.css'
 
 export default function CustomSidebar() {
   const location = useLocation();
   const navigate = useNavigate();
   const [activePage, setActivePage] = useState('');
+  const { logout } = useContext(AuthContext);
   
   useEffect(() => {
     // Extract the current path from location
     const path = location.pathname.split('/').pop();
     setActivePage(path || 'dashboard');
   }, [location]);
+
+  const handleLogout = () => {
+    logout(); // Call the logout function from AuthContext
+    navigate('/'); // Redirect to login page after logout
+  };
 
   const menuItems = [
     { path: 'dashboard', icon: <Home />, label: 'Dashboard' },
@@ -25,7 +32,7 @@ export default function CustomSidebar() {
     { path: 'document-request', icon: <ReceiptLongIcon />, label: 'Document Request' },
     { path: 'request-history', icon: <FaHistory />, label: 'Request History' },
     { path: 'residents', icon: <IoPeopleCircleSharp />, label: 'Residents' },
-    { path: 'admin-accounts', icon: <AdminPanelSettings />, label: 'Admin Accounts' }
+    // { path: 'admin-accounts', icon: <AdminPanelSettings />, label: 'Admin Accounts' }
   ];
 
   return (
@@ -48,8 +55,8 @@ export default function CustomSidebar() {
         ))}
       </div>
       <div className="sidebar-footer">
-        <button className="logout-btn">Logout</button>
-        <p className="copyright">&copy; 2025 Aeron Jay Bulatao</p>
+        <button className="logout-btn" onClick={handleLogout}>Logout</button>
+        <p className="copyright">&copy; Made By Group ABBNL</p>
       </div>
     </div>
   );
