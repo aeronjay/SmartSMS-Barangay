@@ -13,7 +13,7 @@ function LoginPage() {
         e.preventDefault();
         try{
             await login(username, password);
-            navigate("/admindashboard");
+            navigate("/admin");
         }catch(err){
             console.error("Login failed", err);
         }
