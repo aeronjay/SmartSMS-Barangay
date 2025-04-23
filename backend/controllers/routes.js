@@ -113,7 +113,7 @@ routes.post('/api/admin/login', async (req, res) => {
 // routes.get("/protected", authMiddleware, (req, res) => {
 //     res.json({ message: "You are authorized!" });
 // });
-routes.delete('/api/resident/delete/:id', async (req, res) => {
+routes.delete('/api/resident/delete/:id', authMiddleware , async (req, res) => {
     try {
         const residentId = req.params.id;
 
@@ -133,7 +133,7 @@ routes.delete('/api/resident/delete/:id', async (req, res) => {
     }
 })
 
-routes.post('/api/resident/register', async (req, res) => {
+routes.post('/api/resident/register', authMiddleware, async (req, res) => {
     try {
         const newResident = new Resident(req.body);
         await newResident.save();
@@ -143,7 +143,7 @@ routes.post('/api/resident/register', async (req, res) => {
     }
 })
 
-routes.get('/api/resident/all', async (req, res) => {
+routes.get('/api/resident/all', authMiddleware, async (req, res) => {
     try {
         const residents = await Resident.find();
         res.status(200).json(residents);
@@ -152,7 +152,7 @@ routes.get('/api/resident/all', async (req, res) => {
         res.status(500).json({ message: "Server error", error: error.message });
     }
 })
-routes.put('/api/resident/update/:id', async (req, res) => {
+routes.put('/api/resident/update/:id', authMiddleware, async (req, res) => {
     try {
         const residentId = req.params.id;
         const updatedData = req.body;
@@ -175,7 +175,7 @@ routes.put('/api/resident/update/:id', async (req, res) => {
 });
 
 
-routes.get('/api/history/getall', async (req, res) => {
+routes.get('/api/history/getall', authMiddleware, async (req, res) => {
     try {
         const history = await History.find()
             .select('phoneNumbers message messageId status createdAt') // Select only needed fields
@@ -236,7 +236,7 @@ routes.post('/api/resident/documentRequest', async (req, res) => {
         });
     }
 });
-routes.get('/api/admin/allrequest', async (req, res) => {
+routes.get('/api/admin/allrequest', authMiddleware, async (req, res) => {
     try {
         // Fetch all pending requests
         const pendingRequests = await Request.find({})
@@ -255,7 +255,7 @@ routes.get('/api/admin/allrequest', async (req, res) => {
 });
 
 // Route 2: Admin views pending requests
-routes.get('/api/admin/pendingrequest', async (req, res) => {
+routes.get('/api/admin/pendingrequest', authMiddleware, async (req, res) => {
     try {
         // Fetch all pending requests
         const pendingRequests = await Request.find({ status: 'pending' })
@@ -310,7 +310,7 @@ routes.get('/api/admin/pendingrequest', async (req, res) => {
 //     }
 // });
 
-routes.put('/api/admin/updaterequests/:id', async (req, res) => {
+routes.put('/api/admin/updaterequests/:id', authMiddleware, async (req, res) => {
     try {
         const { id } = req.params;
         const { status } = req.body;

@@ -90,7 +90,7 @@ Content-Type: application/json
 
 ###
 
-GET http://localhost:3001/api/message-status/hMCjSLzHvOBfgrX4DjBK5
+GET http://localhost:3001/api/message-status/Sxeg7YvH5mjXoo29ssrrN
 
 ###
 

@@ -1,7 +1,24 @@
 const express = require('express');
-const mongoose = require('mongoose'); // Import mongoose
-const Client = require('android-sms-gateway').default; // Import Client as default export
-const History = require('../models/History'); // Import the History model
+const mongoose = require('mongoose');
+const jwt = require('jsonwebtoken'); // Add this import
+const Client = require('android-sms-gateway').default;
+const History = require('../models/History');
+
+const authMiddleware = (req, res, next) => {
+    const authHeader = req.header("Authorization");
+    if (!authHeader) return res.status(401).json({ error: "access denied" });
+
+    const token = authHeader.split(" ")[1];
+    if (!token) return res.status(401).json({ error: "access denied" });
+
+    try {
+        const verified = jwt.verify(token, process.env.SECRET_KEY);
+        req.user = verified;
+        next();
+    } catch (err) {
+        res.status(400).json({ error: "Invalid token" });
+    }
+};
 
 const httpFetchClient = {
     get: async (url, headers) => {
@@ -28,7 +45,7 @@ module.exports = () => {
     const apiRouter = express.Router();
 
     // Send bulk SMS
-    apiRouter.post('/send-sms', async (req, res) => {
+    apiRouter.post('/send-sms', authMiddleware, async (req, res) => {
         const { phoneNumbers, message, createdBy } = req.body;
 
         // Validate input
@@ -50,9 +67,9 @@ module.exports = () => {
             };
 
             const result = await apiClient.send(smsData);
-            
+
             const messageId = result.id;
-            
+
             const historyRecord = new History({
                 phoneNumbers: smsData.phoneNumbers,
                 message: smsData.message,
@@ -82,7 +99,7 @@ module.exports = () => {
     });
 
     // Get message status
-    apiRouter.get('/message-status/:messageId', async (req, res) => {
+    apiRouter.get('/message-status/:messageId', authMiddleware, async (req, res) => {
         const { messageId } = req.params;
 
         if (!messageId) {
