@@ -15,12 +15,15 @@ export default function CustomSidebar() {
   const [activePage, setActivePage] = useState('');
   const { user, logout } = useContext(AuthContext);
   let role = null;
+  let fullname = null;
   if (user) {
     try {
       const decoded = jwtDecode(user);
       role = decoded.role;
+      fullname = decoded.fullname || decoded.username || 'Admin';
     } catch (e) {
       role = null;
+      fullname = 'Admin';
     }
   }
 
@@ -48,8 +51,12 @@ export default function CustomSidebar() {
 
   return (
     <div className="sidebar-container">
-      <div className="sidebar-header">
-        SMART SMS BARANGAY
+      <div className="sidebar-header cool-header">
+        <img src="/logo%20brgy.jpg" alt="Barangay Logo" className="sidebar-logo" />
+        <div className="sidebar-title">
+          <span className="main-title">SMART SMS</span>
+          <span className="sub-title">BARANGAY SYSTEM</span>
+        </div>
       </div>
       <div className='Menu'>
         {menuItems.map((item) => (
@@ -57,7 +64,6 @@ export default function CustomSidebar() {
             key={item.path}
             className={`menu-item ${activePage === item.path ? 'active' : ''}`}
             onClick={() => {
-              // This is the key change - navigate to the new path
               navigate(`/admin/${item.path}`);
             }}
           >
@@ -65,7 +71,14 @@ export default function CustomSidebar() {
           </div>
         ))}
       </div>
-      <div className="sidebar-footer">
+      <div className="sidebar-footer cool-footer">
+        <div className="user-info">
+          <div className="user-avatar">{fullname ? fullname.charAt(0).toUpperCase() : 'A'}</div>
+          <div>
+            <div className="user-name">{fullname}</div>
+            <div className="user-role">Barangay Role: <b>{role ? role.charAt(0).toUpperCase() + role.slice(1) : 'N/A'}</b></div>
+          </div>
+        </div>
         <button className="logout-btn" onClick={handleLogout}>Logout</button>
         <p className="copyright">&copy; Made By Group ABBNL</p>
       </div>
