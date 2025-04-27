@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-const baseUrl = '/api'
+const baseUrl = 'http://localhost:3001/api'
 
 const getResidents = async () => {
     try {
@@ -126,6 +126,26 @@ const updateDocumentRequestStatus = async (id, status) => {
         throw error;
     }
 }
+const loginAdmin = async (username, password) => {
+    try {
+        const res = await axios.post(`${baseUrl}/admin/login`, { username, password });
+        return res.data;
+    } catch (error) {
+        console.error("Login failed:", error);
+        throw error;
+    }
+};
+
+const verifyAdminToken = async (token) => {
+    try {
+        axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+        await axios.get(`${baseUrl}/admin/verify-token`);
+        return true;
+    } catch (error) {
+        console.error("Token verification failed:", error);
+        return false;
+    }
+};
 
 export default {
     getResidents,
@@ -138,5 +158,7 @@ export default {
     submitDocumentRequest,
     getAllDocumentRequests,
     getPendingDocumentRequests,
-    updateDocumentRequestStatus
+    updateDocumentRequestStatus,
+    loginAdmin,
+    verifyAdminToken
 };
