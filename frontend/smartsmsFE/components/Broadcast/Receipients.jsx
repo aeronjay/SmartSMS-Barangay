@@ -3,6 +3,9 @@ import { useEffect, useState } from "react";
 
 export default function Receipients({ receipients = [], selectedResidentsNumber = [], setselectedResidentsNumber }) {
 
+  const allNumbers = receipients.map(r => r.phone);
+  const allSelected = allNumbers.length > 0 && allNumbers.every(num => selectedResidentsNumber.includes(num));
+
   const [search, setSearch] = useState('');
   const addNumber = (number) => {
     setselectedResidentsNumber([...selectedResidentsNumber, number])
@@ -15,10 +18,18 @@ export default function Receipients({ receipients = [], selectedResidentsNumber 
     }
   }
 
+  const handleSelectAll = () => {
+    if (allSelected) {
+      setselectedResidentsNumber([]);
+    } else {
+      setselectedResidentsNumber(allNumbers);
+    }
+  };
+
   return (
     <div className='broadcast-recipients'>
       <div className="upper-filter">
-        <UpperFilter search={search} setSearch={setSearch} />
+        <UpperFilter search={search} setSearch={setSearch} allSelected={allSelected} handleSelectAll={handleSelectAll} />
         <div className="receipients">
           {displayResidents(receipients, search, addNumber, removeNumber, selectedResidentsNumber)}
         </div>
@@ -27,7 +38,7 @@ export default function Receipients({ receipients = [], selectedResidentsNumber 
   )
 }
 
-const UpperFilter = ({ search, setSearch }) => {
+const UpperFilter = ({ search, setSearch, allSelected, handleSelectAll }) => {
 
   return (
     <div className="main-border">
@@ -36,7 +47,9 @@ const UpperFilter = ({ search, setSearch }) => {
           <h6>Receipients</h6>
         </div>
         <div className="filter-actions">
-          <a href="#">Select all</a>
+        <a href="#" onClick={e => { e.preventDefault(); handleSelectAll(); }}>
+            {allSelected ? "Deselect all" : "Select all"}
+          </a>
         </div>
       </div>
       <div style={{ padding: "10px 20px" }}>
@@ -89,10 +102,10 @@ const ReceipientsCard = ({ id, name, street, age, priority, number, addNumber, r
 
 const displayResidents = (receipients, search, addNumber, removeNumber, selectedResidentsNumber) => {
   // If search is not empty, filter residents whose name includes the search term
-  const filteredResidents = search !== "" 
+  const filteredResidents = search !== ""
     ? receipients.filter(person => person.name.toLowerCase().includes(search.toLowerCase()))
     : receipients;
-    
+
   // Map the filtered residents to components
   return filteredResidents.map(person => (
     <ReceipientsCard
