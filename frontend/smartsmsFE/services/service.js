@@ -206,6 +206,24 @@ const verifyDocumentRequest = async ({ email, code }) => {
     }
 };
 
+// --- Admin Accounts CRUD ---
+const getAdminAccounts = async () => {
+    const res = await axios.get(`${baseUrl}/admin/accounts`);
+    return res.data;
+};
+const addAdminAccount = async (admin) => {
+    const res = await axios.post(`${baseUrl}/admin/accounts`, admin);
+    return res.data;
+};
+const updateAdminAccount = async (id, update) => {
+    const res = await axios.put(`${baseUrl}/admin/accounts/${id}`, update);
+    return res.data;
+};
+const deleteAdminAccount = async (id) => {
+    const res = await axios.delete(`${baseUrl}/admin/accounts/${id}`);
+    return res.data;
+};
+
 export default {
     getResidents,
     registerResident,
@@ -226,4 +244,9 @@ export default {
     updateTemplate,
     deleteTemplate,
     verifyDocumentRequest,
+    // Admin accounts
+    getAdminAccounts,
+    addAdminAccount,
+    updateAdminAccount,
+    deleteAdminAccount,
 };

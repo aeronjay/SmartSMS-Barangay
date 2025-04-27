@@ -455,6 +455,59 @@ routes.put('/api/templates/:id', authMiddleware, async (req, res) => {
         res.status(400).json({ error: err.message });
     }
 });
+// --- Admin Accounts CRUD (superadmin only) ---
+// List all admins
+routes.get('/api/admin/accounts', authMiddleware, requireRole('superadmin'), async (req, res) => {
+    const admins = await User.find({}, '-password'); // Exclude password
+    res.json(admins);
+});
+// Create admin
+routes.post('/api/admin/accounts', authMiddleware, requireRole('superadmin'), async (req, res) => {
+    try {
+        const { username, password, fullname, phoneNumber } = req.body;
+        if (!username || !password || !fullname || !phoneNumber) {
+            return res.status(400).json({ error: 'All fields are required' });
+        }
+        if (await User.findOne({ username })) {
+            return res.status(400).json({ error: 'Username already exists' });
+        }
+        const hashedPassword = await bcrypt.hash(password, 10);
+        const newAdmin = await User.create({ username, password: hashedPassword, fullname, phoneNumber, role: 'admin' });
+        res.status(201).json({ message: 'Admin created', admin: { ...newAdmin.toObject(), password: undefined } });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+// Update admin
+routes.put('/api/admin/accounts/:id', authMiddleware, requireRole('superadmin'), async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { fullname, phoneNumber, password } = req.body;
+        const admin = await User.findById(id);
+        if (!admin) return res.status(404).json({ error: 'Admin not found' });
+        if (admin.role === 'superadmin') return res.status(403).json({ error: 'Cannot update superadmin' });
+        if (fullname) admin.fullname = fullname;
+        if (phoneNumber) admin.phoneNumber = phoneNumber;
+        if (password) admin.password = await bcrypt.hash(password, 10);
+        await admin.save();
+        res.json({ message: 'Admin updated', admin: { ...admin.toObject(), password: undefined } });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
+// Delete admin
+routes.delete('/api/admin/accounts/:id', authMiddleware, requireRole('superadmin'), async (req, res) => {
+    try {
+        const { id } = req.params;
+        const admin = await User.findById(id);
+        if (!admin) return res.status(404).json({ error: 'Admin not found' });
+        if (admin.role === 'superadmin') return res.status(403).json({ error: 'Cannot delete superadmin' });
+        await admin.deleteOne();
+        res.json({ message: 'Admin deleted' });
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+});
 
 
 module.exports = routes
