@@ -427,6 +427,15 @@ routes.put('/api/templates/:id', authMiddleware, async (req, res) => {
         res.status(400).json({ error: err.message });
     }
 });
+routes.delete('/api/templates/:id', authMiddleware, async (req, res) => {
+    try {
+        const template = await BroadcastTemplate.findByIdAndDelete(req.params.id);
+        if (!template) return res.status(404).json({ error: 'Template not found' });
+        res.json({ message: 'Template deleted successfully' });
+    } catch (err) {
+        res.status(400).json({ error: err.message });
+    }
+});
 
 
 module.exports = routes

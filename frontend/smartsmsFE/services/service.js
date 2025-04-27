@@ -188,6 +188,19 @@ const updateTemplate = async (id, template) => {
     }
 };
 
+const deleteTemplate = async (id) => {
+    try {
+        const token = localStorage.getItem('token');
+        const response = await axios.delete(`${baseUrl}/templates/${id}`, {
+            headers: { Authorization: `Bearer ${token}` }
+        });
+        return response.data;
+    } catch (error) {
+        console.error('Error deleting template:', error);
+        throw error;
+    }
+};
+
 export default {
     getResidents,
     registerResident,
@@ -205,5 +218,6 @@ export default {
     // Broadcast template exports
     getTemplates,
     addTemplate,
-    updateTemplate
+    updateTemplate,
+    deleteTemplate
 };
