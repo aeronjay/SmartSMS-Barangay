@@ -48,6 +48,7 @@ export default function BroadcastHistory() {
                     <thead>
                         <tr>
                             <th>Number of Recipients</th>
+                            <th>Broadcast Type</th>
                             <th>Message</th>
                             <th>Message ID</th>
                             <th>Status</th>
@@ -63,6 +64,7 @@ export default function BroadcastHistory() {
                             history.map((item) => (
                                 <tr key={item._id}>
                                     <td>{item.phoneNumbers.length}</td>
+                                    <td>{item.broadcastType || 'N/A'}</td>
                                     <td>{item.message}</td>
                                     <td>{item.messageId || 'N/A'}</td>
                                     <td>{item.status}</td>

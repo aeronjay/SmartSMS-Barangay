@@ -178,7 +178,7 @@ routes.put('/api/resident/update/:id', authMiddleware, async (req, res) => {
 routes.get('/api/history/getall', authMiddleware, async (req, res) => {
     try {
         const history = await History.find()
-            .select('phoneNumbers message messageId status createdAt') // Select only needed fields
+            .select('phoneNumbers message messageId status createdAt broadcastType') // Select only needed fields
             .sort({ createdAt: -1 }); // Sort by newest first
         res.json(history);
     } catch (error) {

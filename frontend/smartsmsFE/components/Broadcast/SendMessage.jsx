@@ -3,11 +3,17 @@ import CampaignIcon from '@mui/icons-material/Campaign';
 import { useState } from 'react';
 import service from '../../services/service';
 
-export default function SendMessage({ selectedResidentsNumber = [] }) {
+export default function SendMessage({ selectedResidentsNumber = [], broadcastType }) {
+    
 
     const [message, setMessage] = useState("")
 
     const handleBroadcast = async () => {
+        if (!broadcastType || broadcastType.trim() === "") {
+            alert("Please select a broadcast type!");
+            return;
+        }
+        
         if (!message.trim()) {
             alert("Message cannot be empty!");
             return;
@@ -20,7 +26,7 @@ export default function SendMessage({ selectedResidentsNumber = [] }) {
 
         try {
             // Call the sendSms function from the service layer
-            const response = await service.sendSms(selectedResidentsNumber, message, "Admin");
+            const response = await service.sendSms(selectedResidentsNumber, message, "Admin", broadcastType);
 
             // Handle success
             alert("Broadcast sent successfully!");

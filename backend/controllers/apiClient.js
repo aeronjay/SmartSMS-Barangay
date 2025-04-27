@@ -46,7 +46,7 @@ module.exports = () => {
 
     // Send bulk SMS
     apiRouter.post('/send-sms', authMiddleware, async (req, res) => {
-        const { phoneNumbers, message, createdBy } = req.body;
+        const { phoneNumbers, message, createdBy, broadcastType } = req.body;
 
         // Validate input
         if (!phoneNumbers || !Array.isArray(phoneNumbers) || phoneNumbers.length === 0) {
@@ -75,7 +75,8 @@ module.exports = () => {
                 message: smsData.message,
                 messageId: messageId || null, // Store the messageId if available
                 createdBy: createdBy.trim(),
-                status: 'Pending' // Default status
+                status: 'Pending',
+                broadcastType: broadcastType || null // Default status
             });
 
             await historyRecord.save();
@@ -89,7 +90,8 @@ module.exports = () => {
                 message: message.trim(),
                 createdBy: createdBy.trim(),
                 status: 'Failed',
-                error: error.message || 'Unknown error'
+                error: error.message || 'Unknown error',
+                broadcastType: broadcastType || null
             });
 
             await historyRecord.save();

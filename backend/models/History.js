@@ -1,6 +1,11 @@
 const mongoose = require('mongoose');
 
 const historySchema = new mongoose.Schema({
+    broadcastType: {
+        type: String,
+        required: false,
+        default: null,
+    },
     phoneNumbers: {
         type: [String],
         required: true,

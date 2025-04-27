@@ -63,7 +63,7 @@ export default function Broadcast() {
                         selectedResidentsNumber={selectedResidentsNumber}
                         setselectedResidentsNumber={setselectedResidentsNumber} />
                     
-                    <SendMessage selectedResidentsNumber={selectedResidentsNumber} />
+                    <SendMessage selectedResidentsNumber={selectedResidentsNumber} broadcastType={broadcastValue}/>
                 </div>
             </MainTemplate>
         </>

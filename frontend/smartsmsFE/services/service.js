@@ -36,7 +36,7 @@ const updateResident = async (residentId, residentData) => {
     }
 };
 
-const sendSms = async (phoneNumbers, message, createdBy) => {
+const sendSms = async (phoneNumbers, message, createdBy, broadcastType) => {
     try {
         // Validate input before making the API call
         if (!Array.isArray(phoneNumbers) || phoneNumbers.length === 0) {
@@ -53,7 +53,8 @@ const sendSms = async (phoneNumbers, message, createdBy) => {
         const response = await axios.post(`${baseUrl}/send-sms`, {
             phoneNumbers,
             message,
-            createdBy
+            createdBy,
+            broadcastType
         });
 
         // Return the server's response
