@@ -1,6 +1,6 @@
 import '../../styles/Broadcast.css'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useMemo } from 'react'
 import AnnouncementOptions from './announcementOptions'
 import Receipients from './Receipients'
 import SendMessage from './SendMessage'
@@ -30,15 +30,20 @@ export default function Broadcast() {
                 const response = await residentService.getResidents();
 
                 const mappedResidents = response.data.map((resident) => ({
-                    id: resident._id, 
+                    id: resident._id,
                     name: `${resident.first_name} ${resident.middle_name ? resident.middle_name + ' ' : ''}${resident.last_name} ${resident.suffix || ''}`.trim(),
                     age: resident.age,
+                    gender: resident.gender,
+                    marital_status: resident.marital_status,
                     street: resident.address.street,
                     phone: resident.contact.phone,
+                    highest_education: resident.education?.highest_education,
+                    resident_type: resident.registration?.resident_type,
+                    medical_conditions: resident.medical_info?.medical_conditions || [],
                     checked: false
                 }));
 
-                setallResidents(mappedResidents); 
+                setallResidents(mappedResidents);
             } catch (err) {
                 console.error('Error fetching residents:', err);
             }
@@ -46,6 +51,38 @@ export default function Broadcast() {
 
         fetchResidents();
     }, [])
+    const [filters, setFilters] = useState({
+        minAge: "",
+        maxAge: "",
+        gender: "",
+        marital_status: "",
+        street: "",
+        highest_education: "",
+        resident_type: "",
+        medical_condition: "",
+    });
+
+    // FILTER LOGIC
+    const filteredResidents = useMemo(() => {
+        return allResidents.filter(resident => {
+            // Age filter
+            if (filters.minAge && resident.age < Number(filters.minAge)) return false;
+            if (filters.maxAge && resident.age > Number(filters.maxAge)) return false;
+            // Gender
+            if (filters.gender && resident.gender !== filters.gender) return false;
+            // Marital Status
+            if (filters.marital_status && resident.marital_status !== filters.marital_status) return false;
+            // Street
+            if (filters.street && resident.street !== filters.street) return false;
+            // Education
+            if (filters.highest_education && resident.highest_education !== filters.highest_education) return false;
+            // Resident Type
+            if (filters.resident_type && resident.resident_type !== filters.resident_type) return false;
+            // Medical Condition
+            if (filters.medical_condition && !(resident.medical_conditions || []).includes(filters.medical_condition)) return false;
+            return true;
+        });
+    }, [allResidents, filters]);
 
     const [selectedResidentsNumber, setselectedResidentsNumber] = useState([])
 
@@ -53,17 +90,22 @@ export default function Broadcast() {
         <>
             <MainTemplate headerName={"Broadcast"} cardHeader={"Create New Announcement"}>
                 <div className='main-content-section'>
-                    <AnnouncementOptions 
+                    <AnnouncementOptions
                         broadcastTypes={broadcastTypes}
                         broadcastValue={broadcastValue}
-                        setBroadcastOnChange={setBroadcastOnChange} />
-                    
-                    <Receipients 
-                        receipients={allResidents}
+                        setBroadcastOnChange={setBroadcastOnChange}
+                        allResidents={allResidents}
+                        filters={filters}
+                        setFilters={setFilters}
+                    />
+
+                    <Receipients
+                        receipients={filteredResidents}
                         selectedResidentsNumber={selectedResidentsNumber}
-                        setselectedResidentsNumber={setselectedResidentsNumber} />
-                    
-                    <SendMessage selectedResidentsNumber={selectedResidentsNumber} broadcastType={broadcastValue}/>
+                        setselectedResidentsNumber={setselectedResidentsNumber}
+                    />
+
+                    <SendMessage selectedResidentsNumber={selectedResidentsNumber} broadcastType={broadcastValue} />
                 </div>
             </MainTemplate>
         </>
