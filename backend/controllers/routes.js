@@ -64,54 +64,16 @@ routes.post('/api/admin/login', async (req, res) => {
         const isMatch = await bcrypt.compare(password, currentUser.password);
         if (!isMatch) return res.status(400).json({ error: 'INVALID CREDS!' })
 
-        const token = jwt.sign({ userId: currentUser._id }, process.env.SECRET_KEY, {
+        // Include role in JWT and response
+        const token = jwt.sign({ userId: currentUser._id, role: currentUser.role }, process.env.SECRET_KEY, {
             expiresIn: "1h",
         });
 
-        res.json({ token })
+        res.json({ token, role: currentUser.role, username: currentUser.username })
     } catch (err) {
         res.status(400).json({ error: err.message })
     }
 })
-
-// routes.post('/api/admin/broadcast', async (req, res) => {
-//     // not working yet, need API KEY AND DEVICEID
-//     try {
-//         const { recipients, message } = req.body;
-
-//         // Validate input
-//         if (!Array.isArray(recipients) || recipients.length === 0) {
-//             return res.status(400).json({ error: 'Recipients array is required and must not be empty.' });
-//         }
-//         if (typeof message !== 'string' || message.trim() === '') {
-//             return res.status(400).json({ error: 'Message is required and must not be empty.' });
-//         }
-
-//         const apiData = {
-//             recipients: recipients,
-//             message: message,
-//         };
-
-//         const apiUrl = `https://api.textbee.dev/api/v1/gateway/devices/${DEVICE_ID}/send-sms`;
-
-//         const response = await axios.post(apiUrl, apiData, {
-//             headers: {
-//                 'x-api-key': API_KEY,
-//             },
-//         });
-
-//         if (response.status === 200) {
-//             res.status(200).json({ success: true, message: 'SMS broadcast successful', data: response.data });
-//         } else {
-//             res.status(response.status).json({ success: false, message: 'SMS broadcast failed', error: response.data });
-//         }
-//     } catch (error) {
-//         console.error('Error broadcasting SMS:', error);
-//         res.status(500).json({ success: false, message: 'Internal server error', error: error.message });
-//     }
-// });
-
-
 
 
 
@@ -440,6 +402,26 @@ routes.put('/api/admin/updaterequests/:id', authMiddleware, async (req, res) => 
 
 // add middleware to handle unknown route and error handler
 
+// Middleware to require a specific role
+const requireRole = (role) => (req, res, next) => {
+    if (!req.user || !req.user.userId) return res.status(401).json({ error: 'Unauthorized' });
+    User.findById(req.user.userId).then(user => {
+        if (!user || user.role !== role) {
+            return res.status(403).json({ error: 'Forbidden: Insufficient role' });
+        }
+        next();
+    }).catch(() => res.status(500).json({ error: 'Server error' }));
+};
+// Example: Only superadmin can delete templates
+routes.delete('/api/templates/:id', authMiddleware, requireRole('superadmin'), async (req, res) => {
+    try {
+        const template = await BroadcastTemplate.findByIdAndDelete(req.params.id);
+        if (!template) return res.status(404).json({ error: 'Template not found' });
+        res.json({ message: 'Template deleted successfully' });
+    } catch (err) {
+        res.status(400).json({ error: err.message });
+    }
+});
 // Broadcast Template CRUD
 routes.get('/api/templates', authMiddleware, async (req, res) => {
     try {
@@ -469,15 +451,6 @@ routes.put('/api/templates/:id', authMiddleware, async (req, res) => {
         );
         if (!template) return res.status(404).json({ error: 'Template not found' });
         res.json(template);
-    } catch (err) {
-        res.status(400).json({ error: err.message });
-    }
-});
-routes.delete('/api/templates/:id', authMiddleware, async (req, res) => {
-    try {
-        const template = await BroadcastTemplate.findByIdAndDelete(req.params.id);
-        if (!template) return res.status(404).json({ error: 'Template not found' });
-        res.json({ message: 'Template deleted successfully' });
     } catch (err) {
         res.status(400).json({ error: err.message });
     }

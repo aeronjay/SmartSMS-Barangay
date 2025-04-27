@@ -8,12 +8,12 @@ Content-Type: application/json
 
 ###
 
-POST http://localhost:3001/api/register
+POST http://localhost:3001/api/admin/register
 Content-Type: application/json
 
 {
-    "username": "user",
-    "password": "password"
+    "username": "superadmin",
+    "password": "superadmin"
 }
 
 

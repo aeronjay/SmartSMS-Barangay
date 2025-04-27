@@ -6,14 +6,35 @@ import { IoPeopleCircleSharp, IoMegaphoneOutline, IoChatboxEllipses } from "reac
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useState, useEffect, useContext } from 'react';
 import AuthContext from '../../context/AuthContext';
+import { jwtDecode } from 'jwt-decode';
 import '../../styles/Sidebar.css'
 
 export default function CustomSidebar() {
   const location = useLocation();
   const navigate = useNavigate();
   const [activePage, setActivePage] = useState('');
-  const { logout } = useContext(AuthContext);
-  
+  const { user, logout } = useContext(AuthContext);
+  let role = null;
+  if (user) {
+    try {
+      const decoded = jwtDecode(user);
+      role = decoded.role;
+    } catch (e) {
+      role = null;
+    }
+  }
+
+  const menuItems = [
+    { path: 'dashboard', icon: <Home />, label: 'Dashboard' },
+    { path: 'announcements', icon: <IoMegaphoneOutline />, label: 'Broadcast' },
+    { path: 'broadcast-history', icon: <FaHistory />, label: 'Broadcast History' },
+    { path: 'document-request', icon: <ReceiptLongIcon />, label: 'Document Request' },
+    { path: 'request-history', icon: <FaHistory />, label: 'Request History' },
+    { path: 'residents', icon: <IoPeopleCircleSharp />, label: 'Residents' },
+    // Only show Admin Accounts if superadmin
+    ...(role === 'superadmin' ? [{ path: 'admin-accounts', icon: <AdminPanelSettings />, label: 'Admin Accounts' }] : [])
+  ];
+
   useEffect(() => {
     // Extract the current path from location
     const path = location.pathname.split('/').pop();
@@ -24,16 +45,6 @@ export default function CustomSidebar() {
     logout(); // Call the logout function from AuthContext
     navigate('/'); // Redirect to login page after logout
   };
-
-  const menuItems = [
-    { path: 'dashboard', icon: <Home />, label: 'Dashboard' },
-    { path: 'announcements', icon: <IoMegaphoneOutline />, label: 'Broadcast' },
-    { path: 'broadcast-history', icon: <FaHistory />, label: 'Broadcast History' },
-    { path: 'document-request', icon: <ReceiptLongIcon />, label: 'Document Request' },
-    { path: 'request-history', icon: <FaHistory />, label: 'Request History' },
-    { path: 'residents', icon: <IoPeopleCircleSharp />, label: 'Residents' },
-    // { path: 'admin-accounts', icon: <AdminPanelSettings />, label: 'Admin Accounts' }
-  ];
 
   return (
     <div className="sidebar-container">
