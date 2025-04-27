@@ -108,23 +108,17 @@ const getPendingDocumentRequests = async () => {
 
 const updateDocumentRequestStatus = async (id, status) => {
     try {
-        const response = await fetch(`${baseUrl}/admin/updaterequests/${id}`, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ status }),
-        });
+        // Get the authentication token from localStorage or wherever you store it
+         // or however you store your auth token
+        
+        const response = await axios.put(`${baseUrl}/admin/updaterequests/${id}`, 
+            { status }, 
+        );
 
-        if (!response.ok) {
-            const errorData = await response.json();
-            throw new Error(errorData.message || 'Failed to update status');
-        }
-
-        return await response.json();
+        return response.data;
     } catch (error) {
         console.error('Error in updateDocumentRequestStatus:', error);
-        throw error;
+        throw error.response?.data?.message || error.message || 'Failed to update status';
     }
 }
 const loginAdmin = async (username, password) => {
