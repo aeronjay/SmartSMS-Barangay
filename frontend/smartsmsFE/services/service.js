@@ -148,6 +148,46 @@ const verifyAdminToken = async (token) => {
     }
 };
 
+// Broadcast Template Service Functions
+const getTemplates = async () => {
+    try {
+        const token = localStorage.getItem('token');
+        const response = await axios.get(`${baseUrl}/templates`, {
+            headers: { Authorization: `Bearer ${token}` }
+        });
+        return response.data;
+    } catch (error) {
+        console.error('Error fetching templates:', error);
+        throw error;
+    }
+};
+
+const addTemplate = async (template) => {
+    try {
+        const token = localStorage.getItem('token');
+        const response = await axios.post(`${baseUrl}/templates`, template, {
+            headers: { Authorization: `Bearer ${token}` }
+        });
+        return response.data;
+    } catch (error) {
+        console.error('Error adding template:', error);
+        throw error;
+    }
+};
+
+const updateTemplate = async (id, template) => {
+    try {
+        const token = localStorage.getItem('token');
+        const response = await axios.put(`${baseUrl}/templates/${id}`, template, {
+            headers: { Authorization: `Bearer ${token}` }
+        });
+        return response.data;
+    } catch (error) {
+        console.error('Error updating template:', error);
+        throw error;
+    }
+};
+
 export default {
     getResidents,
     registerResident,
@@ -161,5 +201,9 @@ export default {
     getPendingDocumentRequests,
     updateDocumentRequestStatus,
     loginAdmin,
-    verifyAdminToken
+    verifyAdminToken,
+    // Broadcast template exports
+    getTemplates,
+    addTemplate,
+    updateTemplate
 };

@@ -3,6 +3,7 @@ const User = require('../models/User')
 const Resident = require('../models/resident')
 const History = require('../models/History')
 const Request = require('../models/DocumentRequest')
+const BroadcastTemplate = require('../models/BroadcastTemplate');
 const bcrypt = require('bcryptjs')
 const jwt = require("jsonwebtoken");
 
@@ -392,5 +393,40 @@ routes.put('/api/admin/updaterequests/:id', authMiddleware, async (req, res) => 
 
 
 // add middleware to handle unknown route and error handler
+
+// Broadcast Template CRUD
+routes.get('/api/templates', authMiddleware, async (req, res) => {
+    try {
+        const templates = await BroadcastTemplate.find().sort({ createdAt: -1 });
+        res.json(templates);
+    } catch (err) {
+        res.status(500).json({ error: 'Failed to fetch templates' });
+    }
+});
+routes.post('/api/templates', authMiddleware, async (req, res) => {
+    try {
+        const { title, message } = req.body;
+        const template = new BroadcastTemplate({ title, message });
+        await template.save();
+        res.status(201).json(template);
+    } catch (err) {
+        res.status(400).json({ error: err.message });
+    }
+});
+routes.put('/api/templates/:id', authMiddleware, async (req, res) => {
+    try {
+        const { title, message } = req.body;
+        const template = await BroadcastTemplate.findByIdAndUpdate(
+            req.params.id,
+            { title, message },
+            { new: true, runValidators: true }
+        );
+        if (!template) return res.status(404).json({ error: 'Template not found' });
+        res.json(template);
+    } catch (err) {
+        res.status(400).json({ error: err.message });
+    }
+});
+
 
 module.exports = routes

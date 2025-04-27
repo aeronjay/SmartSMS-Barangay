@@ -2,11 +2,11 @@ import PeopleAltIcon from '@mui/icons-material/PeopleAlt';
 import CampaignIcon from '@mui/icons-material/Campaign';
 import { useState } from 'react';
 import service from '../../services/service';
+import TemplateDropdown from './TemplateDropdown';
 
 export default function SendMessage({ selectedResidentsNumber = [], broadcastType }) {
-    
-
     const [message, setMessage] = useState("")
+    const [selectedTemplate, setSelectedTemplate] = useState("");
 
     const handleBroadcast = async () => {
         if (!broadcastType || broadcastType.trim() === "") {
@@ -53,6 +53,11 @@ export default function SendMessage({ selectedResidentsNumber = [], broadcastTyp
                 <CampaignIcon />
                 <div>Send Announcement</div>
             </div>
+            <TemplateDropdown
+                setMessage={setMessage}
+                selectedTemplate={selectedTemplate}
+                setSelectedTemplate={setSelectedTemplate}
+            />
         </div>
     )
 }
