@@ -45,6 +45,11 @@ export default function SendMessage({ selectedResidentsNumber = [], broadcastTyp
             </div>
             <textarea name="broadcast-message" id="broadcast-message" placeholder="Type Your Announcement Here..." value={message} onChange={(e) => setMessage(e.target.value)} maxLength={160}>
             </textarea>
+            <TemplateDropdown
+                setMessage={setMessage}
+                selectedTemplate={selectedTemplate}
+                setSelectedTemplate={setSelectedTemplate}
+            />
             <div className="receipients-selected-number">
                 <PeopleAltIcon></PeopleAltIcon>
                 <div>{selectedResidentsNumber.length} Receipients Selected</div>
@@ -53,11 +58,7 @@ export default function SendMessage({ selectedResidentsNumber = [], broadcastTyp
                 <CampaignIcon />
                 <div>Send Announcement</div>
             </div>
-            <TemplateDropdown
-                setMessage={setMessage}
-                selectedTemplate={selectedTemplate}
-                setSelectedTemplate={setSelectedTemplate}
-            />
+            
         </div>
     )
 }
