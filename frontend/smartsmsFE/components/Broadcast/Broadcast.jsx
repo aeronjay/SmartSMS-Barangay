@@ -73,7 +73,15 @@ export default function Broadcast() {
             // Marital Status
             if (filters.marital_status && resident.marital_status !== filters.marital_status) return false;
             // Street
-            if (filters.street && resident.street !== filters.street) return false;
+            if (
+                filters.address &&
+                !(
+                  (resident.house_number && resident.house_number.toLowerCase().includes(filters.address.toLowerCase())) ||
+                  (resident.street && resident.street.toLowerCase().includes(filters.address.toLowerCase()))
+                )
+              ) {
+                return false;
+              }
             // Education
             if (filters.highest_education && resident.highest_education !== filters.highest_education) return false;
             // Resident Type

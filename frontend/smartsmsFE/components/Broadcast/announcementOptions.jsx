@@ -89,9 +89,9 @@ export default function AnnouncementOptions({
           <label>Address:</label>
           <input
             type="text"
-            value={filters.street}
-            onChange={e => setFilters(f => ({ ...f, street: e.target.value }))}
-            placeholder="Enter address or street"
+            value={filters.address || ""}
+            onChange={e => setFilters(f => ({ ...f, address: e.target.value }))}
+            placeholder="Enter house # or street"
             style={{ minWidth: 120 }}
           />
         </div>
@@ -132,11 +132,12 @@ export default function AnnouncementOptions({
           type="button"
           onClick={() =>
             setFilters({
+              ...filters,
               minAge: "",
               maxAge: "",
               gender: "",
               marital_status: "",
-              street: "",
+              address: "",
               highest_education: "",
               resident_type: "",
               medical_condition: "",
