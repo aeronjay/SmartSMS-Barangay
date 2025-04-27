@@ -33,26 +33,16 @@ routes.get('/api/admin/verify-token', authMiddleware, (req, res) => {
     res.status(200).json({ valid: true });
 });
 
+const requireRole = (role) => (req, res, next) => {
+    if (!req.user || !req.user.userId) return res.status(401).json({ error: 'Unauthorized' });
+    User.findById(req.user.userId).then(user => {
+        if (!user || user.role !== role) {
+            return res.status(403).json({ error: 'Forbidden: Insufficient role' });
+        }
+        next();
+    }).catch(() => res.status(500).json({ error: 'Server error' }));
+};
 
-
-// routes.get('/api', (req, res) => {
-//     res.send('hello')
-// })
-
-// routes.post("/api/admin/register", async (req, res) => {
-//     try {
-//       const { username, password } = req.body;
-//       const salt = await bcrypt.genSalt(10);
-//       const hashedPassword = await bcrypt.hash(password, salt);
-
-//       const newUser = new User({ username, password: hashedPassword });
-//       await newUser.save();
-
-//       res.status(201).json({ message: "User registered successfully!" });
-//     } catch (err) {
-//       res.status(500).json({ error: err.message });
-//     }
-//   });
 
 routes.post('/api/admin/login', async (req, res) => {
     try {
@@ -66,7 +56,7 @@ routes.post('/api/admin/login', async (req, res) => {
 
         // Include role in JWT and response
         const token = jwt.sign({ userId: currentUser._id, role: currentUser.role }, process.env.SECRET_KEY, {
-            expiresIn: "1h",
+            expiresIn: "8h",
         });
 
         res.json({ token, role: currentUser.role, username: currentUser.username })
@@ -76,11 +66,7 @@ routes.post('/api/admin/login', async (req, res) => {
 })
 
 
-
-// routes.get("/protected", authMiddleware, (req, res) => {
-//     res.json({ message: "You are authorized!" });
-// });
-routes.delete('/api/resident/delete/:id', authMiddleware , async (req, res) => {
+routes.delete('/api/resident/delete/:id', authMiddleware , requireRole('superadmin'), async (req, res) => {
     try {
         const residentId = req.params.id;
 
@@ -282,43 +268,6 @@ routes.get('/api/admin/pendingrequest', authMiddleware, async (req, res) => {
     }
 });
 
-// // Route 3: Admin approves or rejects a request
-// routes.put('/api/admin/requests/:id', async (req, res) => {
-//     try {
-//         // Check for validation errors
-//         // const errors = validationResult(req);
-//         // if (!errors.isEmpty()) {
-//         //     return res.status(400).json({ errors: errors.array() });
-//         // }
-
-//         const { id } = req.params;
-//         const { status } = req.body;
-
-//         // Find and update the request
-//         const updatedRequest = await Request.findByIdAndUpdate(
-//             id,
-//             { status },
-//             { new: true, runValidators: true }
-//         );
-
-//         // Check if request exists
-//         if (!updatedRequest) {
-//             return res.status(404).json({ message: 'Request not found' });
-//         }
-
-//         // Return the updated request
-//         return res.status(200).json({
-//             message: `Request ${status} successfully`,
-//             request: updatedRequest
-//         });
-//     } catch (error) {
-//         console.error('Error updating request status:', error);
-//         return res.status(500).json({
-//             message: 'An error occurred while updating the request status'
-//         });
-//     }
-// });
-
 routes.put('/api/admin/updaterequests/:id', authMiddleware, async (req, res) => {
     try {
         const { id } = req.params;
@@ -347,72 +296,6 @@ routes.put('/api/admin/updaterequests/:id', authMiddleware, async (req, res) => 
     }
 });
 
-// Optional: Route to get all requests (can be used for admin dashboard)
-// routes.get('/api/requests', async (req, res) => {
-//     try {
-//         // Optional query parameters for filtering
-//         const { status } = req.query;
-
-//         // Build query object
-//         const query = {};
-//         if (status) {
-//             query.status = status;
-//         }
-
-//         // Fetch requests based on query
-//         const requests = await Request.find(query).sort({ createdAt: -1 });
-
-//         return res.status(200).json({
-//             count: requests.length,
-//             requests
-//         });
-//     } catch (error) {
-//         console.error('Error fetching requests:', error);
-//         return res.status(500).json({
-//             message: 'An error occurred while fetching requests'
-//         });
-//     }
-// });
-
-// Optional: Route to get a specific request by ID
-// routes.get('/api/requests/:id', param('id').isMongoId(), async (req, res) => {
-//     try {
-//         // Check for validation errors
-//         const errors = validationResult(req);
-//         if (!errors.isEmpty()) {
-//             return res.status(400).json({ errors: errors.array() });
-//         }
-
-//         const { id } = req.params;
-//         const request = await Request.findById(id);
-
-//         if (!request) {
-//             return res.status(404).json({ message: 'Request not found' });
-//         }
-
-//         return res.status(200).json(request);
-//     } catch (error) {
-//         console.error('Error fetching request:', error);
-//         return res.status(500).json({
-//             message: 'An error occurred while fetching the request'
-//         });
-//     }
-// });
-
-
-// add middleware to handle unknown route and error handler
-
-// Middleware to require a specific role
-const requireRole = (role) => (req, res, next) => {
-    if (!req.user || !req.user.userId) return res.status(401).json({ error: 'Unauthorized' });
-    User.findById(req.user.userId).then(user => {
-        if (!user || user.role !== role) {
-            return res.status(403).json({ error: 'Forbidden: Insufficient role' });
-        }
-        next();
-    }).catch(() => res.status(500).json({ error: 'Server error' }));
-};
-// Example: Only superadmin can delete templates
 routes.delete('/api/templates/:id', authMiddleware, requireRole('superadmin'), async (req, res) => {
     try {
         const template = await BroadcastTemplate.findByIdAndDelete(req.params.id);
