@@ -52,14 +52,17 @@ export default function Dashboard() {
           }))
         );
         
-        // Update document requests (take last 5)
+        // Update document requests (take last 5, only pending)
         setDocumentRequests(
-          requestsResponse.requests.slice(0, 5).map(request => ({
-            name: request.fullName,
-            document: request.documentType,
-            status: request.status.charAt(0).toUpperCase() + request.status.slice(1), // Capitalize status
-            date: new Date(request.createdAt).toISOString().split('T')[0]
-          }))
+          requestsResponse.requests
+            .filter(request => request.status === 'pending')
+            .slice(0, 5)
+            .map(request => ({
+              name: request.fullName,
+              document: request.documentType,
+              status: request.status.charAt(0).toUpperCase() + request.status.slice(1), // Capitalize status
+              date: new Date(request.createdAt).toISOString().split('T')[0]
+            }))
         );
         
         setLoading(false);
