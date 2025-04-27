@@ -4,6 +4,10 @@ const Resident = require('../models/resident')
 const History = require('../models/History')
 const Request = require('../models/DocumentRequest')
 const BroadcastTemplate = require('../models/BroadcastTemplate');
+const PendingDocumentRequest = require('../models/PendingDocumentRequest');
+const nodemailer = require('nodemailer');
+require('dotenv').config();
+
 const bcrypt = require('bcryptjs')
 const jwt = require("jsonwebtoken");
 
@@ -194,41 +198,50 @@ routes.get('/api/history/getall', authMiddleware, async (req, res) => {
 
 
 
+// Helper to generate a 6-digit code
+function generateVerificationCode() {
+    return Math.floor(100000 + Math.random() * 900000).toString();
+}
+
+// Helper to send email
+async function sendVerificationEmail(email, code) {
+    const transporter = nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+            user: process.env.GMAIL_USER,
+            pass: process.env.GMAIL_PASS
+        }
+    });
+    await transporter.sendMail({
+        from: process.env.GMAIL_USER,
+        to: email,
+        subject: 'Your Document Request Verification Code',
+        text: `Your verification code is: ${code}. It will expire in 10 minutes.`
+    });
+}
+
 routes.post('/api/resident/documentRequest', async (req, res) => {
     try {
-        // Check for validation errors
-        // const errors = validationResult(req);
-        // if (!errors.isEmpty()) {
-        //     return res.status(400).json({ errors: errors.array() });
-        // }
+        const { email, phoneNumber, address, fullName, purpose, documentType } = req.body;
+        const code = generateVerificationCode();
+        const codeExpiresAt = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes from now
 
-        // Extract request data from request body
-        const {
-            email,
-            phoneNumber,
-            address,
-            fullName,
-            purpose,
-            documentType
-        } = req.body;
+        // Remove any previous pending requests for this email
+        await PendingDocumentRequest.deleteMany({ email });
 
-        // Create a new request
-        const newRequest = new Request({
-            email,
-            phoneNumber,
-            address,
-            fullName,
-            purpose,
-            documentType
+        // Store pending request
+        const pending = new PendingDocumentRequest({
+            email, phoneNumber, address, fullName, purpose, documentType,
+            verificationCode: code,
+            codeExpiresAt
         });
+        await pending.save();
 
-        // Save the request to the database
-        const savedRequest = await newRequest.save();
+        // Send email
+        await sendVerificationEmail(email, code);
 
-        // Return success response
-        return res.status(201).json({
-            message: 'Document request submitted successfully',
-            requestId: savedRequest._id
+        return res.status(200).json({
+            message: 'Verification code sent to your email. Please verify to complete your request.'
         });
     } catch (error) {
         console.error('Error submitting document request:', error);
@@ -237,6 +250,39 @@ routes.post('/api/resident/documentRequest', async (req, res) => {
         });
     }
 });
+
+// New endpoint: verify code and finalize request
+routes.post('/api/resident/verifyDocumentRequest', async (req, res) => {
+    try {
+        const { email, code } = req.body;
+        const pending = await PendingDocumentRequest.findOne({ email });
+        if (!pending)
+            return res.status(400).json({ message: 'No pending request found for this email.' });
+        if (pending.verificationCode !== code)
+            return res.status(400).json({ message: 'Invalid verification code.' });
+        if (pending.codeExpiresAt < new Date()) {
+            await PendingDocumentRequest.deleteOne({ _id: pending._id });
+            return res.status(400).json({ message: 'Verification code expired. Please request again.' });
+        }
+        // Move to DocumentRequest
+        const newRequest = new Request({
+            email: pending.email,
+            phoneNumber: pending.phoneNumber,
+            address: pending.address,
+            fullName: pending.fullName,
+            purpose: pending.purpose,
+            documentType: pending.documentType
+        });
+        await newRequest.save();
+        await PendingDocumentRequest.deleteOne({ _id: pending._id });
+        return res.status(201).json({ message: 'Document request verified and submitted successfully.' });
+    } catch (error) {
+        console.error('Error verifying document request:', error);
+        return res.status(500).json({ message: 'An error occurred during verification.' });
+    }
+});
+
+
 routes.get('/api/admin/allrequest', authMiddleware, async (req, res) => {
     try {
         // Fetch all pending requests

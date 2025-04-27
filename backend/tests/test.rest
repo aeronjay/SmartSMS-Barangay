@@ -113,3 +113,25 @@ Content-Type: application/json
 
 ### 
 GET http://localhost:3001/api/admin/pendingrequest
+
+### Submit a Document Request
+POST http://localhost:3001/api/resident/documentRequest
+Content-Type: application/json
+
+{
+  "email": "test@example.com",
+  "phoneNumber": "1234567890",
+  "address": "123 Main St, City",
+  "fullName": "John Doe",
+  "purpose": "Proof of residency",
+  "documentType": "Residency Certificate"
+}
+
+### Verify Document Request
+POST http://localhost:3000/api/resident/verifyDocumentRequest
+Content-Type: application/json
+
+{
+  "email": "test@example.com",
+  "code": "123456" 
+}
