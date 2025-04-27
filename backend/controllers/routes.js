@@ -54,12 +54,17 @@ routes.post('/api/admin/login', async (req, res) => {
         const isMatch = await bcrypt.compare(password, currentUser.password);
         if (!isMatch) return res.status(400).json({ error: 'INVALID CREDS!' })
 
-        // Include role in JWT and response
-        const token = jwt.sign({ userId: currentUser._id, role: currentUser.role }, process.env.SECRET_KEY, {
+        // Include role, fullname, and username in JWT and response
+        const token = jwt.sign({ 
+            userId: currentUser._id, 
+            role: currentUser.role, 
+            fullname: currentUser.fullname, 
+            username: currentUser.username 
+        }, process.env.SECRET_KEY, {
             expiresIn: "8h",
         });
 
-        res.json({ token, role: currentUser.role, username: currentUser.username })
+        res.json({ token, role: currentUser.role, username: currentUser.username, fullname: currentUser.fullname })
     } catch (err) {
         res.status(400).json({ error: err.message })
     }
