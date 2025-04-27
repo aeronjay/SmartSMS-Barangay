@@ -201,6 +201,17 @@ const deleteTemplate = async (id) => {
     }
 };
 
+// Add: Verify document request code
+const verifyDocumentRequest = async ({ email, code }) => {
+    try {
+        const response = await axios.post(`${baseUrl}/resident/verifyDocumentRequest`, { email, code });
+        return response.data;
+    } catch (error) {
+        console.error('Error verifying document request:', error);
+        throw error;
+    }
+};
+
 export default {
     getResidents,
     registerResident,
@@ -219,5 +230,6 @@ export default {
     getTemplates,
     addTemplate,
     updateTemplate,
-    deleteTemplate
+    deleteTemplate,
+    verifyDocumentRequest,
 };
