@@ -34,8 +34,11 @@ export default function CustomSidebar() {
     { path: 'document-request', icon: <ReceiptLongIcon />, label: 'Document Request' },
     { path: 'request-history', icon: <FaHistory />, label: 'Request History' },
     { path: 'residents', icon: <IoPeopleCircleSharp />, label: 'Residents' },
-    // Only show Admin Accounts if superadmin
-    ...(role === 'superadmin' ? [{ path: 'admin-accounts', icon: <AdminPanelSettings />, label: 'Admin Accounts' }] : [])
+    // Only show Admin Accounts and Admin History if superadmin
+    ...(role === 'superadmin' ? [
+      { path: 'admin-accounts', icon: <AdminPanelSettings />, label: 'Admin Accounts' },
+      { path: 'admin-history', icon: <FaHistory />, label: 'Admin History' }
+    ] : [])
   ];
 
   useEffect(() => {

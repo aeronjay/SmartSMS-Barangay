@@ -5,6 +5,7 @@ const History = require('../models/History')
 const Request = require('../models/DocumentRequest')
 const BroadcastTemplate = require('../models/BroadcastTemplate');
 const PendingDocumentRequest = require('../models/PendingDocumentRequest');
+const AdminActionHistory = require('../models/AdminActionHistory');
 const nodemailer = require('nodemailer');
 require('dotenv').config();
 
@@ -294,12 +295,41 @@ routes.put('/api/admin/updaterequests/:id', authMiddleware, async (req, res) => 
             return res.status(404).json({ success: false, message: 'Document request not found' });
         }
 
+        // Log admin action
+        if (req.user && req.user.userId && req.user.username) {
+            await AdminActionHistory.create({
+                adminId: req.user.userId,
+                adminUsername: req.user.username,
+                action: `${status} document request`,
+                target: id,
+                details: {
+                    requestId: id,
+                    status,
+                    fullName: updatedRequest.fullName,
+                    documentType: updatedRequest.documentType
+                }
+            });
+        }
+
         return res.status(200).json({ success: true, data: updatedRequest });
     } catch (error) {
         console.error('Error updating document status:', error);
         return res.status(500).json({ success: false, message: 'Server error' });
     }
 });
+
+// Endpoint for superadmin to fetch admin action history
+routes.get('/api/admin/action-history', authMiddleware, requireRole('superadmin'), async (req, res) => {
+    try {
+        const history = await AdminActionHistory.find({})
+            .sort({ createdAt: -1 })
+            .limit(200);
+        res.json(history);
+    } catch (err) {
+        res.status(500).json({ error: 'Failed to fetch admin action history' });
+    }
+});
+
 
 routes.delete('/api/templates/:id', authMiddleware, requireRole('superadmin'), async (req, res) => {
     try {

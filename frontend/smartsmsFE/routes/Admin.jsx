@@ -8,6 +8,7 @@ import DocumentRequest from '../components/DocumentRequest/DocumentRequest';
 import RequestHistory from '../components/RequestHistory/RequestHistory';
 import Residents from '../components/Residents/Residents';
 import AdminAccounts from '../components/AdminAccounts/AdminAccounts';
+import AdminHistory from '../components/AdminAccounts/AdminHistory';
 
 function AdminDashboard() {
     return(
@@ -29,6 +30,7 @@ function AdminDashboard() {
                     <Route path="request-history" element={<RequestHistory />}/>
                     <Route path="residents" element={<Residents />}/>
                     <Route path="admin-accounts" element={<AdminAccounts />}/>
+                    <Route path="admin-history" element={<AdminHistory />}/>
                 </Routes>
             </div>
         </div>
