@@ -1,0 +1,102 @@
+/* BroadcastHistory specific styles */
+.broadcast-history-table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: white;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.broadcast-history-table thead {
+  background-color: #f8fafc;
+  border-bottom: 2px solid #e2e8f0;
+}
+
+.broadcast-history-table th {
+  padding: 16px 12px;
+  text-align: left;
+  font-weight: 600;
+  color: #374151;
+  font-size: 14px;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.broadcast-history-table tbody {
+  background-color: white;
+}
+
+.broadcast-history-table tbody tr {
+  border-bottom: 1px solid #f1f5f9;
+  transition: background-color 0.2s ease;
+}
+
+.broadcast-history-table tbody tr:hover {
+  background-color: #f8fafc;
+}
+
+.broadcast-history-table td {
+  padding: 16px 12px;
+  color: #374151;
+  line-height: 1.5;
+  font-size: 14px;
+  vertical-align: top;
+}
+
+/* Column widths for 6 columns */
+.broadcast-history-table th:nth-child(1),
+.broadcast-history-table td:nth-child(1) {
+  width: 15%; /* Number of Recipients */
+}
+
+.broadcast-history-table th:nth-child(2),
+.broadcast-history-table td:nth-child(2) {
+  width: 15%; /* Broadcast Type */
+}
+
+.broadcast-history-table th:nth-child(3),
+.broadcast-history-table td:nth-child(3) {
+  width: 30%; /* Message */
+}
+
+.broadcast-history-table th:nth-child(4),
+.broadcast-history-table td:nth-child(4) {
+  width: 15%; /* Message ID */
+}
+
+.broadcast-history-table th:nth-child(5),
+.broadcast-history-table td:nth-child(5) {
+  width: 10%; /* Status */
+}
+
+.broadcast-history-table th:nth-child(6),
+.broadcast-history-table td:nth-child(6) {
+  width: 15%; /* Created At */
+}
+
+/* Message column - allow text wrapping */
+.broadcast-history-table td:nth-child(3) {
+  word-wrap: break-word;
+  word-break: break-word;
+  white-space: normal;
+  min-width: 200px;
+}
+
+/* Status styling */
+.broadcast-history-table td:nth-child(5) {
+  font-weight: 500;
+}
+
+/* Date column styling */
+.broadcast-history-table td:nth-child(6) {
+  white-space: nowrap;
+  font-size: 13px;
+}
+
+/* No data message */
+.broadcast-history-table td[colspan="6"] {
+  text-align: center;
+  padding: 40px;
+  color: #6b7280;
+  font-style: italic;
+}
