@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import service from '../../services/service';
 import MainTemplate from '../MainTemplate'
+import '../../styles/BroadcastHistory.css'
 
 export default function BroadcastHistory() {
     const [history, setHistory] = useState([]);
@@ -39,12 +40,10 @@ export default function BroadcastHistory() {
                 <div>Error: {error}</div>
             </MainTemplate>
         );
-    }
-
-    return (
+    }    return (
         <MainTemplate headerName="Broadcast History" cardHeader="Broadcast History">
-            <div className="history-table">
-                <table>
+            <div className="broadcast-history-table">
+                <table className="broadcast-history-table">
                     <thead>
                         <tr>
                             <th>Number of Recipients</th>
@@ -58,7 +57,7 @@ export default function BroadcastHistory() {
                     <tbody>
                         {history.length === 0 ? (
                             <tr>
-                                <td colSpan="5">No history available</td>
+                                <td colSpan="6">No history available</td>
                             </tr>
                         ) : (
                             history.map((item) => (
