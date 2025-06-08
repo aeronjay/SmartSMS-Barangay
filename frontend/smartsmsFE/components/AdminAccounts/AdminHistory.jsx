@@ -2,6 +2,7 @@ import { useEffect, useState, useContext } from 'react';
 import AuthContext from '../../context/AuthContext';
 import MainTemplate from '../MainTemplate';
 import SearchInput from '../SearchInput';
+import service from '../../services/service';
 import '../../styles/AdminHistory.css';
 import { 
   FaHistory, 
@@ -29,17 +30,12 @@ export default function AdminHistory() {
   const [selectedAction, setSelectedAction] = useState('all');
   const [selectedDateRange, setSelectedDateRange] = useState('all');
   const [expandedRows, setExpandedRows] = useState(new Set());
-
   useEffect(() => {
     const fetchHistory = async () => {
       setLoading(true);
       setError(null);
       try {
-        const res = await fetch('/api/admin/action-history', {
-          headers: { Authorization: `Bearer ${user}` }
-        });
-        if (!res.ok) throw new Error('Failed to fetch admin action history');
-        const data = await res.json();
+        const data = await service.getAdminActionHistory(user);
         setHistory(data);
         setFilteredHistory(data);
       } catch (err) {
@@ -291,11 +287,11 @@ export default function AdminHistory() {
                         <div className="admin-cell">
                           <FaUser className="admin-icon" />
                           <span className="admin-name">{item.adminUsername}</span>
-                        </div>
-                      </td>
+                        </div>                      </td>
                       <td>
                         <span className="target-text">{item.target || 'N/A'}</span>
-                      </td>                      <td>
+                      </td>
+                      <td>
                         <div className="details-cell">
                           {item.details && Object.entries(item.details).length > 0 ? (
                             <div className="details-content">

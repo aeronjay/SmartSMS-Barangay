@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-const baseUrl = '/api'
+const baseUrl = 'http://localhost:3001/api'
 
 const getResidents = async () => {
     try {
@@ -224,6 +224,18 @@ const deleteAdminAccount = async (id) => {
     return res.data;
 };
 
+const getAdminActionHistory = async (token) => {
+    try {
+        const response = await axios.get(`${baseUrl}/admin/action-history`, {
+            headers: { Authorization: `Bearer ${token}` }
+        });
+        return response.data;
+    } catch (error) {
+        console.error('Error fetching admin action history:', error);
+        throw error;
+    }
+};
+
 export default {
     getResidents,
     registerResident,
@@ -249,4 +261,6 @@ export default {
     addAdminAccount,
     updateAdminAccount,
     deleteAdminAccount,
+    // Admin action history
+    getAdminActionHistory,
 };
