@@ -35,7 +35,7 @@ export default function AdminHistory() {
       setLoading(true);
       setError(null);
       try {
-        const res = await fetch('http://localhost:3001/api/admin/action-history', {
+        const res = await fetch('/api/admin/action-history', {
           headers: { Authorization: `Bearer ${user}` }
         });
         if (!res.ok) throw new Error('Failed to fetch admin action history');
