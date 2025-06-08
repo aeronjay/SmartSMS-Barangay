@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const jwt = require('jsonwebtoken'); // Add this import
 const Client = require('android-sms-gateway').default;
 const History = require('../models/History');
+const AdminActionHistory = require('../models/AdminActionHistory');
 
 const authMiddleware = (req, res, next) => {
     const authHeader = req.header("Authorization");
@@ -77,9 +78,24 @@ module.exports = () => {
                 createdBy: createdBy.trim(),
                 status: 'Pending',
                 broadcastType: broadcastType || null // Default status
-            });
+            });            await historyRecord.save();
 
-            await historyRecord.save();
+            // Log admin action for SMS broadcast
+            if (req.user && req.user.userId && req.user.username) {
+                await AdminActionHistory.create({
+                    adminId: req.user.userId,
+                    adminUsername: req.user.username,
+                    action: 'sent SMS broadcast',
+                    target: `${phoneNumbers.length} recipients`,
+                    details: {
+                        broadcastType: broadcastType || 'General',
+                        recipientCount: phoneNumbers.length,
+                        messageLength: message.trim().length,
+                        messagePreview: message.trim().substring(0, 50) + (message.trim().length > 50 ? '...' : ''),
+                        messageId: messageId || null
+                    }
+                });
+            }
 
             res.status(200).json({ success: true, data: result });
         } catch (error) {

@@ -183,8 +183,7 @@ export default function AdminHistory() {
           
           <div className="filter-section">
             <div className="filter-group">
-              <FaFilter className="filter-icon" />
-              <select 
+              <FaFilter className="filter-icon" />              <select 
                 value={selectedAction} 
                 onChange={(e) => setSelectedAction(e.target.value)}
                 className="filter-select"
@@ -193,8 +192,10 @@ export default function AdminHistory() {
                 <option value="create">Create/Add</option>
                 <option value="edit">Edit/Update</option>
                 <option value="delete">Delete/Remove</option>
-                <option value="user">User Actions</option>
-                <option value="message">Messages</option>
+                <option value="resident">Resident Actions</option>
+                <option value="broadcast">Broadcast/SMS</option>
+                <option value="document">Document Actions</option>
+                <option value="admin">Admin Account Actions</option>
               </select>
             </div>
             

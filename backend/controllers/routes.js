@@ -76,7 +76,7 @@ routes.delete('/api/resident/delete/:id', authMiddleware , requireRole('superadm
     try {
         const residentId = req.params.id;
 
-        // Check if resident exists
+        // Check if resident exists and get their info for logging
         const resident = await Resident.findById(residentId);
         if (!resident) {
             return res.status(404).json({ message: 'Resident not found' });
@@ -84,6 +84,21 @@ routes.delete('/api/resident/delete/:id', authMiddleware , requireRole('superadm
 
         // Delete the resident
         await Resident.findByIdAndDelete(residentId);
+
+        // Log admin action
+        if (req.user && req.user.userId && req.user.username) {
+            await AdminActionHistory.create({
+                adminId: req.user.userId,
+                adminUsername: req.user.username,
+                action: 'deleted resident',
+                target: residentId,
+                details: {
+                    residentId: residentId,
+                    fullName: `${resident.first_name} ${resident.middle_name ? resident.middle_name + ' ' : ''}${resident.last_name} ${resident.suffix || ''}`.trim(),
+                    phoneNumber: resident.contact?.phone || 'N/A'
+                }
+            });
+        }
 
         res.json({ message: 'Resident deleted successfully' });
     } catch (err) {
@@ -96,6 +111,22 @@ routes.post('/api/resident/register', authMiddleware, async (req, res) => {
     try {
         const newResident = new Resident(req.body);
         await newResident.save();
+
+        // Log admin action
+        if (req.user && req.user.userId && req.user.username) {
+            await AdminActionHistory.create({
+                adminId: req.user.userId,
+                adminUsername: req.user.username,
+                action: 'created resident',
+                target: newResident._id,
+                details: {
+                    residentId: newResident._id,
+                    fullName: `${newResident.first_name} ${newResident.middle_name ? newResident.middle_name + ' ' : ''}${newResident.last_name} ${newResident.suffix || ''}`.trim(),
+                    phoneNumber: newResident.contact?.phone || 'N/A'
+                }
+            });
+        }
+
         res.status(201).json(newResident);
     } catch (error) {
         res.status(400).json({ message: error.message });
@@ -116,14 +147,31 @@ routes.put('/api/resident/update/:id', authMiddleware, async (req, res) => {
         const residentId = req.params.id;
         const updatedData = req.body;
 
+        // Get the existing resident first for logging
+        const existingResident = await Resident.findById(residentId);
+        if (!existingResident) {
+            return res.status(404).json({ message: 'Resident not found' });
+        }
+
         const updatedResident = await Resident.findByIdAndUpdate(
             residentId,
             { $set: updatedData },
             { new: true, runValidators: true }
         );
 
-        if (!updatedResident) {
-            return res.status(404).json({ message: 'Resident not found' });
+        // Log admin action
+        if (req.user && req.user.userId && req.user.username) {
+            await AdminActionHistory.create({
+                adminId: req.user.userId,
+                adminUsername: req.user.username,
+                action: 'updated resident',
+                target: residentId,
+                details: {
+                    residentId: residentId,
+                    fullName: `${updatedResident.first_name} ${updatedResident.middle_name ? updatedResident.middle_name + ' ' : ''}${updatedResident.last_name} ${updatedResident.suffix || ''}`.trim(),
+                    phoneNumber: updatedResident.contact?.phone || 'N/A'
+                }
+            });
         }
 
         res.status(200).json(updatedResident);
@@ -391,6 +439,24 @@ routes.post('/api/admin/accounts', authMiddleware, requireRole('superadmin'), as
         }
         const hashedPassword = await bcrypt.hash(password, 10);
         const newAdmin = await User.create({ username, password: hashedPassword, fullname, phoneNumber, role: 'admin' });
+
+        // Log admin action
+        if (req.user && req.user.userId && req.user.username) {
+            await AdminActionHistory.create({
+                adminId: req.user.userId,
+                adminUsername: req.user.username,
+                action: 'created admin account',
+                target: newAdmin._id,
+                details: {
+                    adminId: newAdmin._id,
+                    username: newAdmin.username,
+                    fullName: newAdmin.fullname,
+                    phoneNumber: newAdmin.phoneNumber,
+                    role: newAdmin.role
+                }
+            });
+        }
+
         res.status(201).json({ message: 'Admin created', admin: { ...newAdmin.toObject(), password: undefined } });
     } catch (err) {
         res.status(500).json({ error: err.message });
@@ -404,10 +470,40 @@ routes.put('/api/admin/accounts/:id', authMiddleware, requireRole('superadmin'),
         const admin = await User.findById(id);
         if (!admin) return res.status(404).json({ error: 'Admin not found' });
         if (admin.role === 'superadmin') return res.status(403).json({ error: 'Cannot update superadmin' });
+        
+        // Store original values for logging
+        const originalValues = {
+            fullname: admin.fullname,
+            phoneNumber: admin.phoneNumber
+        };
+        
         if (fullname) admin.fullname = fullname;
         if (phoneNumber) admin.phoneNumber = phoneNumber;
         if (password) admin.password = await bcrypt.hash(password, 10);
         await admin.save();
+
+        // Log admin action
+        if (req.user && req.user.userId && req.user.username) {
+            const changes = [];
+            if (fullname && fullname !== originalValues.fullname) changes.push(`fullname: ${originalValues.fullname} → ${fullname}`);
+            if (phoneNumber && phoneNumber !== originalValues.phoneNumber) changes.push(`phone: ${originalValues.phoneNumber} → ${phoneNumber}`);
+            if (password) changes.push('password updated');
+
+            await AdminActionHistory.create({
+                adminId: req.user.userId,
+                adminUsername: req.user.username,
+                action: 'updated admin account',
+                target: id,
+                details: {
+                    adminId: id,
+                    username: admin.username,
+                    fullName: admin.fullname,
+                    phoneNumber: admin.phoneNumber,
+                    changes: changes.join(', ')
+                }
+            });
+        }
+
         res.json({ message: 'Admin updated', admin: { ...admin.toObject(), password: undefined } });
     } catch (err) {
         res.status(500).json({ error: err.message });
@@ -420,7 +516,34 @@ routes.delete('/api/admin/accounts/:id', authMiddleware, requireRole('superadmin
         const admin = await User.findById(id);
         if (!admin) return res.status(404).json({ error: 'Admin not found' });
         if (admin.role === 'superadmin') return res.status(403).json({ error: 'Cannot delete superadmin' });
+        
+        // Store admin info for logging before deletion
+        const adminInfo = {
+            username: admin.username,
+            fullname: admin.fullname,
+            phoneNumber: admin.phoneNumber,
+            role: admin.role
+        };
+        
         await admin.deleteOne();
+
+        // Log admin action
+        if (req.user && req.user.userId && req.user.username) {
+            await AdminActionHistory.create({
+                adminId: req.user.userId,
+                adminUsername: req.user.username,
+                action: 'deleted admin account',
+                target: id,
+                details: {
+                    adminId: id,
+                    username: adminInfo.username,
+                    fullName: adminInfo.fullname,
+                    phoneNumber: adminInfo.phoneNumber,
+                    role: adminInfo.role
+                }
+            });
+        }
+
         res.json({ message: 'Admin deleted' });
     } catch (err) {
         res.status(500).json({ error: err.message });
