@@ -50,7 +50,7 @@ export default function BroadcastHistory() {
                             <th>Broadcast Type</th>
                             <th>Message</th>
                             <th>Message ID</th>
-                            <th>Status</th>
+                            {/* <th>Status</th> */}
                             <th>Created At</th>
                         </tr>
                     </thead>
@@ -66,7 +66,7 @@ export default function BroadcastHistory() {
                                     <td>{item.broadcastType || 'N/A'}</td>
                                     <td>{item.message}</td>
                                     <td>{item.messageId || 'N/A'}</td>
-                                    <td>{item.status}</td>
+                                    {/* <td>{item.status}</td> */}
                                     <td>
                                         {new Date(new Date(item.createdAt).getTime() - 8 * 60 * 60 * 1000).toLocaleString('en-PH', {
                                             timeZone: 'Asia/Manila',
