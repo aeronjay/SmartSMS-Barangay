@@ -45,13 +45,24 @@ const ResidentSchema = new mongoose.Schema({
     education: {
         highest_education: { type: String },
         field_of_study: { type: String }
-    },
-
-    registration: {
+    },    registration: {
         resident_type: { type: String, enum: ["Permanent", "Temporary"], required: true, default: "Permanent" },
         date_registered: { type: Date, default: Date.now },
         status: { type: String, enum: ["active", "inactive"], default: "active" }
-    }
+    },
+
+    // Household-related fields
+    householdId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Household',
+        default: null
+    },
+    isHouseholdHead: { type: Boolean, default: false },
+    householdAddress: { type: String }, // Individual household address field
+    
+    // Additional fields from the form
+    placeOfBirth: { type: String },
+    citizenship: { type: String, default: "Filipino" }
 });
 
 module.exports = mongoose.model("Resident", ResidentSchema);

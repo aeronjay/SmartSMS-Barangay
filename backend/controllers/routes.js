@@ -1,11 +1,13 @@
 const routes = require('express').Router()
-const User = require('../models/User')
+const Admin = require('../models/User')
 const Resident = require('../models/resident')
 const History = require('../models/History')
 const Request = require('../models/DocumentRequest')
 const BroadcastTemplate = require('../models/BroadcastTemplate');
 const PendingDocumentRequest = require('../models/PendingDocumentRequest');
 const AdminActionHistory = require('../models/AdminActionHistory');
+const Household = require('../models/Household');
+const HouseholdAudit = require('../models/HouseholdAudit');
 const nodemailer = require('nodemailer');
 require('dotenv').config();
 
@@ -34,9 +36,8 @@ routes.get('/api/admin/verify-token', authMiddleware, (req, res) => {
     res.status(200).json({ valid: true });
 });
 
-const requireRole = (role) => (req, res, next) => {
-    if (!req.user || !req.user.userId) return res.status(401).json({ error: 'Unauthorized' });
-    User.findById(req.user.userId).then(user => {
+const requireRole = (role) => (req, res, next) => {    if (!req.user || !req.user.userId) return res.status(401).json({ error: 'Unauthorized' });
+    Admin.findById(req.user.userId).then(user => {
         if (!user || user.role !== role) {
             return res.status(403).json({ error: 'Forbidden: Insufficient role' });
         }
@@ -46,9 +47,8 @@ const requireRole = (role) => (req, res, next) => {
 
 
 routes.post('/api/admin/login', async (req, res) => {
-    try {
-        const { username, password } = req.body
-        const currentUser = await User.findOne({ username })
+    try {        const { username, password } = req.body
+        const currentUser = await Admin.findOne({ username })
 
         if (!currentUser) return res.status(400).json({ error: "USER NOT FOUND" })
 
@@ -424,7 +424,7 @@ routes.put('/api/templates/:id', authMiddleware, async (req, res) => {
 // --- Admin Accounts CRUD (superadmin only) ---
 // List all admins
 routes.get('/api/admin/accounts', authMiddleware, requireRole('superadmin'), async (req, res) => {
-    const admins = await User.find({}, '-password'); // Exclude password
+    const admins = await Admin.find({}, '-password'); // Exclude password
     res.json(admins);
 });
 // Create admin
@@ -433,12 +433,11 @@ routes.post('/api/admin/accounts', authMiddleware, requireRole('superadmin'), as
         const { username, password, fullname, phoneNumber } = req.body;
         if (!username || !password || !fullname || !phoneNumber) {
             return res.status(400).json({ error: 'All fields are required' });
-        }
-        if (await User.findOne({ username })) {
+        }        if (await Admin.findOne({ username })) {
             return res.status(400).json({ error: 'Username already exists' });
         }
         const hashedPassword = await bcrypt.hash(password, 10);
-        const newAdmin = await User.create({ username, password: hashedPassword, fullname, phoneNumber, role: 'admin' });
+        const newAdmin = await Admin.create({ username, password: hashedPassword, fullname, phoneNumber, role: 'admin' });
 
         // Log admin action
         if (req.user && req.user.userId && req.user.username) {
@@ -463,11 +462,10 @@ routes.post('/api/admin/accounts', authMiddleware, requireRole('superadmin'), as
     }
 });
 // Update admin
-routes.put('/api/admin/accounts/:id', authMiddleware, requireRole('superadmin'), async (req, res) => {
-    try {
+routes.put('/api/admin/accounts/:id', authMiddleware, requireRole('superadmin'), async (req, res) => {    try {
         const { id } = req.params;
         const { fullname, phoneNumber, password } = req.body;
-        const admin = await User.findById(id);
+        const admin = await Admin.findById(id);
         if (!admin) return res.status(404).json({ error: 'Admin not found' });
         if (admin.role === 'superadmin') return res.status(403).json({ error: 'Cannot update superadmin' });
         
@@ -510,10 +508,9 @@ routes.put('/api/admin/accounts/:id', authMiddleware, requireRole('superadmin'),
     }
 });
 // Delete admin
-routes.delete('/api/admin/accounts/:id', authMiddleware, requireRole('superadmin'), async (req, res) => {
-    try {
+routes.delete('/api/admin/accounts/:id', authMiddleware, requireRole('superadmin'), async (req, res) => {    try {
         const { id } = req.params;
-        const admin = await User.findById(id);
+        const admin = await Admin.findById(id);
         if (!admin) return res.status(404).json({ error: 'Admin not found' });
         if (admin.role === 'superadmin') return res.status(403).json({ error: 'Cannot delete superadmin' });
         
@@ -545,8 +542,422 @@ routes.delete('/api/admin/accounts/:id', authMiddleware, requireRole('superadmin
         }
 
         res.json({ message: 'Admin deleted' });
-    } catch (err) {
-        res.status(500).json({ error: err.message });
+    } catch (err) {        res.status(500).json({ error: err.message });
+    }
+});
+
+// ================================
+// HOUSEHOLD MANAGEMENT ROUTES
+// ================================
+
+// Helper function to create audit log
+const createHouseholdAudit = async (householdId, action, changedBy, changes = {}, memberDetails = null) => {
+    try {
+        const audit = new HouseholdAudit({
+            householdId,
+            action,
+            changedBy,
+            changes,
+            memberDetails
+        });
+        await audit.save();
+    } catch (error) {
+        console.error('Error creating audit log:', error);
+    }
+};
+
+// Get all households
+routes.get('/api/households', authMiddleware, async (req, res) => {
+    try {
+        const households = await Household.find({ status: 'active' })
+            .populate('headMemberId', 'first_name middle_name last_name')
+            .populate('createdBy', 'username fullname')
+            .sort({ dateCreated: -1 });
+        
+        res.json(households);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Get single household with members
+routes.get('/api/households/:id', authMiddleware, async (req, res) => {
+    try {
+        const household = await Household.findById(req.params.id)
+            .populate('headMemberId')
+            .populate('createdBy', 'username fullname')
+            .populate('updatedBy', 'username fullname');
+        
+        if (!household) {
+            return res.status(404).json({ error: 'Household not found' });
+        }
+
+        const members = await Resident.find({ householdId: req.params.id });
+        
+        res.json({
+            household,
+            members
+        });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Create new household
+routes.post('/api/households', authMiddleware, async (req, res) => {
+    try {
+        const { householdData, members } = req.body;
+        
+        // Validate head member is first in members array
+        if (!members || members.length === 0) {
+            return res.status(400).json({ message: 'At least one member (head) is required' });
+        }
+
+        if (members.length > 18) {
+            return res.status(400).json({ message: 'Maximum 18 inhabitants allowed per household' });
+        }
+
+        // First, process the head member to get their ID
+        let headMemberId = null;
+        
+        // Process the first member (head) first
+        const headMemberData = {
+            ...members[0],
+            isHouseholdHead: true,
+            householdAddress: householdData.householdAddress
+        };
+        
+        if (members[0].isExisting) {
+            // Update existing resident to be head
+            await Resident.findByIdAndUpdate(members[0]._id, headMemberData);
+            headMemberId = members[0]._id;
+        } else {
+            // Create new resident as head
+            delete headMemberData._id; // Remove _id if it exists
+            delete headMemberData.isExisting;
+            const newHeadResident = new Resident(headMemberData);
+            await newHeadResident.save();
+            headMemberId = newHeadResident._id;
+        }
+
+        // Now create household with headMemberId
+        const household = new Household({
+            ...householdData,
+            headMemberId: headMemberId,
+            memberCount: members.length,
+            createdBy: req.user.userId
+        });
+
+        await household.save();
+
+        // Process remaining members (if any)
+        for (let i = 1; i < members.length; i++) {
+            const memberData = {
+                ...members[i],
+                householdId: household._id,
+                isHouseholdHead: false,
+                householdAddress: householdData.householdAddress
+            };
+            
+            if (members[i].isExisting) {
+                // Update existing resident
+                await Resident.findByIdAndUpdate(members[i]._id, memberData);
+            } else {
+                // Create new resident
+                delete memberData._id; // Remove _id if it exists
+                delete memberData.isExisting;
+                const newResident = new Resident(memberData);
+                await newResident.save();
+            }
+        }
+
+        // Update head member with household ID
+        await Resident.findByIdAndUpdate(headMemberId, { householdId: household._id });
+
+        // Create audit log
+        await createHouseholdAudit(household._id, 'created', req.user.userId, {
+            householdData,
+            memberCount: members.length
+        });
+
+        const populatedHousehold = await Household.findById(household._id)
+            .populate('headMemberId', 'first_name middle_name last_name')
+            .populate('createdBy', 'username fullname');
+
+        res.status(201).json(populatedHousehold);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Update household
+routes.put('/api/households/:id', authMiddleware, async (req, res) => {
+    try {
+        const { householdData } = req.body;
+        
+        const oldHousehold = await Household.findById(req.params.id);
+        if (!oldHousehold) {
+            return res.status(404).json({ error: 'Household not found' });
+        }
+
+        const updatedHousehold = await Household.findByIdAndUpdate(
+            req.params.id,
+            {
+                ...householdData,
+                updatedBy: req.user.userId,
+                dateUpdated: new Date()
+            },
+            { new: true }
+        ).populate('headMemberId', 'first_name middle_name last_name');
+
+        // Update household address for all members if address changed
+        if (oldHousehold.householdAddress !== householdData.householdAddress) {
+            await Resident.updateMany(
+                { householdId: req.params.id },
+                { householdAddress: householdData.householdAddress }
+            );
+        }
+
+        // Create audit log
+        await createHouseholdAudit(req.params.id, 'updated', req.user.userId, {
+            oldData: oldHousehold.toObject(),
+            newData: householdData
+        });
+
+        res.json(updatedHousehold);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Add member to household
+routes.post('/api/households/:id/members', authMiddleware, async (req, res) => {
+    try {
+        const { memberData, isExisting } = req.body;
+        const householdId = req.params.id;
+
+        const household = await Household.findById(householdId);
+        if (!household) {
+            return res.status(404).json({ error: 'Household not found' });
+        }
+
+        if (household.memberCount >= 18) {
+            return res.status(400).json({ message: 'Maximum 18 inhabitants allowed per household' });
+        }
+
+        let member;
+        
+        if (isExisting) {
+            // Update existing resident
+            member = await Resident.findByIdAndUpdate(memberData._id, {
+                ...memberData,
+                householdId: householdId,
+                householdAddress: household.householdAddress,
+                isHouseholdHead: false
+            }, { new: true });
+        } else {
+            // Create new resident
+            member = new Resident({
+                ...memberData,
+                householdId: householdId,
+                householdAddress: household.householdAddress,
+                isHouseholdHead: false
+            });
+            await member.save();
+        }
+
+        // Update household member count
+        household.memberCount += 1;
+        household.updatedBy = req.user.userId;
+        household.dateUpdated = new Date();
+        await household.save();
+
+        // Create audit log
+        await createHouseholdAudit(householdId, 'member_added', req.user.userId, {}, {
+            memberId: member._id,
+            memberName: `${member.first_name} ${member.last_name}`,
+            actionType: 'added'
+        });
+
+        res.status(201).json(member);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Remove member from household
+routes.delete('/api/households/:householdId/members/:memberId', authMiddleware, async (req, res) => {
+    try {
+        const { householdId, memberId } = req.params;
+        const { action } = req.query; // 'unassign' or 'delete'
+
+        const household = await Household.findById(householdId);
+        if (!household) {
+            return res.status(404).json({ error: 'Household not found' });
+        }
+
+        const member = await Resident.findById(memberId);
+        if (!member) {
+            return res.status(404).json({ error: 'Member not found' });
+        }
+
+        // Check if member is household head
+        if (member.isHouseholdHead && household.memberCount > 1) {
+            return res.status(400).json({ 
+                error: 'Cannot remove household head. Please assign a new head first.' 
+            });
+        }
+
+        let auditAction = '';
+        let memberName = `${member.first_name} ${member.last_name}`;
+
+        if (action === 'delete') {
+            // Delete resident entirely
+            await Resident.findByIdAndDelete(memberId);
+            auditAction = 'member_removed';
+        } else {
+            // Unassign from household
+            await Resident.findByIdAndUpdate(memberId, {
+                householdId: null,
+                isHouseholdHead: false,
+                householdAddress: null
+            });
+            auditAction = 'member_removed';
+        }
+
+        // Update household
+        household.memberCount -= 1;
+        household.updatedBy = req.user.userId;
+        household.dateUpdated = new Date();
+
+        // If this was the last member, we might want to handle household deletion
+        if (household.memberCount === 0) {
+            household.status = 'inactive';
+        }
+
+        await household.save();
+
+        // Create audit log
+        await createHouseholdAudit(householdId, auditAction, req.user.userId, { action }, {
+            memberId: memberId,
+            memberName: memberName,
+            actionType: action === 'delete' ? 'deleted' : 'unassigned'
+        });
+
+        res.json({ message: `Member ${action === 'delete' ? 'deleted' : 'unassigned'} successfully` });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Change household head
+routes.put('/api/households/:householdId/head', authMiddleware, async (req, res) => {
+    try {
+        const { householdId } = req.params;
+        const { newHeadId } = req.body;
+
+        const household = await Household.findById(householdId);
+        if (!household) {
+            return res.status(404).json({ error: 'Household not found' });
+        }
+
+        const newHead = await Resident.findById(newHeadId);
+        if (!newHead || newHead.householdId.toString() !== householdId) {
+            return res.status(400).json({ error: 'Selected member is not part of this household' });
+        }
+
+        const oldHeadId = household.headMemberId;
+        
+        // Update old head
+        await Resident.findByIdAndUpdate(oldHeadId, { isHouseholdHead: false });
+        
+        // Update new head
+        await Resident.findByIdAndUpdate(newHeadId, { isHouseholdHead: true });
+        
+        // Update household
+        household.headMemberId = newHeadId;
+        household.updatedBy = req.user.userId;
+        household.dateUpdated = new Date();
+        await household.save();
+
+        // Create audit log
+        await createHouseholdAudit(householdId, 'head_changed', req.user.userId, {
+            oldHeadId: oldHeadId,
+            newHeadId: newHeadId
+        }, {
+            memberId: newHeadId,
+            memberName: `${newHead.first_name} ${newHead.last_name}`,
+            actionType: 'made_head'
+        });
+
+        const updatedHousehold = await Household.findById(householdId)
+            .populate('headMemberId', 'first_name middle_name last_name');
+
+        res.json(updatedHousehold);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Get unassigned residents
+routes.get('/api/residents/unassigned', authMiddleware, async (req, res) => {
+    try {
+        const unassignedResidents = await Resident.find({ 
+            householdId: null,
+            'registration.status': 'active'
+        });
+        res.json(unassignedResidents);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Get household audit history
+routes.get('/api/households/:id/audit', authMiddleware, async (req, res) => {
+    try {
+        const auditLogs = await HouseholdAudit.find({ householdId: req.params.id })
+            .populate('changedBy', 'username fullname')
+            .populate('memberDetails.memberId', 'first_name last_name')
+            .sort({ timestamp: -1 });
+        
+        res.json(auditLogs);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// Delete household (soft delete)
+routes.delete('/api/households/:id', authMiddleware, async (req, res) => {
+    try {
+        const household = await Household.findById(req.params.id);
+        if (!household) {
+            return res.status(404).json({ error: 'Household not found' });
+        }
+
+        // Unassign all members
+        await Resident.updateMany(
+            { householdId: req.params.id },
+            { 
+                householdId: null, 
+                isHouseholdHead: false,
+                householdAddress: null 
+            }
+        );
+
+        // Soft delete household
+        household.status = 'inactive';
+        household.updatedBy = req.user.userId;
+        household.dateUpdated = new Date();
+        await household.save();
+
+        // Create audit log
+        await createHouseholdAudit(req.params.id, 'deleted', req.user.userId, {
+            deletedAt: new Date()
+        });
+
+        res.json({ message: 'Household deleted successfully' });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
     }
 });
 

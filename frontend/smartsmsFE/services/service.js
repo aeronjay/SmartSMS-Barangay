@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-const baseUrl = '/api'
+const baseUrl = 'http://localhost:3001/api'
 
 const getResidents = async () => {
     try {
@@ -236,6 +236,162 @@ const getAdminActionHistory = async (token) => {
     }
 };
 
+
+// ================================
+// HOUSEHOLD SERVICES
+// ================================
+
+// Get all households
+const getHouseholds = async () => {
+    try {
+        const token = localStorage.getItem('token');
+        const response = await axios.get(`${baseUrl}/households`, {
+            headers: { Authorization: `Bearer ${token}` }
+        });
+        return response.data;
+    } catch (error) {
+        console.error('Error fetching households:', error);
+        throw error;
+    }
+};
+
+// Get single household with members
+const getHousehold = async (householdId) => {
+    try {
+        const token = localStorage.getItem('token');
+        const response = await axios.get(`${baseUrl}/households/${householdId}`, {
+            headers: { Authorization: `Bearer ${token}` }
+        });
+        return response.data;
+    } catch (error) {
+        console.error('Error fetching household:', error);
+        throw error;
+    }
+};
+
+// Create new household
+const createHousehold = async (householdData, members) => {
+    try {
+        const token = localStorage.getItem('token');
+        const response = await axios.post(`${baseUrl}/households`, {
+            householdData,
+            members
+        }, {
+            headers: { Authorization: `Bearer ${token}` }
+        });
+        return response.data;
+    } catch (error) {
+        console.error('Error creating household:', error);
+        throw error;
+    }
+};
+
+// Update household
+const updateHousehold = async (householdId, householdData) => {
+    try {
+        const token = localStorage.getItem('token');
+        const response = await axios.put(`${baseUrl}/households/${householdId}`, {
+            householdData
+        }, {
+            headers: { Authorization: `Bearer ${token}` }
+        });
+        return response.data;
+    } catch (error) {
+        console.error('Error updating household:', error);
+        throw error;
+    }
+};
+
+// Add member to household
+const addHouseholdMember = async (householdId, memberData, isExisting = false) => {
+    try {
+        const token = localStorage.getItem('token');
+        const response = await axios.post(`${baseUrl}/households/${householdId}/members`, {
+            memberData,
+            isExisting
+        }, {
+            headers: { Authorization: `Bearer ${token}` }
+        });
+        return response.data;
+    } catch (error) {
+        console.error('Error adding household member:', error);
+        throw error;
+    }
+};
+
+// Remove member from household
+const removeHouseholdMember = async (householdId, memberId, action = 'unassign') => {
+    try {
+        const token = localStorage.getItem('token');
+        const response = await axios.delete(`${baseUrl}/households/${householdId}/members/${memberId}?action=${action}`, {
+            headers: { Authorization: `Bearer ${token}` }
+        });
+        return response.data;
+    } catch (error) {
+        console.error('Error removing household member:', error);
+        throw error;
+    }
+};
+
+// Change household head
+const changeHouseholdHead = async (householdId, newHeadId) => {
+    try {
+        const token = localStorage.getItem('token');
+        const response = await axios.put(`${baseUrl}/households/${householdId}/head`, {
+            newHeadId
+        }, {
+            headers: { Authorization: `Bearer ${token}` }
+        });
+        return response.data;
+    } catch (error) {
+        console.error('Error changing household head:', error);
+        throw error;
+    }
+};
+
+// Get unassigned residents
+const getUnassignedResidents = async () => {
+    try {
+        const token = localStorage.getItem('token');
+        const response = await axios.get(`${baseUrl}/residents/unassigned`, {
+            headers: { Authorization: `Bearer ${token}` }
+        });
+        return response.data;
+    } catch (error) {
+        console.error('Error fetching unassigned residents:', error);
+        throw error;
+    }
+};
+
+// Get household audit history
+const getHouseholdAudit = async (householdId) => {
+    try {
+        const token = localStorage.getItem('token');
+        const response = await axios.get(`${baseUrl}/households/${householdId}/audit`, {
+            headers: { Authorization: `Bearer ${token}` }
+        });
+        return response.data;
+    } catch (error) {
+        console.error('Error fetching household audit:', error);
+        throw error;
+    }
+};
+
+// Delete household
+const deleteHousehold = async (householdId) => {
+    try {
+        const token = localStorage.getItem('token');
+        const response = await axios.delete(`${baseUrl}/households/${householdId}`, {
+            headers: { Authorization: `Bearer ${token}` }
+        });
+        return response.data;
+    } catch (error) {
+        console.error('Error deleting household:', error);
+        throw error;
+    }
+};
+
+// Export all services including household services
 export default {
     getResidents,
     registerResident,
@@ -263,4 +419,15 @@ export default {
     deleteAdminAccount,
     // Admin action history
     getAdminActionHistory,
+    // Household services
+    getHouseholds,
+    getHousehold,
+    createHousehold,
+    updateHousehold,
+    addHouseholdMember,
+    removeHouseholdMember,
+    changeHouseholdHead,
+    getUnassignedResidents,
+    getHouseholdAudit,
+    deleteHousehold
 };

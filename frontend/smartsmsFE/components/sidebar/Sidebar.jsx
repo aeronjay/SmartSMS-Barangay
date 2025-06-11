@@ -3,6 +3,7 @@ import { Home, Schedule, Announcement, People, AdminPanelSettings } from "@mui/i
 import ReceiptLongIcon from '@mui/icons-material/ReceiptLong';
 import { FaBirthdayCake, FaTrash, FaGift, FaHistory, FaTv, FaExclamationTriangle } from "react-icons/fa";
 import { IoPeopleCircleSharp, IoMegaphoneOutline, IoChatboxEllipses } from "react-icons/io5";
+import { MdFamilyRestroom } from "react-icons/md";
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useState, useEffect, useContext } from 'react';
 import AuthContext from '../../context/AuthContext';
@@ -26,7 +27,6 @@ export default function CustomSidebar() {
       fullname = 'Admin';
     }
   }
-
   const menuItems = [
     { path: 'dashboard', icon: <Home />, label: 'Dashboard' },
     { path: 'announcements', icon: <IoMegaphoneOutline />, label: 'Broadcast' },
@@ -34,6 +34,7 @@ export default function CustomSidebar() {
     { path: 'document-request', icon: <ReceiptLongIcon />, label: 'Document Request' },
     { path: 'request-history', icon: <FaHistory />, label: 'Request History' },
     { path: 'residents', icon: <IoPeopleCircleSharp />, label: 'Residents' },
+    { path: 'households', icon: <MdFamilyRestroom />, label: 'Households' },
     // Only show Admin Accounts and Admin History if superadmin
     ...(role === 'superadmin' ? [
       { path: 'admin-accounts', icon: <AdminPanelSettings />, label: 'Admin Accounts' },
