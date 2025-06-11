@@ -174,7 +174,6 @@ const EditHouseholdModal = ({ open, onClose, onHouseholdUpdated, householdData }
       if (addMode === 'existing' && selectedExistingResident) {
         memberData = selectedExistingResident;
         isExisting = true;      } else if (addMode === 'new') {
-        console.log('Member form data before validation:', memberFormData);
         if (!memberFormData.first_name || !memberFormData.last_name || !memberFormData.birthdate || 
             !memberFormData.gender || !memberFormData.marital_status || !memberFormData.contact.phone ||
             !memberFormData.contact.email || !memberFormData.address.house_number || 
@@ -186,8 +185,7 @@ const EditHouseholdModal = ({ open, onClose, onHouseholdUpdated, householdData }
         memberData = memberFormData;
         isExisting = false;
       }
-
-      console.log('Sending member data:', memberData, 'isExisting:', isExisting);
+      
       await service.addHouseholdMember(householdData.household._id, memberData, isExisting);
 
       // Refresh household data
@@ -251,15 +249,15 @@ const EditHouseholdModal = ({ open, onClose, onHouseholdUpdated, householdData }
       setLoading(false);
     }
   };
-
   const handleRemoveMember = (member) => {
     setMemberToRemove(member);
+    setRemoveAction('unassign'); // Reset to default action
     setShowRemoveDialog(true);
-  };
-
-  const confirmRemoveMember = async () => {
+  };const confirmRemoveMember = async () => {
     try {
-      setLoading(true);      await service.removeHouseholdMember(
+      setLoading(true);
+      
+      await service.removeHouseholdMember(
         householdData.household._id, 
         memberToRemove._id, 
         removeAction
@@ -267,13 +265,14 @@ const EditHouseholdModal = ({ open, onClose, onHouseholdUpdated, householdData }
 
       // Refresh household data
       const response = await service.getHousehold(householdData.household._id);
-      setMembers(response.data.members);
-      
-      setShowRemoveDialog(false);
+      setMembers(response.members);
+        setShowRemoveDialog(false);
       setMemberToRemove(null);
       fetchUnassignedResidents();
     } catch (error) {
-      setError(error.response?.data?.error || 'Error removing member');
+      console.error('Error removing member:', error);
+      setError(error.response?.data?.error || error.message || 'Error removing member');
+      // Don't close dialog on error so user can see the error and try again
     } finally {
       setLoading(false);
     }
@@ -283,16 +282,16 @@ const EditHouseholdModal = ({ open, onClose, onHouseholdUpdated, householdData }
     setSelectedNewHead(member);
     setShowChangeHeadDialog(true);
   };
-
   const confirmChangeHead = async () => {
     try {
-      setLoading(true);      await service.changeHouseholdHead(householdData.household._id, {
-        newHeadId: selectedNewHead._id
-      });
+      setLoading(true);      await service.changeHouseholdHead(
+        householdData.household._id, 
+        selectedNewHead._id
+      );
 
       // Refresh household data
       const response = await service.getHousehold(householdData.household._id);
-      setMembers(response.data.members);
+      setMembers(response.members);
       
       setShowChangeHeadDialog(false);
       setSelectedNewHead(null);
@@ -684,10 +683,11 @@ const EditHouseholdModal = ({ open, onClose, onHouseholdUpdated, householdData }
             {loading ? 'Updating...' : 'Update Household'}
           </Button>
         </DialogActions>
-      </Dialog>
-
-      {/* Remove Member Confirmation Dialog */}
-      <Dialog open={showRemoveDialog} onClose={() => setShowRemoveDialog(false)}>
+      </Dialog>      {/* Remove Member Confirmation Dialog */}
+      <Dialog open={showRemoveDialog} onClose={() => {
+        setShowRemoveDialog(false);
+        setMemberToRemove(null);
+      }}>
         <DialogTitle>Remove Member</DialogTitle>
         <DialogContent>
           <DialogContentText>
@@ -706,7 +706,10 @@ const EditHouseholdModal = ({ open, onClose, onHouseholdUpdated, householdData }
           </FormControl>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setShowRemoveDialog(false)}>Cancel</Button>
+          <Button onClick={() => {
+            setShowRemoveDialog(false);
+            setMemberToRemove(null);
+          }}>Cancel</Button>
           <Button 
             onClick={confirmRemoveMember} 
             color="error"
