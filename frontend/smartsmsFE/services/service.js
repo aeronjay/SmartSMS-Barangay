@@ -391,6 +391,20 @@ const deleteHousehold = async (householdId) => {
     }
 };
 
+// Delete household with residents
+const deleteHouseholdWithResidents = async (householdId) => {
+    try {
+        const token = localStorage.getItem('token');
+        const response = await axios.delete(`${baseUrl}/households/${householdId}/with-residents`, {
+            headers: { Authorization: `Bearer ${token}` }
+        });
+        return response.data;
+    } catch (error) {
+        console.error('Error deleting household with residents:', error);
+        throw error;
+    }
+};
+
 // Export all services including household services
 export default {
     getResidents,
@@ -429,5 +443,6 @@ export default {
     changeHouseholdHead,
     getUnassignedResidents,
     getHouseholdAudit,
-    deleteHousehold
+    deleteHousehold,
+    deleteHouseholdWithResidents
 };

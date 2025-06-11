@@ -14,10 +14,11 @@ import {
   Box,
   Dialog
 } from '@mui/material';
-import { Edit, Add, Visibility } from '@mui/icons-material';
+import { Edit, Add, Visibility, Delete } from '@mui/icons-material';
 import { MdFamilyRestroom } from "react-icons/md";
 import CreateHouseholdModal from './CreateHouseholdModal_v2';
 import EditHouseholdModal from './EditHouseholdModal';
+import DeleteHouseholdModal from './DeleteHouseholdModal';
 import service from '../../services/service';
 import '../../styles/resident.css';
 
@@ -26,6 +27,7 @@ const Households = () => {
   const [loading, setLoading] = useState(true);
   const [createModalOpen, setCreateModalOpen] = useState(false);
   const [editModalOpen, setEditModalOpen] = useState(false);
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const [selectedHousehold, setSelectedHousehold] = useState(null);
   const [error, setError] = useState('');
 
@@ -59,10 +61,15 @@ const Households = () => {
       console.error('Error fetching household details:', error);
     }
   };
+  const handleDeleteHousehold = (household) => {
+    setSelectedHousehold(household);
+    setDeleteModalOpen(true);
+  };
 
   const handleCloseModals = () => {
     setCreateModalOpen(false);
     setEditModalOpen(false);
+    setDeleteModalOpen(false);
     setSelectedHousehold(null);
   };
 
@@ -72,6 +79,11 @@ const Households = () => {
   };
 
   const handleHouseholdUpdated = () => {
+    fetchHouseholds();
+    handleCloseModals();
+  };
+
+  const handleHouseholdDeleted = () => {
     fetchHouseholds();
     handleCloseModals();
   };
@@ -195,6 +207,13 @@ const Households = () => {
                       title="Edit Household"
                     >
                       <Edit />
+                    </IconButton>                    <IconButton
+                      onClick={() => handleDeleteHousehold(household)}
+                      color="error"
+                      size="small"
+                      title="Delete Household"
+                    >
+                      <Delete />
                     </IconButton>
                   </TableCell>
                 </TableRow>
@@ -219,7 +238,13 @@ const Households = () => {
           onHouseholdUpdated={handleHouseholdUpdated}
           householdData={selectedHousehold}
         />
-      )}
+      )}      {/* Delete Household Modal */}
+      <DeleteHouseholdModal
+        open={deleteModalOpen}
+        onClose={handleCloseModals}
+        onDeleteSuccess={handleHouseholdDeleted}
+        household={selectedHousehold}
+      />
     </div>
   );
 };

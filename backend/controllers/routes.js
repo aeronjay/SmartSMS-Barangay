@@ -961,5 +961,60 @@ routes.delete('/api/households/:id', authMiddleware, async (req, res) => {
     }
 });
 
+// Delete household with residents (hard delete option)
+routes.delete('/api/households/:id/with-residents', authMiddleware, requireRole('superadmin'), async (req, res) => {
+    try {
+        const household = await Household.findById(req.params.id);
+        if (!household) {
+            return res.status(404).json({ error: 'Household not found' });
+        }
+
+        // Get all household members for logging
+        const members = await Resident.find({ householdId: req.params.id });
+        
+        // Delete all household members
+        await Resident.deleteMany({ householdId: req.params.id });
+
+        // Soft delete household
+        household.status = 'inactive';
+        household.updatedBy = req.user.userId;
+        household.dateUpdated = new Date();
+        await household.save();
+
+        // Create audit log
+        await createHouseholdAudit(req.params.id, 'deleted_with_residents', req.user.userId, {
+            deletedAt: new Date(),
+            deletedResidents: members.map(m => ({
+                id: m._id,
+                name: `${m.first_name} ${m.last_name}`,
+                phone: m.contact?.phone
+            }))
+        });
+
+        // Log admin action
+        if (req.user && req.user.userId && req.user.username) {
+            await AdminActionHistory.create({
+                adminId: req.user.userId,
+                adminUsername: req.user.username,
+                action: 'deleted household with residents',
+                target: req.params.id,
+                details: {
+                    householdId: req.params.id,
+                    householdAddress: household.householdAddress,
+                    deletedResidentsCount: members.length,
+                    deletedResidents: members.map(m => `${m.first_name} ${m.last_name}`).join(', ')
+                }
+            });
+        }
+
+        res.json({ 
+            message: 'Household and all residents deleted successfully',
+            deletedResidentsCount: members.length 
+        });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
 
 module.exports = routes

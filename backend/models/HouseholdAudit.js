@@ -5,12 +5,11 @@ const HouseholdAuditSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Household',
         required: true
-    },
-    action: {
+    },    action: {
         type: String,
-        enum: ['created', 'updated', 'member_added', 'member_removed', 'head_changed', 'deleted'],
+        enum: ['created', 'updated', 'member_added', 'member_removed', 'head_changed', 'deleted', 'deleted_with_residents'],
         required: true
-    },    changedBy: {
+    },changedBy: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Admin',
         required: true
