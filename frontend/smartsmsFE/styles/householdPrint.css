@@ -1,0 +1,130 @@
+/* Print-specific styles for household registry forms */
+@media print {
+  .household-print-form {
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    background: white !important;
+    color: black !important;
+    font-family: Arial, sans-serif !important;
+    font-size: 12px !important;
+  }
+  
+  .household-print-form table {
+    border-collapse: collapse !important;
+    width: 100% !important;
+  }
+  
+  .household-print-form table,
+  .household-print-form th,
+  .household-print-form td {
+    border: 1px solid black !important;
+  }
+  
+  .household-print-form th {
+    background-color: #f0f0f0 !important;
+    font-weight: bold !important;
+    text-align: center !important;
+    padding: 4px !important;
+  }
+  
+  .household-print-form td {
+    padding: 3px !important;
+    vertical-align: top !important;
+  }
+  
+  /* Hide everything except the form when printing */
+  body * {
+    visibility: hidden;
+  }
+  
+  .household-print-form,
+  .household-print-form * {
+    visibility: visible;
+  }
+  
+  .household-print-form {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100% !important;
+  }
+}
+
+/* Screen styles for better preview */
+.household-print-form {
+  background: white;
+  border: 1px solid #ddd;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  margin: 20px auto;
+  max-width: 210mm;
+  min-height: 297mm;
+  padding: 20mm;
+  position: relative;
+}
+
+.household-print-form .form-header {
+  text-align: center;
+  margin-bottom: 20px;
+  line-height: 1.2;
+}
+
+.household-print-form .form-title {
+  text-align: center;
+  margin: 20px 0;
+  font-weight: bold;
+}
+
+.household-print-form .household-info {
+  margin-bottom: 15px;
+  font-size: 11px;
+}
+
+.household-print-form .signature-section {
+  text-align: center;
+  width: 30%;
+}
+
+.household-print-form .signature-line {
+  border-bottom: 1px solid black;
+  margin: 40px 0 10px 0;
+  height: 1px;
+}
+
+.household-print-form .form-footer {
+  margin-top: 40px;
+  display: flex;
+  justify-content: space-between;
+  font-size: 10px;
+}
+
+.household-print-form table {
+  width: 100%;
+  border-collapse: collapse;
+  border: 2px solid black;
+  font-size: 9px;
+}
+
+.household-print-form th,
+.household-print-form td {
+  border: 1px solid black;
+  padding: 4px;
+  text-align: left;
+}
+
+.household-print-form th {
+  background-color: #f0f0f0;
+  font-weight: bold;
+  text-align: center;
+}
+
+.household-print-form tr {
+  height: 25px;
+}
+
+.disclaimer {
+  margin-top: 20px;
+  font-size: 8px;
+  text-align: justify;
+  line-height: 1.3;
+}

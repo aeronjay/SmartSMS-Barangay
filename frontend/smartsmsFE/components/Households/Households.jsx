@@ -14,12 +14,13 @@ import {
   Box,
   Dialog
 } from '@mui/material';
-import { Edit, Add, Visibility, Delete } from '@mui/icons-material';
+import { Edit, Add, Visibility, Delete, Print } from '@mui/icons-material';
 import { MdFamilyRestroom } from "react-icons/md";
 import CreateHouseholdModal from './CreateHouseholdModal_v2';
 import EditHouseholdModal from './EditHouseholdModal';
 import DeleteHouseholdModal from './DeleteHouseholdModal';
 import service from '../../services/service';
+import { printHouseholdForm } from '../../src/utils/householdPrintUtils';
 import '../../styles/resident.css';
 
 const Households = () => {
@@ -27,9 +28,9 @@ const Households = () => {
   const [loading, setLoading] = useState(true);
   const [createModalOpen, setCreateModalOpen] = useState(false);
   const [editModalOpen, setEditModalOpen] = useState(false);
-  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
-  const [selectedHousehold, setSelectedHousehold] = useState(null);
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);  const [selectedHousehold, setSelectedHousehold] = useState(null);
   const [error, setError] = useState('');
+  const [isPrinting, setIsPrinting] = useState(false);
 
   useEffect(() => {
     fetchHouseholds();
@@ -60,10 +61,30 @@ const Households = () => {
     } catch (error) {
       console.error('Error fetching household details:', error);
     }
-  };
-  const handleDeleteHousehold = (household) => {
+  };  const handleDeleteHousehold = (household) => {
     setSelectedHousehold(household);
     setDeleteModalOpen(true);
+  };
+  const handlePrintHousehold = async (householdId) => {
+    try {
+      setIsPrinting(true);
+      setError('');
+      
+      // Fetch detailed household data with all members
+      const householdData = await service.getHouseholdForPrint(householdId);
+      
+      // Use the simple print function (opens in new window)
+      printHouseholdForm(householdData);
+      
+      // Alternative: Generate PDF download
+      // await generateHouseholdRegistryForm(householdData);
+      
+    } catch (error) {
+      console.error('Error printing household:', error);
+      setError(`Failed to print household: ${error.message}`);
+    } finally {
+      setIsPrinting(false);
+    }
   };
 
   const handleCloseModals = () => {
@@ -95,11 +116,18 @@ const Households = () => {
       day: 'numeric'
     });
   };
-
-  if (loading) {
+      if (loading) {
     return (
       <div className="resident-container">
         <div className="loading">Loading households...</div>
+      </div>
+    );
+  }
+
+  if (isPrinting) {
+    return (
+      <div className="resident-container">
+        <div className="loading">Preparing household registry form for printing...</div>
       </div>
     );
   }
@@ -153,7 +181,8 @@ const Households = () => {
                   </Typography>
                 </TableCell>
               </TableRow>
-            ) : (              households.map((household) => (
+            ) : (
+              households.map((household) => (
                 <TableRow key={household._id}>
                   <TableCell>
                     <Chip 
@@ -193,8 +222,7 @@ const Households = () => {
                     </Typography>
                     <Typography variant="caption" color="text.secondary">
                       {household.barangay}, {household.cityMunicipality}
-                    </Typography>
-                  </TableCell>
+                    </Typography>                  </TableCell>
                   <TableCell>{formatDate(household.dateCreated)}</TableCell>
                   <TableCell>
                     {household.createdBy?.fullname || household.createdBy?.username || 'Unknown'}
@@ -207,7 +235,17 @@ const Households = () => {
                       title="Edit Household"
                     >
                       <Edit />
-                    </IconButton>                    <IconButton
+                    </IconButton>
+                    <IconButton
+                      onClick={() => handlePrintHousehold(household._id)}
+                      color="success"
+                      size="small"
+                      title="Print Household Registry Form"
+                      disabled={isPrinting}
+                    >
+                      <Print />
+                    </IconButton>
+                    <IconButton
                       onClick={() => handleDeleteHousehold(household)}
                       color="error"
                       size="small"

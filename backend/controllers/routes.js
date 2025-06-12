@@ -603,6 +603,44 @@ routes.get('/api/households/:id', authMiddleware, async (req, res) => {
     }
 });
 
+// Get household with all member details for printing
+routes.get('/api/households/:id/print', authMiddleware, async (req, res) => {
+    try {
+        const household = await Household.findById(req.params.id)
+            .populate('headMemberId')
+            .populate('createdBy', 'username fullname')
+            .populate('updatedBy', 'username fullname');
+        
+        if (!household) {
+            return res.status(404).json({ error: 'Household not found' });
+        }
+
+        // Get all members with full details
+        const members = await Resident.find({ householdId: req.params.id })
+            .select('first_name last_name middle_name extension date_of_birth place_of_birth gender civil_status citizenship occupation income householdId householdRole')
+            .sort({ householdRole: 1, first_name: 1 }); // Sort head first, then by name
+        
+        // Prepare data for printing
+        const printData = {
+            householdId: household.householdId,
+            region: household.region,
+            province: household.province,
+            cityMunicipality: household.cityMunicipality,
+            barangay: household.barangay,
+            householdAddress: household.householdAddress,
+            dateCreated: household.dateCreated,
+            headMember: household.headMemberId,
+            memberCount: household.memberCount,
+            members: members
+        };
+        
+        res.json(printData);
+    } catch (error) {
+        console.error('Error fetching household for print:', error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
 // Create new household
 routes.post('/api/households', authMiddleware, async (req, res) => {
     try {

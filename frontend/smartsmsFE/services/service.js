@@ -269,6 +269,25 @@ const getHousehold = async (householdId) => {
     }
 };
 
+// Get household details with all members for printing
+const getHouseholdForPrint = async (householdId) => {
+    try {
+        const token = localStorage.getItem('token');
+        const response = await axios.get(`${baseUrl}/households/${householdId}/print`, {
+            headers: { Authorization: `Bearer ${token}` }
+        });
+        return response.data;
+    } catch (error) {
+        console.error('Error fetching household for print:', error);
+        // Fallback to regular household endpoint if print endpoint doesn't exist
+        if (error.response?.status === 404) {
+            console.warn('Print endpoint not found, falling back to regular household endpoint');
+            return await getHousehold(householdId);
+        }
+        throw error;
+    }
+};
+
 // Create new household
 const createHousehold = async (householdData, members) => {
     try {
@@ -432,10 +451,10 @@ export default {
     updateAdminAccount,
     deleteAdminAccount,
     // Admin action history
-    getAdminActionHistory,
-    // Household services
+    getAdminActionHistory,    // Household services
     getHouseholds,
     getHousehold,
+    getHouseholdForPrint,
     createHousehold,
     updateHousehold,
     addHouseholdMember,
