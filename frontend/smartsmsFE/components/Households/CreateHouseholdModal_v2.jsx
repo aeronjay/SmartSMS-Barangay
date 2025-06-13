@@ -90,19 +90,29 @@ const CreateHouseholdModal = ({ open, onClose, onHouseholdCreated }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [addMode, setAddMode] = useState('new'); // 'new' or 'existing'
-
   useEffect(() => {
     if (open) {
       fetchUnassignedResidents();
     }
-  }, [open]);
-
+  }, [open, members]); // Add members as dependency
   const fetchUnassignedResidents = async () => {
     try {
       const residents = await service.getUnassignedResidents();
-      setUnassignedResidents(residents);
+      console.log('Fetched unassigned residents:', residents); // Debug log
+      
+      // Filter out residents that are already in the current members list
+      const filteredResidents = residents.filter(resident => 
+        !members.some(member => 
+          member._id === resident._id || 
+          (member.isExisting && member._id && member._id === resident._id)
+        )
+      );
+      
+      setUnassignedResidents(filteredResidents);
     } catch (error) {
       console.error('Error fetching unassigned residents:', error);
+      setUnassignedResidents([]); // Ensure it's always an array
+      setError('Error loading available residents. Please try again.');
     }
   };
 
@@ -148,16 +158,31 @@ const CreateHouseholdModal = ({ open, onClose, onHouseholdCreated }) => {
       birthdate: value,
       age: value ? calculateAge(value) : ''
     }));
-  };
-  const handleAddMember = () => {
+  };  const handleAddMember = () => {
     if (addMode === 'existing' && selectedExistingResident) {
-      const newMember = {
+      // Check if this resident is already in the members list
+      const isAlreadyAdded = members.some(member => 
+        member._id === selectedExistingResident._id || 
+        (member.isExisting && member._id && member._id === selectedExistingResident._id)
+      );
+      
+      if (isAlreadyAdded) {
+        setError('This resident is already added to the household');
+        return;
+      }
+        const newMember = {
         ...selectedExistingResident,
         isExisting: true
       };
       setMembers(prev => [...prev, newMember]);
+        // Remove the selected resident from unassigned list
+      setUnassignedResidents(prev => 
+        prev.filter(resident => resident._id !== selectedExistingResident._id)
+      );
+      
       setSelectedExistingResident(null);
-    } else if (addMode === 'new') {      // Validate required fields
+      setError(''); // Clear errors when successfully adding
+    } else if (addMode === 'new') {// Validate required fields
       if (!memberFormData.first_name || !memberFormData.last_name || !memberFormData.birthdate || 
           !memberFormData.gender || !memberFormData.marital_status || !memberFormData.contact.phone || 
           !memberFormData.contact.email || !memberFormData.address.house_number || 
@@ -220,16 +245,21 @@ const CreateHouseholdModal = ({ open, onClose, onHouseholdCreated }) => {
           resident_type: 'Permanent'
         }
       });
-    }
-    
+    }    
     // Hide form after adding member (users can click "Add Member" to add more)
     setShowAddMemberForm(false);
-    setError('');
+    setError(''); // Clear any errors after successful addition
   };
-
   const handleRemoveMember = (index) => {
+    const memberToRemove = members[index];
+    
+    // If it's an existing resident, add them back to unassigned list
+    if (memberToRemove.isExisting && memberToRemove._id) {
+      setUnassignedResidents(prev => [...prev, memberToRemove]);
+    }
+    
     setMembers(prev => prev.filter((_, i) => i !== index));
-  };  const handleSubmit = async () => {
+  };const handleSubmit = async () => {
     try {
       setLoading(true);
       setError('');
@@ -467,18 +497,38 @@ const CreateHouseholdModal = ({ open, onClose, onHouseholdCreated }) => {
             </FormControl>
 
             {addMode === 'existing' ? (
-              <>
-                <Autocomplete
+              <>                <Autocomplete
                   fullWidth
-                  options={unassignedResidents}
-                  getOptionLabel={(option) => `${option.first_name} ${option.last_name} - ${option.contact?.phone || 'No phone'}`}
+                  options={unassignedResidents || []}
+                  getOptionLabel={(option) => {
+                    if (!option) return '';
+                    const name = `${option.first_name || ''} ${option.last_name || ''}`.trim();
+                    const phone = option.contact?.phone || 'No phone';
+                    return `${name} - ${phone}`;
+                  }}
                   value={selectedExistingResident}
-                  onChange={(event, newValue) => setSelectedExistingResident(newValue)}
+                  onChange={(event, newValue) => {
+                    setSelectedExistingResident(newValue);
+                    setError(''); // Clear any previous errors
+                  }}
                   renderInput={(params) => (
                     <TextField {...params} label="Select Existing Resident" />
                   )}
+                  renderOption={(props, option) => (
+                    <li {...props} key={option._id}>
+                      <div>
+                        <div style={{ fontWeight: 'bold' }}>
+                          {`${option.first_name || ''} ${option.last_name || ''}`.trim()}
+                        </div>
+                        <div style={{ fontSize: '0.8em', color: 'gray' }}>
+                          Phone: {option.contact?.phone || 'N/A'} | Age: {option.age || 'N/A'}
+                        </div>
+                      </div>
+                    </li>
+                  )}
                   sx={{ mb: 2 }}
-                />                <Box sx={{ display: 'flex', gap: 1 }}>
+                  noOptionsText="No unassigned residents available"
+                /><Box sx={{ display: 'flex', gap: 1 }}>
                   <Button variant="contained" onClick={handleAddMember} disabled={!selectedExistingResident}>
                     Add Selected Resident
                   </Button>

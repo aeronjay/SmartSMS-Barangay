@@ -114,10 +114,18 @@ const EditHouseholdModal = ({ open, onClose, onHouseholdUpdated, householdData }
   }, [open, householdData]);  const fetchUnassignedResidents = async () => {
     try {
       const residents = await service.getUnassignedResidents();
-      setUnassignedResidents(residents);
+      console.log('Fetched unassigned residents:', residents); // Debug log
+      
+      // Filter out residents that are already members of this household
+      const filteredResidents = residents.filter(resident => 
+        !members.some(member => member._id === resident._id)
+      );
+      
+      setUnassignedResidents(filteredResidents);
     } catch (error) {
       console.error('Error fetching unassigned residents:', error);
       setUnassignedResidents([]); // Ensure it's always an array
+      setError('Error loading available residents. Please try again.');
     }
   };
 
@@ -164,7 +172,6 @@ const EditHouseholdModal = ({ open, onClose, onHouseholdUpdated, householdData }
       age: value ? calculateAge(value) : ''
     }));
   };
-
   const handleAddMember = async () => {
     try {
       setLoading(true);
@@ -172,8 +179,18 @@ const EditHouseholdModal = ({ open, onClose, onHouseholdUpdated, householdData }
       let isExisting = false;
 
       if (addMode === 'existing' && selectedExistingResident) {
+        // Check if this resident is already in the members list
+        const isAlreadyAdded = members.some(member => 
+          member._id === selectedExistingResident._id
+        );
+        
+        if (isAlreadyAdded) {
+          setError('This resident is already a member of this household');
+          return;
+        }
+        
         memberData = selectedExistingResident;
-        isExisting = true;      } else if (addMode === 'new') {
+        isExisting = true;} else if (addMode === 'new') {
         if (!memberFormData.first_name || !memberFormData.last_name || !memberFormData.birthdate || 
             !memberFormData.gender || !memberFormData.marital_status || !memberFormData.contact.phone ||
             !memberFormData.contact.email || !memberFormData.address.house_number || 
@@ -501,13 +518,34 @@ const EditHouseholdModal = ({ open, onClose, onHouseholdUpdated, householdData }
                 <>                  <Autocomplete
                     fullWidth
                     options={unassignedResidents || []}
-                    getOptionLabel={(option) => `${option.first_name} ${option.last_name} - ${option.contact?.phone || 'No phone'}`}
+                    getOptionLabel={(option) => {
+                      if (!option) return '';
+                      const name = `${option.first_name || ''} ${option.last_name || ''}`.trim();
+                      const phone = option.contact?.phone || 'No phone';
+                      return `${name} - ${phone}`;
+                    }}
                     value={selectedExistingResident}
-                    onChange={(event, newValue) => setSelectedExistingResident(newValue)}
+                    onChange={(event, newValue) => {
+                      setSelectedExistingResident(newValue);
+                      setError(''); // Clear any previous errors
+                    }}
                     renderInput={(params) => (
                       <TextField {...params} label="Select Existing Resident" />
                     )}
+                    renderOption={(props, option) => (
+                      <li {...props} key={option._id}>
+                        <div>
+                          <div style={{ fontWeight: 'bold' }}>
+                            {`${option.first_name || ''} ${option.last_name || ''}`.trim()}
+                          </div>
+                          <div style={{ fontSize: '0.8em', color: 'gray' }}>
+                            Phone: {option.contact?.phone || 'N/A'} | Age: {option.age || 'N/A'}
+                          </div>
+                        </div>
+                      </li>
+                    )}
                     sx={{ mb: 2 }}
+                    noOptionsText="No unassigned residents available"
                   />
                   <Box sx={{ display: 'flex', gap: 1 }}>
                     <Button 
