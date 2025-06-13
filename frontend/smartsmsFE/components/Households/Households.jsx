@@ -12,9 +12,11 @@ import {
   Chip,
   Typography,
   Box,
-  Dialog
+  Dialog,
+  TextField,
+  InputAdornment
 } from '@mui/material';
-import { Edit, Add, Visibility, Delete, Print } from '@mui/icons-material';
+import { Edit, Add, Visibility, Delete, Print, Search } from '@mui/icons-material';
 import { MdFamilyRestroom } from "react-icons/md";
 import CreateHouseholdModal from './CreateHouseholdModal_v2';
 import EditHouseholdModal from './EditHouseholdModal';
@@ -25,12 +27,15 @@ import '../../styles/resident.css';
 
 const Households = () => {
   const [households, setHouseholds] = useState([]);
+  const [filteredHouseholds, setFilteredHouseholds] = useState([]);
   const [loading, setLoading] = useState(true);
   const [createModalOpen, setCreateModalOpen] = useState(false);
   const [editModalOpen, setEditModalOpen] = useState(false);
-  const [deleteModalOpen, setDeleteModalOpen] = useState(false);  const [selectedHousehold, setSelectedHousehold] = useState(null);
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [selectedHousehold, setSelectedHousehold] = useState(null);
   const [error, setError] = useState('');
   const [isPrinting, setIsPrinting] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
     fetchHouseholds();
@@ -41,11 +46,13 @@ const Households = () => {
             const response = await service.getHouseholds();
             console.log('Households response:', response); // Debug log
             setHouseholds(response || []); // Handle undefined response
+            setFilteredHouseholds(response || []); // Initialize filtered households
             setError('');
         } catch (err) {
             console.error('Error fetching households:', err);
             setError(`Failed to fetch households: ${err.message}`);
             setHouseholds([]); // Set empty array on error
+            setFilteredHouseholds([]); // Set empty array on error
         } finally {
             setLoading(false);
         }
@@ -83,13 +90,40 @@ const Households = () => {
     }
   };
 
+  const handleSearchChange = (event) => {
+    const searchValue = event.target.value.toLowerCase();
+    setSearchTerm(searchValue);
+
+    if (searchValue === '') {
+      setFilteredHouseholds(households);
+    } else {
+      const filtered = households.filter((household) => {
+        // Search by household ID
+        const householdIdMatch = household.householdId?.toLowerCase().includes(searchValue);
+        
+        // Search by head member name
+        const headMemberName = household.headMemberId ? 
+          `${household.headMemberId.first_name} ${household.headMemberId.middle_name || ''} ${household.headMemberId.last_name}`.trim().toLowerCase()
+          : '';
+        const headMemberMatch = headMemberName.includes(searchValue);
+        
+        // Search by address
+        const addressMatch = household.householdAddress?.toLowerCase().includes(searchValue);
+        const cityMatch = household.cityMunicipality?.toLowerCase().includes(searchValue);
+        const barangayMatch = household.barangay?.toLowerCase().includes(searchValue);
+        
+        return householdIdMatch || headMemberMatch || addressMatch || cityMatch || barangayMatch;
+      });
+      setFilteredHouseholds(filtered);
+    }
+  };
+
   const handleCloseModals = () => {
     setCreateModalOpen(false);
     setEditModalOpen(false);
     setDeleteModalOpen(false);
     setSelectedHousehold(null);
   };
-
   const handleHouseholdCreated = () => {
     fetchHouseholds();
     handleCloseModals();
@@ -104,6 +138,15 @@ const Households = () => {
     fetchHouseholds();
     handleCloseModals();
   };
+
+  // Update filtered households when households change
+  useEffect(() => {
+    if (searchTerm === '') {
+      setFilteredHouseholds(households);
+    } else {
+      handleSearchChange({ target: { value: searchTerm } });
+    }
+  }, [households]);
 
   const formatDate = (dateString) => {
     return new Date(dateString).toLocaleDateString('en-US', {
@@ -127,7 +170,6 @@ const Households = () => {
       </div>
     );
   }
-
   return (
     <div className="resident-container">
       <div className="resident-header">
@@ -138,24 +180,48 @@ const Households = () => {
             <p>Manage households and their inhabitants</p>
           </div>
         </div>
-        <Button
-          variant="contained"
-          startIcon={<Add />}
-          onClick={handleCreateHousehold}
-          className="add-resident-btn"
-          sx={{ 
-            backgroundColor: '#1976d2',
-            '&:hover': { backgroundColor: '#1565c0' }
-          }}
-        >
-          Create New Household        </Button>
-      </div>
-
-      {error && (
+        <div className="header-right">
+          <TextField
+            placeholder="Search households..."
+            variant="outlined"
+            size="small"
+            value={searchTerm}
+            onChange={handleSearchChange}
+            sx={{
+              marginRight: 2,
+              minWidth: 300,
+              '& .MuiOutlinedInput-root': {
+                backgroundColor: 'white',
+              }
+            }}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <Search color="action" />
+                </InputAdornment>
+              ),
+            }}
+          />
+          <Button
+            variant="contained"
+            startIcon={<Add />}
+            onClick={handleCreateHousehold}
+            className="add-resident-btn"
+            sx={{ 
+              backgroundColor: '#1976d2',
+              '&:hover': { backgroundColor: '#1565c0' }
+            }}
+          >
+            Create New Household
+          </Button>
+        </div>
+      </div>      {error && (
         <div className="error-message">
           {error}
         </div>
-      )}      <TableContainer component={Paper} className="resident-table-container">
+      )}
+
+      <TableContainer component={Paper} className="resident-table-container">
         <Table>
           <TableHead>
             <TableRow>
@@ -169,16 +235,16 @@ const Households = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {!households || households.length === 0 ? (
+            {!filteredHouseholds || filteredHouseholds.length === 0 ? (
               <TableRow>
                 <TableCell colSpan={7} align="center">
                   <Typography variant="body1" color="text.secondary">
-                    No households found. Create your first household to get started.
+                    {searchTerm ? 'No households found matching your search.' : 'No households found. Create your first household to get started.'}
                   </Typography>
                 </TableCell>
               </TableRow>
             ) : (
-              households.map((household) => (
+              filteredHouseholds.map((household) => (
                 <TableRow key={household._id}>
                   <TableCell>
                     <Chip 

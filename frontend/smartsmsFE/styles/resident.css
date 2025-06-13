@@ -33,6 +33,55 @@
     /* Minimum height as requested */
 }
 
+/* Container for resident and household pages */
+.resident-container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    background-color: #f5f5f5;
+}
+
+/* Header section with title and actions */
+.resident-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem 2rem;
+    background-color: white;
+    border-bottom: 1px solid #e0e0e0;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.header-left .header-icon {
+    font-size: 2.5rem;
+    color: #1976d2;
+}
+
+.header-left h1 {
+    margin: 0;
+    color: #333;
+    font-size: 1.75rem;
+    font-weight: 600;
+}
+
+.header-left p {
+    margin: 0.25rem 0 0 0;
+    color: #666;
+    font-size: 1rem;
+}
+
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
 /* Table container with fixed height and scroll */
 .table-container {
     display: flex;
