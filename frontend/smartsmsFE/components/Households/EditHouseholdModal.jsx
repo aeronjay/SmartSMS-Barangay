@@ -301,7 +301,6 @@ const EditHouseholdModal = ({ open, onClose, onHouseholdUpdated, householdData }
       setLoading(false);
     }
   };
-
   const handleSubmit = async () => {
     try {
       setLoading(true);
@@ -312,13 +311,19 @@ const EditHouseholdModal = ({ open, onClose, onHouseholdUpdated, householdData }
           !household.barangay || !household.householdAddress) {
         setError('Please fill in all household information');
         return;
-      }      await service.updateHousehold(householdData.household._id, {
-        householdData: household
-      });
+      }
 
+      console.log('Updating household with data:', household);
+      console.log('Household ID:', householdData.household._id);
+      
+      await service.updateHousehold(householdData.household._id, household);
+
+      console.log('Household updated successfully');
       onHouseholdUpdated();
+      handleClose(); // Close modal after successful update
     } catch (error) {
-      setError(error.response?.data?.message || 'Error updating household');
+      console.error('Error updating household:', error);
+      setError(error.response?.data?.message || error.message || 'Error updating household');
     } finally {
       setLoading(false);
     }

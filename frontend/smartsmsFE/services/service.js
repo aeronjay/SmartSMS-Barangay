@@ -309,14 +309,18 @@ const createHousehold = async (householdData, members) => {
 const updateHousehold = async (householdId, householdData) => {
     try {
         const token = localStorage.getItem('token');
+        console.log('Updating household:', householdId, 'with data:', householdData);
+        
         const response = await axios.put(`${baseUrl}/households/${householdId}`, {
             householdData
         }, {
             headers: { Authorization: `Bearer ${token}` }
         });
+        
+        console.log('Household update response:', response.data);
         return response.data;
     } catch (error) {
-        console.error('Error updating household:', error);
+        console.error('Error updating household:', error.response?.data || error.message);
         throw error;
     }
 };
