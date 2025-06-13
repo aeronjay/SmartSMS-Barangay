@@ -43,14 +43,14 @@ const generateCompactTableRows = (members) => {
         <td style="border: 1px solid black; padding: 2px; height: 18px; vertical-align: top; font-size: 7px;">${member.last_name || ''}</td>
         <td style="border: 1px solid black; padding: 2px; height: 18px; vertical-align: top; font-size: 7px;">${member.first_name || ''}</td>
         <td style="border: 1px solid black; padding: 2px; height: 18px; vertical-align: top; font-size: 7px;">${member.middle_name || ''}</td>
-        <td style="border: 1px solid black; padding: 2px; height: 18px; vertical-align: top; font-size: 7px;">${member.extension || ''}</td>
-        <td style="border: 1px solid black; padding: 2px; height: 18px; vertical-align: top; font-size: 7px;">${member.place_of_birth || ''}</td>
-        <td style="border: 1px solid black; padding: 2px; height: 18px; vertical-align: top; font-size: 7px;">${formatDateOfBirth(member.date_of_birth)}</td>
-        <td style="border: 1px solid black; padding: 2px; height: 18px; vertical-align: top; text-align: center; font-size: 7px;">${member.date_of_birth ? calculateAge(member.date_of_birth) : ''}</td>
-        <td style="border: 1px solid black; padding: 2px; height: 18px; vertical-align: top; text-align: center; font-size: 7px;">${member.gender === 'male' ? 'M' : member.gender === 'female' ? 'F' : member.gender || ''}</td>
-        <td style="border: 1px solid black; padding: 2px; height: 18px; vertical-align: top; font-size: 7px;">${member.civil_status || ''}</td>
+        <td style="border: 1px solid black; padding: 2px; height: 18px; vertical-align: top; font-size: 7px;">${member.suffix || ''}</td>
+        <td style="border: 1px solid black; padding: 2px; height: 18px; vertical-align: top; font-size: 7px;">${member.placeOfBirth || ''}</td>
+        <td style="border: 1px solid black; padding: 2px; height: 18px; vertical-align: top; font-size: 7px;">${formatDateOfBirth(member.birthdate)}</td>
+        <td style="border: 1px solid black; padding: 2px; height: 18px; vertical-align: top; text-align: center; font-size: 7px;">${member.age || (member.birthdate ? calculateAge(member.birthdate) : '')}</td>
+        <td style="border: 1px solid black; padding: 2px; height: 18px; vertical-align: top; text-align: center; font-size: 7px;">${member.gender === 'Male' ? 'M' : member.gender === 'Female' ? 'F' : member.gender || ''}</td>
+        <td style="border: 1px solid black; padding: 2px; height: 18px; vertical-align: top; font-size: 7px;">${member.marital_status || ''}</td>
         <td style="border: 1px solid black; padding: 2px; height: 18px; vertical-align: top; font-size: 7px;">${member.citizenship || 'FILIPINO'}</td>
-        <td style="border: 1px solid black; padding: 2px; height: 18px; vertical-align: top; font-size: 7px;">${member.occupation || ''}</td>
+        <td style="border: 1px solid black; padding: 2px; height: 18px; vertical-align: top; font-size: 7px;">${member.employment?.occupation || ''}</td>
         <td style="border: 1px solid black; padding: 2px; height: 18px; vertical-align: top; font-size: 7px;"></td>
       </tr>
     `;
@@ -160,13 +160,24 @@ const createRBIFormTemplate = (householdData) => {
 
 // Simple print using browser's print functionality (optimized for one page)
 export const printHouseholdForm = (householdData) => {
-  const printWindow = window.open('', '_blank');
+  // Add timestamp to prevent caching
+  const timestamp = new Date().getTime();
+  const printWindow = window.open('', '_blank', `width=1200,height=800,scrollbars=yes,resizable=yes,timestamp=${timestamp}`);
+  
+  if (!printWindow) {
+    alert('Popup blocked! Please allow popups for this site to print.');
+    return;
+  }
+  
   const formHTML = createRBIFormTemplate(householdData);
   
   const htmlContent = `<!DOCTYPE html>
     <html>
     <head>
-      <title>RBI Form A - ${householdData.householdId}</title>
+      <title>RBI Form A - ${householdData.householdId} - ${timestamp}</title>
+      <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+      <meta http-equiv="Pragma" content="no-cache">
+      <meta http-equiv="Expires" content="0">
       <style>
         @page {
           size: A4 landscape;
@@ -191,12 +202,17 @@ export const printHouseholdForm = (householdData) => {
     </body>
     </html>`;
   
+  printWindow.document.open();
   printWindow.document.write(htmlContent);
   printWindow.document.close();
   printWindow.focus();
-  // Wait a bit for content to load, then print
+  
+  // Wait for content to load, then print
   setTimeout(() => {
     printWindow.print();
-    printWindow.close();
-  }, 500);
+    // Don't close immediately, let user see the content
+    setTimeout(() => {
+      printWindow.close();
+    }, 1000);
+  }, 1000);
 };

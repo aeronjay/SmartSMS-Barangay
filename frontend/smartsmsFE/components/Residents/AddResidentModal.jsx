@@ -20,13 +20,13 @@ import {
 import CloseIcon from "@mui/icons-material/Close";
 import service from "../../services/service";
 
-export default function AddResidentModal({ open, onClose }) {
-  const [formData, setFormData] = useState({
+export default function AddResidentModal({ open, onClose }) {  const [formData, setFormData] = useState({
     first_name: "",
     middle_name: "",
     last_name: "",
     suffix: "",
     birthdate: "",
+    placeOfBirth: "",
     age: "",
     gender: "",
     marital_status: "",
@@ -113,15 +113,14 @@ export default function AddResidentModal({ open, onClose }) {
       const newResident = await service.registerResident(formData);
 
       // Log success message
-      console.log("Resident added successfully:", newResident);
-
-      // Reset the form
+      console.log("Resident added successfully:", newResident);      // Reset the form
       setFormData({
         first_name: "",
         middle_name: "",
         last_name: "",
         suffix: "",
         birthdate: "",
+        placeOfBirth: "",
         age: "",
         gender: "",
         marital_status: "",
@@ -227,8 +226,7 @@ export default function AddResidentModal({ open, onClose }) {
                 onChange={handleChange}
                 fullWidth
               />
-            </Grid>
-            <Grid size={{ xs: 12, md: 4 }}>
+            </Grid>            <Grid size={{ xs: 12, md: 4 }}>
               <TextField
                 label="Birthdate"
                 name="birthdate"
@@ -238,6 +236,15 @@ export default function AddResidentModal({ open, onClose }) {
                 fullWidth
                 required
                 InputLabelProps={{ shrink: true }}
+              />
+            </Grid>
+            <Grid size={{ xs: 12, md: 4 }}>
+              <TextField
+                label="Place of Birth"
+                name="placeOfBirth"
+                value={formData.placeOfBirth}
+                onChange={handleChange}
+                fullWidth
               />
             </Grid>
             <Grid size={{ xs: 12, md: 4 }}>

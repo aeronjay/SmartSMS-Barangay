@@ -26,13 +26,13 @@ const formatDateForInput = (isoDate) => {
   return new Date(isoDate).toISOString().split("T")[0];
 };
 
-export default function EditResidentModal({ open, onClose, resident }) {
-  const [formData, setFormData] = useState({
+export default function EditResidentModal({ open, onClose, resident }) {  const [formData, setFormData] = useState({
     first_name: "",
     middle_name: "",
     last_name: "",
     suffix: "",
     birthdate: "",
+    placeOfBirth: "",
     age: "",
     gender: "",
     marital_status: "",
@@ -75,13 +75,13 @@ export default function EditResidentModal({ open, onClose, resident }) {
 
   // Populate form with resident data when modal opens
   useEffect(() => {
-    if (resident) {
-      setFormData({
+    if (resident) {      setFormData({
         first_name: resident.first_name || "",
         middle_name: resident.middle_name || "",
         last_name: resident.last_name || "",
         suffix: resident.suffix || "",
         birthdate: formatDateForInput(resident.birthdate), // Format the date
+        placeOfBirth: resident.placeOfBirth || "",
         age: resident.age || "",
         gender: resident.gender || "",
         marital_status: resident.marital_status || "",
@@ -234,8 +234,7 @@ export default function EditResidentModal({ open, onClose, resident }) {
                 onChange={handleChange}
                 fullWidth
               />
-            </Grid>
-            <Grid size={{ xs: 12, md: 4 }}>
+            </Grid>            <Grid size={{ xs: 12, md: 4 }}>
               <TextField
                 label="Birthdate"
                 name="birthdate"
@@ -245,6 +244,15 @@ export default function EditResidentModal({ open, onClose, resident }) {
                 fullWidth
                 required
                 InputLabelProps={{ shrink: true }}
+              />
+            </Grid>
+            <Grid size={{ xs: 12, md: 4 }}>
+              <TextField
+                label="Place of Birth"
+                name="placeOfBirth"
+                value={formData.placeOfBirth}
+                onChange={handleChange}
+                fullWidth
               />
             </Grid>
             <Grid size={{ xs: 12, md: 4 }}>

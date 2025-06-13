@@ -613,12 +613,10 @@ routes.get('/api/households/:id/print', authMiddleware, async (req, res) => {
         
         if (!household) {
             return res.status(404).json({ error: 'Household not found' });
-        }
-
-        // Get all members with full details
+        }        // Get all members with full details
         const members = await Resident.find({ householdId: req.params.id })
-            .select('first_name last_name middle_name extension date_of_birth place_of_birth gender civil_status citizenship occupation income householdId householdRole')
-            .sort({ householdRole: 1, first_name: 1 }); // Sort head first, then by name
+            .select('first_name last_name middle_name suffix birthdate placeOfBirth age gender marital_status citizenship employment.occupation contact.phone householdId isHouseholdHead')
+            .sort({ isHouseholdHead: -1, first_name: 1 }); // Sort head first, then by name
         
         // Prepare data for printing
         const printData = {

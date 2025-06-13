@@ -64,8 +64,7 @@ const Households = () => {
   };  const handleDeleteHousehold = (household) => {
     setSelectedHousehold(household);
     setDeleteModalOpen(true);
-  };
-  const handlePrintHousehold = async (householdId) => {
+  };  const handlePrintHousehold = async (householdId) => {
     try {
       setIsPrinting(true);
       setError('');
@@ -75,9 +74,6 @@ const Households = () => {
       
       // Use the simple print function (opens in new window)
       printHouseholdForm(householdData);
-      
-      // Alternative: Generate PDF download
-      // await generateHouseholdRegistryForm(householdData);
       
     } catch (error) {
       console.error('Error printing household:', error);
