@@ -78,11 +78,11 @@ const CreateHouseholdModal = ({ open, onClose, onHouseholdCreated }) => {
     },
     education: { 
       highest_education: '',
-      field_of_study: ''
-    },
+      field_of_study: ''    },
     registration: {
       resident_type: 'Permanent'
-    }
+    },
+    specialStatus: ''
   });
   
   const [unassignedResidents, setUnassignedResidents] = useState([]);
@@ -335,11 +335,11 @@ const CreateHouseholdModal = ({ open, onClose, onHouseholdCreated }) => {
       },
       education: { 
         highest_education: '',
-        field_of_study: ''
-      },
+        field_of_study: ''      },
       registration: {
         resident_type: 'Permanent'
-      }
+      },
+      specialStatus: ''
     });
     setShowAddMemberForm(true); // Reset to show form for next time
     setError('');
@@ -698,9 +698,23 @@ const CreateHouseholdModal = ({ open, onClose, onHouseholdCreated }) => {
                       label="Province"
                       value={memberFormData.address.province}
                       onChange={(e) => handleMemberFormChange('address.province', e.target.value)}
+                    />                  </Grid>
+                </Grid>
+                
+                {/* Special Status Field */}
+                <Grid container spacing={2} sx={{ mt: 1 }}>
+                  <Grid size={{ xs: 12 }}>
+                    <TextField
+                      fullWidth
+                      label="Special Status"
+                      value={memberFormData.specialStatus}
+                      onChange={(e) => handleMemberFormChange('specialStatus', e.target.value)}
+                      placeholder="e.g., Lactating Mother, Pregnant, PWD, Senior Citizen, Solo Parent, OSY, OSC"
+                      helperText="Optional: Enter special status if applicable"
                     />
                   </Grid>
                 </Grid>
+                
                   <Box sx={{ display: 'flex', gap: 1, mt: 2 }}>
                   <Button variant="contained" onClick={handleAddMember}>
                     Add Member

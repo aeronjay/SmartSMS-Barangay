@@ -615,7 +615,7 @@ routes.get('/api/households/:id/print', authMiddleware, async (req, res) => {
             return res.status(404).json({ error: 'Household not found' });
         }        // Get all members with full details
         const members = await Resident.find({ householdId: req.params.id })
-            .select('first_name last_name middle_name suffix birthdate placeOfBirth age gender marital_status citizenship employment.occupation contact.phone householdId isHouseholdHead')
+            .select('first_name last_name middle_name suffix birthdate placeOfBirth age gender marital_status citizenship employment.occupation contact.phone householdId isHouseholdHead specialStatus')
             .sort({ isHouseholdHead: -1, first_name: 1 }); // Sort head first, then by name
         
         // Prepare data for printing

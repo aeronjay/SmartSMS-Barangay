@@ -86,10 +86,10 @@ const EditHouseholdModal = ({ open, onClose, onHouseholdUpdated, householdData }
     education: { 
       highest_education: '',
       field_of_study: ''
-    },
-    registration: {
+    },    registration: {
       resident_type: 'Permanent'
-    }
+    },
+    specialStatus: ''
   });
   
   const [unassignedResidents, setUnassignedResidents] = useState([]);
@@ -250,11 +250,11 @@ const EditHouseholdModal = ({ open, onClose, onHouseholdUpdated, householdData }
         },
         education: { 
           highest_education: '',
-          field_of_study: ''
-        },
+          field_of_study: ''        },
         registration: {
           resident_type: 'Permanent'
-        }
+        },
+        specialStatus: ''
       });
       setSelectedExistingResident(null);
       setShowAddMemberForm(false);
@@ -694,6 +694,19 @@ const EditHouseholdModal = ({ open, onClose, onHouseholdUpdated, householdData }
                         label="Occupation"
                         value={memberFormData.employment.occupation}
                         onChange={(e) => handleMemberFormChange('employment.occupation', e.target.value)}
+                      />                    </Grid>
+                  </Grid>
+                  
+                  {/* Special Status Field */}
+                  <Grid container spacing={2} sx={{ mt: 1 }}>
+                    <Grid size={{ xs: 12 }}>
+                      <TextField
+                        fullWidth
+                        label="Special Status"
+                        value={memberFormData.specialStatus}
+                        onChange={(e) => handleMemberFormChange('specialStatus', e.target.value)}
+                        placeholder="e.g., Lactating Mother, Pregnant, PWD, Senior Citizen, Solo Parent, OSY, OSC"
+                        helperText="Optional: Enter special status if applicable"
                       />
                     </Grid>
                   </Grid>

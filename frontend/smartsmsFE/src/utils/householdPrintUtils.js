@@ -47,11 +47,10 @@ const generateCompactTableRows = (members) => {
         <td style="border: 1px solid black; padding: 2px; height: 18px; vertical-align: top; font-size: 7px;">${member.placeOfBirth || ''}</td>
         <td style="border: 1px solid black; padding: 2px; height: 18px; vertical-align: top; font-size: 7px;">${formatDateOfBirth(member.birthdate)}</td>
         <td style="border: 1px solid black; padding: 2px; height: 18px; vertical-align: top; text-align: center; font-size: 7px;">${member.age || (member.birthdate ? calculateAge(member.birthdate) : '')}</td>
-        <td style="border: 1px solid black; padding: 2px; height: 18px; vertical-align: top; text-align: center; font-size: 7px;">${member.gender === 'Male' ? 'M' : member.gender === 'Female' ? 'F' : member.gender || ''}</td>
-        <td style="border: 1px solid black; padding: 2px; height: 18px; vertical-align: top; font-size: 7px;">${member.marital_status || ''}</td>
+        <td style="border: 1px solid black; padding: 2px; height: 18px; vertical-align: top; text-align: center; font-size: 7px;">${member.gender === 'Male' ? 'M' : member.gender === 'Female' ? 'F' : member.gender || ''}</td>        <td style="border: 1px solid black; padding: 2px; height: 18px; vertical-align: top; font-size: 7px;">${member.marital_status || ''}</td>
         <td style="border: 1px solid black; padding: 2px; height: 18px; vertical-align: top; font-size: 7px;">${member.citizenship || 'FILIPINO'}</td>
         <td style="border: 1px solid black; padding: 2px; height: 18px; vertical-align: top; font-size: 7px;">${member.employment?.occupation || ''}</td>
-        <td style="border: 1px solid black; padding: 2px; height: 18px; vertical-align: top; font-size: 7px;"></td>
+        <td style="border: 1px solid black; padding: 2px; height: 18px; vertical-align: top; font-size: 7px;">${member.specialStatus || ''}</td>
       </tr>
     `;
   }
@@ -113,7 +112,7 @@ const createRBIFormTemplate = (householdData) => {
             <th rowspan="2" style="border: 1px solid black; padding: 2px; width: 8%; text-align: center; font-weight: bold;">CIVIL STATUS</th>
             <th rowspan="2" style="border: 1px solid black; padding: 2px; width: 8%; text-align: center; font-weight: bold;">CITIZENSHIP</th>
             <th rowspan="2" style="border: 1px solid black; padding: 2px; width: 10%; text-align: center; font-weight: bold;">OCCUPATION</th>
-            <th style="border: 1px solid black; padding: 2px; width: 16%; text-align: center; font-weight: bold;">Indicate if Labor Force Participant: Unemployed, Employed, Underemployed, Out of Labor Force (OLF), Out of School Youth (OSY), Out of School Children (OSC) as of reference date</th>
+            <th style="border: 1px solid black; padding: 2px; width: 16%; text-align: center; font-weight: bold;">Indicate if Lactating Mother, Pregnant, Person With Disability (PWD), Senior Citizen (SC), Solo Parent, Out of School Youth (OSY), Out of School Children (OSC)</th>
           </tr>
           <tr style="border: 1px solid black; background-color: #f0f0f0;">
             <th style="border: 1px solid black; padding: 2px; text-align: center; font-weight: bold; font-size: 6px;">STATUS</th>

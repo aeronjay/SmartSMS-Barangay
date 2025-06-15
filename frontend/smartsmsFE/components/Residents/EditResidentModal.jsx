@@ -67,10 +67,10 @@ export default function EditResidentModal({ open, onClose, resident }) {  const 
     education: {
       highest_education: "",
       field_of_study: "",
-    },
-    registration: {
+    },    registration: {
       resident_type: "Permanent",
     },
+    specialStatus: "",
   });
 
   // Populate form with resident data when modal opens
@@ -116,10 +116,10 @@ export default function EditResidentModal({ open, onClose, resident }) {  const 
         education: {
           highest_education: resident.education?.highest_education || "",
           field_of_study: resident.education?.field_of_study || "",
-        },
-        registration: {
+        },        registration: {
           resident_type: resident.registration?.resident_type || "Permanent",
         },
+        specialStatus: resident.specialStatus || "",
       });
     }
   }, [resident]);
@@ -550,7 +550,25 @@ export default function EditResidentModal({ open, onClose, resident }) {  const 
                   <MenuItem value="Permanent">Permanent</MenuItem>
                   <MenuItem value="Temporary">Temporary</MenuItem>
                 </Select>
-              </FormControl>
+              </FormControl>            </Grid>
+          </Grid>
+        </Card>
+
+        {/* SPECIAL STATUS INFORMATION */}
+        <Card variant="outlined" sx={{ my: 3 }}>
+          <CardHeader title={<Typography variant="subtitle1">Special Status Information</Typography>} />
+          <Divider />
+          <Grid container spacing={2} sx={{ p: 2 }}>
+            <Grid size={{ xs: 12 }}>
+              <TextField
+                label="Special Status"
+                name="specialStatus"
+                value={formData.specialStatus}
+                onChange={handleChange}
+                fullWidth
+                placeholder="e.g., Lactating Mother, Pregnant, PWD, Senior Citizen, Solo Parent, OSY, OSC"
+                helperText="Optional: Enter special status if applicable (Lactating Mother, Pregnant, Person With Disability, Senior Citizen, Solo Parent, Out of School Youth, Out of School Children)"
+              />
             </Grid>
           </Grid>
         </Card>

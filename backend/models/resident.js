@@ -59,10 +59,12 @@ const ResidentSchema = new mongoose.Schema({
     },
     isHouseholdHead: { type: Boolean, default: false },
     householdAddress: { type: String }, // Individual household address field
-    
-    // Additional fields from the form
+      // Additional fields from the form
     placeOfBirth: { type: String },
-    citizenship: { type: String, default: "Filipino" }
+    citizenship: { type: String, default: "Filipino" },
+    
+    // Status field for RBI form (Lactating Mother, Pregnant, PWD, Senior Citizen, Solo Parent, OSY, OSC)
+    specialStatus: { type: String }
 });
 
 module.exports = mongoose.model("Resident", ResidentSchema);

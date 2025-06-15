@@ -61,10 +61,10 @@ export default function AddResidentModal({ open, onClose }) {  const [formData, 
     education: {
       highest_education: "",
       field_of_study: "",
-    },
-    registration: {
+    },    registration: {
       resident_type: "Permanent",
     },
+    specialStatus: "",
   });
 
   const handleChange = (e) => {
@@ -155,10 +155,10 @@ export default function AddResidentModal({ open, onClose }) {  const [formData, 
         education: {
           highest_education: "",
           field_of_study: "",
-        },
-        registration: {
+        },        registration: {
           resident_type: "",
         },
+        specialStatus: "",
       });
 
       // Close the modal
@@ -545,7 +545,25 @@ export default function AddResidentModal({ open, onClose }) {  const [formData, 
                   <MenuItem value="Permanent">Permanent</MenuItem>
                   <MenuItem value="Temporary">Temporary</MenuItem>
                 </Select>
-              </FormControl>
+              </FormControl>            </Grid>
+          </Grid>
+        </Card>
+
+        {/* SPECIAL STATUS INFORMATION */}
+        <Card variant="outlined" sx={{ my: 3 }}>
+          <CardHeader title={<Typography variant="subtitle1">Special Status Information</Typography>} />
+          <Divider />
+          <Grid container spacing={2} sx={{ p: 2 }}>
+            <Grid size={{ xs: 12 }}>
+              <TextField
+                label="Special Status"
+                name="specialStatus"
+                value={formData.specialStatus}
+                onChange={handleChange}
+                fullWidth
+                placeholder="e.g., Lactating Mother, Pregnant, PWD, Senior Citizen, Solo Parent, OSY, OSC"
+                helperText="Optional: Enter special status if applicable (Lactating Mother, Pregnant, Person With Disability, Senior Citizen, Solo Parent, Out of School Youth, Out of School Children)"
+              />
             </Grid>
           </Grid>
         </Card>
