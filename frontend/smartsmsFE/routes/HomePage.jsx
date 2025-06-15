@@ -5,7 +5,16 @@ import ServicesSection from '../components/Homepage/ServiceSection';
 import { FaFacebookF, FaYoutube, FaTwitter, FaPhone, FaUsers, FaShieldAlt, FaMobileAlt, FaHeart } from 'react-icons/fa';
 
 const HomePage = () => {
-
+    // Scroll to section function
+    const scrollToSection = (sectionId) => {
+        const element = document.getElementById(sectionId);
+        if (element) {
+            element.scrollIntoView({ 
+                behavior: 'smooth',
+                block: 'start'
+            });
+        }
+    };
     
     const today = new Date();
     const options = { 
@@ -54,18 +63,16 @@ const HomePage = () => {
                             <h1>Barangay 551</h1>
                             <h2>District 4 Manila</h2>
                         </div>
-                    </div>
-                      <nav className="navbar">
-                        <Link to="/" className="nav-item">Home</Link>
-                        <Link to="/about" className="nav-item">About</Link>
-                        <Link to="/contact" className="nav-item">Contact</Link>
+                    </div>                      <nav className="navbar">
+                        <button onClick={() => scrollToSection('home')} className="nav-item nav-button">Home</button>
+                        <button onClick={() => scrollToSection('about')} className="nav-item nav-button">About</button>
+                        <button onClick={() => scrollToSection('services')} className="nav-item nav-button">Online Services</button>
+                        <button onClick={() => scrollToSection('contact')} className="nav-item nav-button">Contact</button>
                         <Link to="/loginPage" className="nav-item admin-login-btn">Admin Login</Link>
                     </nav>
                 </div>
-            </header>
-
-            {/* Main banner section */}
-            <main className="main-content">
+            </header>            {/* Main banner section */}
+            <main className="main-content" id="home">
                 <div className="banner">
                     <div className="banner-content">
                         <div className="banner-left">
@@ -91,10 +98,8 @@ const HomePage = () => {
 
                     </div>
                 </div>
-            </main>
-
-            {/* About Section */}
-            <section className="about-section">
+            </main>            {/* About Section */}
+            <section className="about-section" id="about">
                 <div className="about-container">
                     <div className="about-content">
                         <div className="about-header">
@@ -171,10 +176,47 @@ const HomePage = () => {
                         </div>
                     </div>
                 </div>
-            </section>
+            </section>            {/* Services Section - New Component Added Here */}
+            <div id="services">
+                <ServicesSection />
+            </div>
 
-            {/* Services Section - New Component Added Here */}
-            <ServicesSection />
+            {/* Contact Section */}
+            <section id="contact" className="contact-section">
+                <div className="contact-container">
+                    <div className="contact-content">
+                        <div className="contact-header">
+                            <h2 className="contact-title">Contact Us</h2>
+                            <div className="contact-divider"></div>
+                        </div>
+                        
+                        <div className="contact-info">
+                            <div className="contact-item">
+                                <h3>Barangay Office</h3>
+                                <p>Barangay 551, Zone 54, District 4, Manila</p>
+                                <p>Phone: Contact information available at office</p>
+                                <p>Email: brgy551zone54@manila.gov.ph</p>
+                            </div>
+                            
+                            <div className="contact-item">
+                                <h3>Office Hours</h3>
+                                <p>Monday - Friday: 8:00 AM - 5:00 PM</p>
+                                <p>Saturday: 8:00 AM - 12:00 PM</p>
+                                <p>Sunday: Closed</p>
+                            </div>
+                            
+                            <div className="contact-item">
+                                <h3>Follow Us</h3>
+                                <div className="social-links-contact">
+                                    <a href="https://www.facebook.com/brgy551zone54" target="_blank" rel="noopener noreferrer">
+                                        <FaFacebookF /> Facebook
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
 
             {/* Footer */}
             <footer className="footer">
