@@ -56,6 +56,14 @@ body {
     transition: all 0.3s ease;
     padding: 8px;
     border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.social-icon svg {
+    color: white;
+    font-size: 18px;
 }
 
 .social-icon:hover {
@@ -371,6 +379,215 @@ body {
     box-shadow: 0 4px 15px rgba(52, 152, 219, 0.3);
 }
 
+/* About Section Styling */
+.about-section {
+    width: 100%;
+    padding: 80px 0;
+    background: linear-gradient(135deg, rgba(255,255,255,0.95), rgba(248,249,250,0.95));
+    position: relative;
+    overflow: hidden;
+}
+
+.about-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="aboutgrain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="20" cy="20" r="1.5" fill="%231e3c72" opacity="0.08"/><circle cx="80" cy="80" r="1.5" fill="%23ff6b6b" opacity="0.06"/><circle cx="60" cy="40" r="1" fill="%232a5298" opacity="0.05"/></pattern></defs><rect width="100" height="100" fill="url(%23aboutgrain)"/></svg>');
+    z-index: -1;
+}
+
+.about-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+    position: relative;
+    z-index: 1;
+}
+
+.about-content {
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 20px;
+    padding: 60px 40px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.about-header {
+    text-align: center;
+    margin-bottom: 50px;
+}
+
+.about-title {
+    font-size: 42px;
+    font-weight: 800;
+    background: linear-gradient(45deg, #1e3c72, #2a5298);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 20px;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+}
+
+.about-divider {
+    width: 80px;
+    height: 4px;
+    background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+    margin: 0 auto;
+    border-radius: 2px;
+    box-shadow: 0 2px 8px rgba(255, 107, 107, 0.3);
+}
+
+.about-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+    align-items: start;
+    margin-bottom: 50px;
+}
+
+.about-text {
+    display: flex;
+    flex-direction: column;
+    gap: 40px;
+}
+
+.about-item h3 {
+    font-size: 24px;
+    font-weight: 700;
+    color: #1e3c72;
+    margin-bottom: 15px;
+    position: relative;
+    padding-left: 20px;
+}
+
+.about-item h3::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 4px;
+    height: 20px;
+    background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+    border-radius: 2px;
+}
+
+.about-item p {
+    font-size: 16px;
+    line-height: 1.8;
+    color: #495057;
+    text-align: justify;
+    font-weight: 500;
+}
+
+.about-features {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 25px;
+}
+
+.feature-card {
+    background: linear-gradient(135deg, rgba(255,255,255,0.9), rgba(248,249,250,0.9));
+    padding: 30px 25px;
+    border-radius: 15px;
+    text-align: center;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    backdrop-filter: blur(10px);
+}
+
+.feature-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+    background: linear-gradient(135deg, rgba(30, 60, 114, 0.05), rgba(255, 255, 255, 0.95));
+}
+
+.feature-icon {
+    width: 60px;
+    height: 60px;
+    margin: 0 auto 20px;
+    background: linear-gradient(45deg, #1e3c72, #2a5298);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 8px 25px rgba(30, 60, 114, 0.3);
+    transition: all 0.3s ease;
+}
+
+.feature-card:hover .feature-icon {
+    background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+    box-shadow: 0 12px 35px rgba(255, 107, 107, 0.4);
+    transform: scale(1.1);
+}
+
+.feature-icon svg {
+    color: white;
+    font-size: 24px;
+}
+
+.feature-card h4 {
+    font-size: 18px;
+    font-weight: 700;
+    color: #1e3c72;
+    margin-bottom: 12px;
+    transition: color 0.3s ease;
+}
+
+.feature-card:hover h4 {
+    color: #ff6b6b;
+}
+
+.feature-card p {
+    font-size: 14px;
+    color: #6c757d;
+    line-height: 1.6;
+    font-weight: 500;
+}
+
+.about-footer {
+    background: linear-gradient(135deg, rgba(30, 60, 114, 0.08), rgba(255, 255, 255, 0.5));
+    border-radius: 15px;
+    padding: 40px;
+    text-align: center;
+    border: 1px solid rgba(30, 60, 114, 0.1);
+}
+
+.governance-info h4 {
+    font-size: 22px;
+    font-weight: 700;
+    color: #1e3c72;
+    margin-bottom: 20px;
+    position: relative;
+    display: inline-block;
+}
+
+.governance-info h4::after {
+    content: '';
+    position: absolute;
+    bottom: -5px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 60px;
+    height: 3px;
+    background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+    border-radius: 2px;
+}
+
+.governance-info p {
+    font-size: 16px;
+    line-height: 1.8;
+    color: #495057;
+    max-width: 800px;
+    margin: 0 auto;
+    font-weight: 500;
+}
+
 /* Responsive adjustments */
 @media (max-width: 992px) {
     .navbar {
@@ -407,6 +624,24 @@ body {
     .barangay-seal img {
         width: 180px;
         height: 180px;
+    }
+    
+    .about-grid {
+        grid-template-columns: 1fr;
+        gap: 40px;
+    }
+    
+    .about-features {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+    
+    .about-title {
+        font-size: 36px;
+    }
+    
+    .about-content {
+        padding: 40px 30px;
     }
 }
 
@@ -451,6 +686,42 @@ body {
     
     .banner-content {
         padding: 20px;
+    }
+    
+    .about-section {
+        padding: 60px 0;
+    }
+    
+    .about-title {
+        font-size: 30px;
+    }
+    
+    .about-content {
+        padding: 30px 20px;
+    }
+    
+    .about-item h3 {
+        font-size: 20px;
+    }
+    
+    .about-item p {
+        font-size: 15px;
+    }
+    
+    .feature-card {
+        padding: 25px 20px;
+    }
+    
+    .about-footer {
+        padding: 30px 20px;
+    }
+    
+    .governance-info h4 {
+        font-size: 20px;
+    }
+    
+    .governance-info p {
+        font-size: 15px;
     }
 }
 
