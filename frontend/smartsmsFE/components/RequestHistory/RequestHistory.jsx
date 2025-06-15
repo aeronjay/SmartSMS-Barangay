@@ -148,7 +148,7 @@ export default function RequestHistory() {
                                             <th>Purpose</th>
                                             <th>Status</th>
                                             <th>Date</th>
-                                            <th>Actions</th>
+                                            {/* <th>Actions</th> */}
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -176,7 +176,7 @@ export default function RequestHistory() {
                                                         minute: '2-digit',
                                                         hour12: true,
                                                     })}</td>
-                                                    <td>
+                                                    {/* <td>
                                                         <div className="action-buttons">
                                                             <button
                                                                 onClick={() => handleView(request)}
@@ -185,7 +185,7 @@ export default function RequestHistory() {
                                                                 View
                                                             </button>
                                                         </div>
-                                                    </td>
+                                                    </td> */}
                                                 </tr>
                                             ))
                                         ) : (

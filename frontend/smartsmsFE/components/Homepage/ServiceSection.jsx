@@ -38,7 +38,7 @@ const ServicesSection = () => {
     const services = [
         {
             id: 1,
-            title: "Barangay Clearance",
+            title: "Certificate of Oneness",
             icon: "fas fa-file-alt",
             description: "Proof of good standing within the barangay; required for employment, business, and other legal purposes.",
             bgImage: "cert1.jpg"
@@ -59,25 +59,11 @@ const ServicesSection = () => {
         },
         {
             id: 5,
-            title: "Medical Assistance",
+            title: "Certificate of Low Income",
             icon: "fas fa-medkit",
-            description: "Endorsement and support for healthcare and medical-related concerns.",
-            bgImage: "MEDS.jpg"
-        },
-        {
-            id: 6,
-            title: "Health Certificate",
-            icon: "fas fa-notes-medical",
-            description: "Certificate issued after a barangay-level health screening, commonly required for work or school.",
+            description: "Endorsement and support for Low Income households.",
             bgImage: "cert4.jpg"
         },
-        {
-            id: 7,
-            title: "Barangay Blotter Certificate",
-            icon: "fas fa-clipboard-list",
-            description: "Documentation of incidents or filed complaints within the barangay for legal and record purposes.",
-            bgImage: "cert5.jpg"
-        }
     ];
     
 
