@@ -135,7 +135,7 @@ routes.post('/api/resident/register', authMiddleware, async (req, res) => {
 
 routes.get('/api/resident/all', authMiddleware, async (req, res) => {
     try {
-        const residents = await Resident.find();
+        const residents = await Resident.find().populate('householdId');
         res.status(200).json(residents);
     } catch (error) {
         console.error("ERROR:", error);

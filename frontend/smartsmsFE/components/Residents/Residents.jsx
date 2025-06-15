@@ -65,18 +65,6 @@ export default function Residents() {
         setEditDialogOpen(false);
         setSelectedResident(null);
     };
-    const tryResidents = [
-        { first_name: "asd", last_name: "asd", middle_name: "asd", contact: { phone: "1231", email: "asdasd@gam" }, registration: { status: "active" }, address: { street: "asdas" } },
-        { first_name: "asd", last_name: "asd", middle_name: "asd", contact: { phone: "1231", email: "asdasd@gam" }, registration: { status: "active" }, address: { street: "asdas" } },
-        { first_name: "asd", last_name: "asd", middle_name: "asd", contact: { phone: "1231", email: "asdasd@gam" }, registration: { status: "active" }, address: { street: "asdas" } },
-        { first_name: "asd", last_name: "asd", middle_name: "asd", contact: { phone: "1231", email: "asdasd@gam" }, registration: { status: "active" }, address: { street: "asdas" } },
-        { first_name: "asd", last_name: "asd", middle_name: "asd", contact: { phone: "1231", email: "asdasd@gam" }, registration: { status: "active" }, address: { street: "asdas" } },
-        { first_name: "asd", last_name: "asd", middle_name: "asd", contact: { phone: "1231", email: "asdasd@gam" }, registration: { status: "active" }, address: { street: "asdas" } },
-        { first_name: "asd", last_name: "asd", middle_name: "asd", contact: { phone: "1231", email: "asdasd@gam" }, registration: { status: "active" }, address: { street: "asdas" } },
-        { first_name: "asd", last_name: "asd", middle_name: "asd", contact: { phone: "1231", email: "asdasd@gam" }, registration: { status: "active" }, address: { street: "asdas" } },
-        { first_name: "asd", last_name: "asd", middle_name: "asd", contact: { phone: "1231", email: "asdasd@gam" }, registration: { status: "active" }, address: { street: "asdas" } },
-    ]
-
     useEffect(() => {
         const fetchResidents = async () => {
             try {
@@ -142,7 +130,7 @@ const ResidentsTable = ({ residents, search, onDeleteClick, onEditClick }) => {
                         <th>Contact Number</th>
                         <th>Email</th>
                         <th>Address</th>
-                        <th>Status</th>
+                        <th>Household ID</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -159,15 +147,13 @@ const displayResidents = (recipients, search, onDeleteClick, onEditClick) => {
             const fullName = `${person.first_name} ${person.middle_name || ''} ${person.last_name}`.toLowerCase();
             return fullName.includes(search.toLowerCase());
         })
-        : recipients;
-
-    return filteredResidents.map(resident => (
+        : recipients;    return filteredResidents.map(resident => (
         <tr key={resident._id}>
             <td>{resident.first_name} {resident.middle_name} {resident.last_name}</td>
             <td>{resident.contact.phone}</td>
             <td>{resident.contact.email}</td>
             <td>{resident.address.street}</td>
-            <td>{resident.registration.status}</td>
+            <td>{resident.householdId?.householdId || "Unassigned"}</td>
             <td className='Actions'>
                 <IconButton
                     aria-label='Edit-Icon'
