@@ -18,50 +18,6 @@ const HomePage = () => {
     };
     const dateTimeString = today.toLocaleString('en-US', options);
     
-    // Weather forecast data
-    const weatherForecast = [
-        { day: '16 Apr', temp: '+32°C', icon: '☁️' },
-        { day: '17 Apr', temp: '+31°C', icon: '☁️' },
-        { day: '18 Apr', temp: '+31°C', icon: '☀️' },
-        { day: '19 Apr', temp: '+31°C', icon: '☁️' },
-        { day: '20 Apr', temp: '+32°C', icon: '☁️' },
-        { day: '21 Apr', temp: '+31°C', icon: '☁️' },
-        { day: '22 Apr', temp: '+31°C', icon: '☀️' }
-    ];
-
-    // Weather scroll effect
-    const [scrollPosition, setScrollPosition] = useState(0);
-    
-    useEffect(() => {
-        const interval = setInterval(() => {
-            setScrollPosition(prevPosition => {
-                // Reset position when all weather items have scrolled
-                if (prevPosition <= -700) {
-                    return 0;
-                }
-                return prevPosition - 1; // Move 1px at a time
-            });
-        }, 50); // Update every 50ms for smooth scrolling
-        
-        return () => clearInterval(interval);
-    }, []);
-
-    // API key for OpenWeatherMap
-    // const apiKey = '';
-    // const [currentWeather, setCurrentWeather] = useState(null);
-
-    // useEffect(() => {
-    //     // Fetch real-time weather for Manila using your API key
-    //     fetch(`https://api.openweathermap.org/data/2.5/weather?q=Manila,ph&units=metric&appid=${apiKey}`)
-    //         .then(response => response.json())
-    //         .then(data => {
-    //             setCurrentWeather(data);
-    //         })
-    //         .catch(error => {
-    //             console.error("Error fetching weather data:", error);
-    //         });
-    // }, [apiKey]);
-
     return (
         <div className="site-container">
             {/* Top header with official website text and social links */}
@@ -99,64 +55,14 @@ const HomePage = () => {
                             <h2>District 4 Manila</h2>
                         </div>
                     </div>
-                    
-                    <nav className="navbar">
+                      <nav className="navbar">
                         <Link to="/" className="nav-item">Home</Link>
-                        <div className="dropdown">
-                            <span className="nav-item">Our Barangay ▾</span>
-                            <div className="dropdown-content">
-                                <Link to="/history">History</Link>
-                                <Link to="/officials">Officials</Link>
-                            </div>
-                        </div>
-                        <div className="dropdown">
-                            <span className="nav-item">Services ▾</span>
-                            <div className="dropdown-content">
-                                <Link to="/permits">Permits</Link>
-                                <Link to="/assistance">Assistance</Link>
-                            </div>
-                        </div>
-                        <Link to="/jobs" className="nav-item">Jobs</Link>
-                        <div className="dropdown">
-                            <span className="nav-item">Publications ▾</span>
-                            <div className="dropdown-content">
-                                <Link to="/reports">Reports</Link>
-                                <Link to="/announcements">Announcements</Link>
-                            </div>
-                        </div>
-                        <Link to="/news" className="nav-item">News & Events</Link>
-                        <div className="dropdown">
-                            <span className="nav-item">Transparency ▾</span>
-                            <div className="dropdown-content">
-                                <Link to="/budget">Budget</Link>
-                                <Link to="/projects">Projects</Link>
-                            </div>
-                        </div>
-                        <Link to="/loginPage" className="nav-item login-btn">Login</Link>
+                        <Link to="/about" className="nav-item">About</Link>
+                        <Link to="/contact" className="nav-item">Contact</Link>
+                        <Link to="/loginPage" className="nav-item admin-login-btn">Admin Login</Link>
                     </nav>
                 </div>
             </header>
-
-            {/* Weather forecast strip */}
-            <div className="weather-forecast-container">
-                <div className="weather-forecast" style={{ transform: `translateX(${scrollPosition}px)` }}>
-                    {weatherForecast.map((day, index) => (
-                        <div key={index} className="weather-day">
-                            <span className="weather-date">{day.day}</span>
-                            <span className="weather-icon">{day.icon}</span>
-                            <span className="weather-temp">{day.temp}</span>
-                        </div>
-                    ))}
-                    {/* Duplicate items for continuous scrolling */}
-                    {weatherForecast.map((day, index) => (
-                        <div key={`dup-${index}`} className="weather-day">
-                            <span className="weather-date">{day.day}</span>
-                            <span className="weather-icon">{day.icon}</span>
-                            <span className="weather-temp">{day.temp}</span>
-                        </div>
-                    ))}
-                </div>
-            </div>
 
             {/* Main banner section */}
             <main className="main-content">
@@ -172,7 +78,7 @@ const HomePage = () => {
                                 <div className="slogan">
                                     <p className="slogan-line">TODAY'S INNOVATIONS,</p>
                                     <p className="slogan-line">TOMORROW'S COMMUNITY.</p>
-                                    <p className="website-url">www.Barangay551zone54.ph</p>
+                                    <p className="website-url">smartsms-barangay.onrender.com</p>
                                 </div>
                             </div>
                         </div>
@@ -190,20 +96,12 @@ const HomePage = () => {
             {/* Services Section - New Component Added Here */}
             <ServicesSection />
 
-            {/* Announcements ticker */}
-            <div className="announcements-ticker">
-                <div className="announcement-label">Announcements</div>
-                <div className="announcement-content">
-                    <p>Barangay 551 announcements will appear here.</p>
-                </div>
-            </div>
-
             {/* Footer */}
             <footer className="footer">
                 <p>© 2025 Barangay 551 Zone 54, District 4 Manila. All rights reserved.</p>
                 <div className="social-links">
                     <a href="https://www.facebook.com/brgy551zone54" target="_blank" rel="noopener noreferrer" className="footer-link">FACEBOOK</a>
-                    <a href="mailto:barangay551@gmail.com" className="footer-link">GMAIL</a>
+                    
                 </div>
             </footer>
         </div>
