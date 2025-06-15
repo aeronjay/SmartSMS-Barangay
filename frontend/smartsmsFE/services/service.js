@@ -106,13 +106,13 @@ const getPendingDocumentRequests = async () => {
     }
 };
 
-const updateDocumentRequestStatus = async (id, status) => {
+const updateDocumentRequestStatus = async (id, status, additionalData = {}) => {
     try {
         // Get the authentication token from localStorage or wherever you store it
          // or however you store your auth token
         
         const response = await axios.put(`${baseUrl}/admin/updaterequests/${id}`, 
-            { status }, 
+            { status, ...additionalData }, 
         );
 
         return response.data;

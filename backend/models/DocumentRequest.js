@@ -30,11 +30,20 @@ const DocumentSchema = new mongoose.Schema({
       type: String,
       required: true,
       trim: true
-    },
-    status: {
+    },    status: {
       type: String,
       enum: ['pending', 'approved', 'rejected'],
       default: 'pending'
+    },
+    approvalDetails: {
+      pickupDate: String,
+      pickupTime: String,
+      officeHours: String,
+      instructions: String
+    },
+    rejectionReason: {
+      type: String,
+      trim: true
     },
     createdAt: {
         type: Date,

@@ -1,12 +1,16 @@
 import { useState, useEffect } from 'react';
 import MainTemplate from '../MainTemplate';
 import apiService from '../../services/service';
+import ApprovalModal from './ApprovalModal';
+import RejectionModal from './RejectionModal';
 import '../../styles/DocumentRequest.css';
 
 export default function DocumentRequest() {
     const [requests, setRequests] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [approvalModal, setApprovalModal] = useState({ isOpen: false, requestData: null });
+    const [rejectionModal, setRejectionModal] = useState({ isOpen: false, requestData: null });
 
     useEffect(() => {
         // Fetch all requests when component mounts
@@ -30,11 +34,9 @@ export default function DocumentRequest() {
         } finally {
             setLoading(false);
         }
-    };
-
-    const handleApprove = async (id) => {
+    };    const handleApprove = async (id, approvalDetails) => {
         try {
-            await apiService.updateDocumentRequestStatus(id, 'approved');
+            await apiService.updateDocumentRequestStatus(id, 'approved', { approvalDetails });
             // Update the local state to reflect the change
             setRequests(requests.map(request =>
                 request._id === id ? { ...request, status: 'approved' } : request
@@ -44,9 +46,9 @@ export default function DocumentRequest() {
         }
     };
 
-    const handleReject = async (id) => {
+    const handleReject = async (id, reason) => {
         try {
-            await apiService.updateDocumentRequestStatus(id, 'rejected');
+            await apiService.updateDocumentRequestStatus(id, 'rejected', { rejectionReason: reason });
             // Update the local state to reflect the change
             setRequests(requests.map(request =>
                 request._id === id ? { ...request, status: 'rejected' } : request
@@ -54,6 +56,22 @@ export default function DocumentRequest() {
         } catch (err) {
             setError(`Error rejecting request: ${err?.message || 'Unknown error'}`);
         }
+    };
+
+    const openApprovalModal = (request) => {
+        setApprovalModal({ isOpen: true, requestData: request });
+    };
+
+    const closeApprovalModal = () => {
+        setApprovalModal({ isOpen: false, requestData: null });
+    };
+
+    const openRejectionModal = (request) => {
+        setRejectionModal({ isOpen: true, requestData: request });
+    };
+
+    const closeRejectionModal = () => {
+        setRejectionModal({ isOpen: false, requestData: null });
     };
 
     const getStatusClass = (status) => {
@@ -121,17 +139,16 @@ export default function DocumentRequest() {
                                                         minute: '2-digit',
                                                         hour12: true,
                                                     })}</td>
-                                                    <td>
-                                                        {request.status === 'pending' && (
+                                                    <td>                                                        {request.status === 'pending' && (
                                                             <div className="action-buttons">
                                                                 <button
-                                                                    onClick={() => handleApprove(request._id || request.id)}
+                                                                    onClick={() => openApprovalModal(request)}
                                                                     className="approve-button"
                                                                 >
                                                                     Approve
                                                                 </button>
                                                                 <button
-                                                                    onClick={() => handleReject(request._id || request.id)}
+                                                                    onClick={() => openRejectionModal(request)}
                                                                     className="reject-button"
                                                                 >
                                                                     Reject
@@ -153,10 +170,24 @@ export default function DocumentRequest() {
                                         )}
                                     </tbody>
                                 </table>
-                            </div>
-                        </>
+                            </div>                        </>
                     )}
                 </div>
+                
+                {/* Modals */}
+                <ApprovalModal
+                    isOpen={approvalModal.isOpen}
+                    onClose={closeApprovalModal}
+                    onApprove={handleApprove}
+                    requestData={approvalModal.requestData}
+                />
+                
+                <RejectionModal
+                    isOpen={rejectionModal.isOpen}
+                    onClose={closeRejectionModal}
+                    onReject={handleReject}
+                    requestData={rejectionModal.requestData}
+                />
             </MainTemplate>
         </>
     );

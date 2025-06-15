@@ -39,10 +39,52 @@ export default function RequestHistory() {
     };
 
     const handleView = (request) => {
-        // You can implement the view functionality here
-        // For example, open a modal with request details
-        console.log("Viewing request details:", request);
-        // Implement your view logic here
+        // Create a detailed view of the request
+        const details = [
+            `Name: ${request.fullName}`,
+            `Email: ${request.email}`,
+            `Phone: ${request.phoneNumber}`,
+            `Address: ${request.address}`,
+            `Document Type: ${request.documentType}`,
+            `Purpose: ${request.purpose}`,
+            `Status: ${request.status}`,
+            `Date: ${new Date(new Date(request.createdAt).getTime() - 8 * 60 * 60 * 1000).toLocaleString('en-PH', {
+                timeZone: 'Asia/Manila',
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit',
+                hour: 'numeric',
+                minute: '2-digit',
+                hour12: true,
+            })}`
+        ];
+
+        // Add approval details if approved
+        if (request.status === 'approved' && request.approvalDetails) {
+            details.push('');
+            details.push('--- APPROVAL DETAILS ---');
+            if (request.approvalDetails.pickupDate) {
+                details.push(`Pickup Date: ${new Date(request.approvalDetails.pickupDate).toLocaleDateString('en-PH')}`);
+            }
+            if (request.approvalDetails.pickupTime) {
+                details.push(`Pickup Time: ${request.approvalDetails.pickupTime}`);
+            }
+            if (request.approvalDetails.officeHours) {
+                details.push(`Office Hours: ${request.approvalDetails.officeHours}`);
+            }
+            if (request.approvalDetails.instructions) {
+                details.push(`Instructions: ${request.approvalDetails.instructions}`);
+            }
+        }
+
+        // Add rejection reason if rejected
+        if (request.status === 'rejected' && request.rejectionReason) {
+            details.push('');
+            details.push('--- REJECTION REASON ---');
+            details.push(request.rejectionReason);
+        }
+
+        alert(details.join('\n'));
     };
 
     const getStatusClass = (status) => {

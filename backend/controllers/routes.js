@@ -222,6 +222,84 @@ async function sendVerificationEmail(email, code) {
     });
 }
 
+// Helper to send approval email
+async function sendApprovalEmail(email, fullName, documentType, approvalDetails) {
+    const transporter = nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+            user: process.env.GMAIL_USER,
+            pass: process.env.GMAIL_PASS
+        }
+    });
+
+    const emailContent = `
+Dear ${fullName},
+
+Good news! Your document request has been APPROVED.
+
+Document Details:
+- Document Type: ${documentType}
+- Status: Approved
+
+Pickup Information:
+- Date: ${approvalDetails.pickupDate ? new Date(approvalDetails.pickupDate).toLocaleDateString('en-PH') : 'To be advised'}
+- Time: ${approvalDetails.pickupTime || 'During office hours'}
+- Office Hours: ${approvalDetails.officeHours || 'Monday to Friday, 8:00 AM - 5:00 PM'}
+
+${approvalDetails.instructions ? `Additional Instructions:\n${approvalDetails.instructions}` : ''}
+
+Please bring a valid ID when claiming your document.
+
+Thank you,
+Barangay Office
+    `;
+
+    await transporter.sendMail({
+        from: process.env.GMAIL_USER,
+        to: email,
+        subject: 'Document Request Approved - Ready for Pickup',
+        text: emailContent
+    });
+}
+
+// Helper to send rejection email
+async function sendRejectionEmail(email, fullName, documentType, rejectionReason) {
+    const transporter = nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+            user: process.env.GMAIL_USER,
+            pass: process.env.GMAIL_PASS
+        }
+    });
+
+    const emailContent = `
+Dear ${fullName},
+
+We regret to inform you that your document request has been rejected.
+
+Document Details:
+- Document Type: ${documentType}
+- Status: Rejected
+
+Reason for Rejection:
+${rejectionReason}
+
+If you believe this was an error or if you have questions about the rejection, please contact our office during business hours.
+
+You may also submit a new request with the necessary corrections or additional information.
+
+Thank you for your understanding,
+Barangay Office
+    `;
+
+    await transporter.sendMail({
+        from: process.env.GMAIL_USER,
+        to: email,
+        subject: 'Document Request Status Update - Rejected',
+        text: emailContent
+    });
+}
+
 routes.post('/api/resident/documentRequest', async (req, res) => {
     try {
         const { email, phoneNumber, address, fullName, purpose, documentType } = req.body;
@@ -325,7 +403,7 @@ routes.get('/api/admin/pendingrequest', authMiddleware, async (req, res) => {
 routes.put('/api/admin/updaterequests/:id', authMiddleware, async (req, res) => {
     try {
         const { id } = req.params;
-        const { status } = req.body;
+        const { status, approvalDetails, rejectionReason } = req.body;
 
         // Validate status
         if (!['pending', 'approved', 'rejected'].includes(status)) {
@@ -335,7 +413,11 @@ routes.put('/api/admin/updaterequests/:id', authMiddleware, async (req, res) => 
         // Find and update the document
         const updatedRequest = await Request.findByIdAndUpdate(
             id,
-            { status },
+            { 
+                status,
+                ...(approvalDetails && { approvalDetails }),
+                ...(rejectionReason && { rejectionReason })
+            },
             { new: true } // Return the updated document
         );
 
@@ -354,9 +436,33 @@ routes.put('/api/admin/updaterequests/:id', authMiddleware, async (req, res) => 
                     requestId: id,
                     status,
                     fullName: updatedRequest.fullName,
-                    documentType: updatedRequest.documentType
+                    documentType: updatedRequest.documentType,
+                    ...(rejectionReason && { rejectionReason }),
+                    ...(approvalDetails && { approvalDetails })
                 }
             });
+        }
+
+        // Send email notification based on status
+        try {
+            if (status === 'approved' && approvalDetails) {
+                await sendApprovalEmail(
+                    updatedRequest.email,
+                    updatedRequest.fullName,
+                    updatedRequest.documentType,
+                    approvalDetails
+                );
+            } else if (status === 'rejected' && rejectionReason) {
+                await sendRejectionEmail(
+                    updatedRequest.email,
+                    updatedRequest.fullName,
+                    updatedRequest.documentType,
+                    rejectionReason
+                );
+            }
+        } catch (emailError) {
+            console.error('Error sending email:', emailError);
+            // Don't fail the request if email fails, but log it
         }
 
         return res.status(200).json({ success: true, data: updatedRequest });
