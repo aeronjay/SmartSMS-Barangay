@@ -7,17 +7,53 @@ import '../../styles/DocumentRequest.css';
 
 export default function DocumentRequest() {
     const [requests, setRequests] = useState([]);
+    const [filteredRequests, setFilteredRequests] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [approvalModal, setApprovalModal] = useState({ isOpen: false, requestData: null });
     const [rejectionModal, setRejectionModal] = useState({ isOpen: false, requestData: null });
+      // Filter and search states
+    const [searchTerm, setSearchTerm] = useState('');
+    const [dateFilter, setDateFilter] = useState('');
+    const [documentTypeFilter, setDocumentTypeFilter] = useState('');
 
     useEffect(() => {
         // Fetch all requests when component mounts
         fetchRequests();
     }, []);
 
-    const fetchRequests = async () => {
+    // Filter and search effect
+    useEffect(() => {
+        let filtered = [...requests];
+
+        // Search filter
+        if (searchTerm) {
+            filtered = filtered.filter(request => 
+                request.fullName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                request.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                request.address?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                request.phoneNumber?.includes(searchTerm)
+            );
+        }
+
+        // Document type filter
+        if (documentTypeFilter) {
+            filtered = filtered.filter(request => 
+                request.documentType === documentTypeFilter
+            );
+        }
+
+        // Date filter
+        if (dateFilter) {
+            const filterDate = new Date(dateFilter);
+            filtered = filtered.filter(request => {
+                const requestDate = new Date(request.createdAt);
+                return requestDate.toDateString() === filterDate.toDateString();
+            });
+        }
+
+        setFilteredRequests(filtered);
+    }, [requests, searchTerm, documentTypeFilter, dateFilter]);    const fetchRequests = async () => {
         try {
             setLoading(true);
             const response = await apiService.getPendingDocumentRequests();
@@ -26,15 +62,19 @@ export default function DocumentRequest() {
             // If response.requests exists, use it, otherwise check if response itself is an array
             const requestData = response?.requests || response || [];
             setRequests(Array.isArray(requestData) ? requestData : []);
+            setFilteredRequests(Array.isArray(requestData) ? requestData : []);
             setError(null);
         } catch (err) {
             setError('Error fetching document requests');
             console.error('Error fetching requests:', err);
             setRequests([]);  // Ensure requests is always an array
+            setFilteredRequests([]);  // Ensure filteredRequests is always an array
         } finally {
             setLoading(false);
         }
-    };    const handleApprove = async (id, approvalDetails) => {
+    };
+
+    const handleApprove = async (id, approvalDetails) => {
         try {
             await apiService.updateDocumentRequestStatus(id, 'approved', { approvalDetails });
             // Update the local state to reflect the change
@@ -56,6 +96,19 @@ export default function DocumentRequest() {
         } catch (err) {
             setError(`Error rejecting request: ${err?.message || 'Unknown error'}`);
         }
+    };
+
+    // Get unique document types for filter dropdown
+    const getUniqueDocumentTypes = () => {
+        const types = requests.map(request => request.documentType);
+        return [...new Set(types)].filter(Boolean);
+    };
+
+    // Clear all filters
+    const clearFilters = () => {
+        setSearchTerm('');
+        setDateFilter('');
+        setDocumentTypeFilter('');
     };
 
     const openApprovalModal = (request) => {
@@ -97,9 +150,60 @@ export default function DocumentRequest() {
                             <div className="loading-spinner"></div>
                         </div>
                     ) : error ? (
-                        <div className="error-message">{error}</div>
-                    ) : (
-                        <>
+                        <div className="error-message">{error}</div>                    ) : (
+                        <>                            {/* Filter and Search Controls */}
+                            <div className="filters-container">
+                                <div className="search-box">
+                                    <i className="fas fa-search"></i>
+                                    <input
+                                        type="text"
+                                        placeholder="Search by name, email, address, or phone..."
+                                        value={searchTerm}
+                                        onChange={(e) => setSearchTerm(e.target.value)}
+                                        className="search-input"
+                                    />
+                                </div>
+                                
+                                <div className="filter-group">
+                                    <label htmlFor="documentTypeFilter">Document Type:</label>
+                                    <select
+                                        id="documentTypeFilter"
+                                        value={documentTypeFilter}
+                                        onChange={(e) => setDocumentTypeFilter(e.target.value)}
+                                        className="filter-select"
+                                    >
+                                        <option value="">All Types</option>
+                                        {getUniqueDocumentTypes().map(type => (
+                                            <option key={type} value={type}>{type}</option>
+                                        ))}
+                                    </select>
+                                </div>
+                                
+                                <div className="filter-group">
+                                    <label htmlFor="dateFilter">Date:</label>
+                                    <input
+                                        type="date"
+                                        id="dateFilter"
+                                        value={dateFilter}
+                                        onChange={(e) => setDateFilter(e.target.value)}
+                                        className="filter-date"
+                                    />
+                                </div>
+                                
+                                <button 
+                                    onClick={clearFilters}
+                                    className="clear-filters-btn"
+                                    title="Clear all filters"
+                                >
+                                    <i className="fas fa-times"></i> Clear
+                                </button>
+                            </div>
+
+                            {/* Results Summary */}
+                            <div className="results-summary">
+                                Showing {filteredRequests.length} of {requests.length} requests
+                            </div>
+
                             <div className="table-container">
                                 <table className="requests-table">
                                     <thead>
@@ -112,10 +216,9 @@ export default function DocumentRequest() {
                                             <th>Date</th>
                                             <th>Actions</th>
                                         </tr>
-                                    </thead>
-                                    <tbody>
-                                        {requests.length > 0 ? (
-                                            requests.map((request) => (
+                                    </thead>                                    <tbody>
+                                        {filteredRequests.length > 0 ? (
+                                            filteredRequests.map((request) => (
                                                 <tr key={request._id || request.id || Math.random().toString()}>
                                                     <td>
                                                         <div className="requester-name">{request.fullName}</div>
