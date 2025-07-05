@@ -5,7 +5,7 @@ import SettingsCard from './Broadcast/settingCard'
 import AnnouncementOptions from './Broadcast/announcementOptions'
 import Receipients from './Broadcast/Receipients'
 
-export default function Local({  children, headerName, cardHeader  }){
+export default function MainTemplate({  children, headerName, cardHeader  }){
 
     return(
         <>

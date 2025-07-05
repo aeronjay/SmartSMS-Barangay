@@ -97,7 +97,7 @@ export default function Broadcast() {
     return (
         <>
             <MainTemplate headerName={"Broadcast"} cardHeader={"Create New Announcement"}>
-                <div className='main-content-section'>
+                <div className='broadcast-layout'>
                     <AnnouncementOptions
                         broadcastTypes={broadcastTypes}
                         broadcastValue={broadcastValue}

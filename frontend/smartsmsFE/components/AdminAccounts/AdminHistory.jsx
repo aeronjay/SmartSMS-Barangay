@@ -147,9 +147,11 @@ export default function AdminHistory() {
   if (loading) {
     return (
       <MainTemplate headerName="Admin Actions" cardHeader="Admin Action History">
-        <div className="loading-state">
-          <FaHistory size={48} color="#6b7280" />
-          <p>Loading admin action history...</p>
+        <div className="main-container">
+          <div className="loading-container">
+            <div className="loading-spinner"></div>
+            <p>Loading admin action history...</p>
+          </div>
         </div>
       </MainTemplate>
     );
@@ -158,11 +160,13 @@ export default function AdminHistory() {
   if (error) {
     return (
       <MainTemplate headerName="Admin Actions" cardHeader="Admin Action History">
-        <div className="error-state">
-          <p>⚠️ {error}</p>
-          <button onClick={() => window.location.reload()} className="retry-button">
-            Try Again
-          </button>
+        <div className="main-container">
+          <div className="error-message">
+            <p>⚠️ {error}</p>
+            <button onClick={() => window.location.reload()} className="retry-button">
+              Try Again
+            </button>
+          </div>
         </div>
       </MainTemplate>
     );
@@ -170,7 +174,7 @@ export default function AdminHistory() {
 
   return (
     <MainTemplate headerName="Admin Actions" cardHeader="Admin Action History">
-      <div className="admin-history-container">
+      <div className="main-container">
         {/* Filters and Search */}
         <div className="history-controls">
           <div className="search-section">
@@ -183,7 +187,8 @@ export default function AdminHistory() {
           
           <div className="filter-section">
             <div className="filter-group">
-              <FaFilter className="filter-icon" />              <select 
+              <FaFilter className="filter-icon" />              
+              <select 
                 value={selectedAction} 
                 onChange={(e) => setSelectedAction(e.target.value)}
                 className="filter-select"
@@ -247,7 +252,7 @@ export default function AdminHistory() {
         </div>
 
         {/* History Table */}
-        <div className="history-table-container">
+        <div className="table-wrapper">
           {filteredHistory.length === 0 ? (
             <div className="no-data-message">
               <FaHistory size={48} color="#6b7280" />
@@ -260,7 +265,7 @@ export default function AdminHistory() {
               </p>
             </div>
           ) : (
-            <div className="table-container">
+            <div className="table-scroll-container">
               <table className="history-table">
                 <thead>
                   <tr>
@@ -288,7 +293,8 @@ export default function AdminHistory() {
                         <div className="admin-cell">
                           <FaUser className="admin-icon" />
                           <span className="admin-name">{item.adminUsername}</span>
-                        </div>                      </td>
+                        </div>                      
+                      </td>
                       <td>
                         <span className="target-text">{item.target || 'N/A'}</span>
                       </td>

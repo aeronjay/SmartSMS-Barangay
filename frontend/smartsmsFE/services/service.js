@@ -37,32 +37,33 @@ const updateResident = async (residentId, residentData) => {
 };
 
 const sendSms = async (phoneNumbers, message, createdBy, broadcastType) => {
-    try {
-        // Validate input before making the API call
-        if (!Array.isArray(phoneNumbers) || phoneNumbers.length === 0) {
-            throw new Error('Phone numbers must be a non-empty array');
-        }
-        if (!message || typeof message !== 'string' || message.trim() === '') {
-            throw new Error('Message is required and must be a non-empty string');
-        }
-        if (!createdBy || typeof createdBy !== 'string' || createdBy.trim() === '') {
-            throw new Error('Created by field is required and must be a non-empty string');
-        }
+    alert("this feature is disabled for now, please contact the admin for more information");
+    // try {
+    //     // Validate input before making the API call
+    //     if (!Array.isArray(phoneNumbers) || phoneNumbers.length === 0) {
+    //         throw new Error('Phone numbers must be a non-empty array');
+    //     }
+    //     if (!message || typeof message !== 'string' || message.trim() === '') {
+    //         throw new Error('Message is required and must be a non-empty string');
+    //     }
+    //     if (!createdBy || typeof createdBy !== 'string' || createdBy.trim() === '') {
+    //         throw new Error('Created by field is required and must be a non-empty string');
+    //     }
 
-        // Make the POST request to the backend
-        const response = await axios.post(`${baseUrl}/send-sms`, {
-            phoneNumbers,
-            message,
-            createdBy,
-            broadcastType
-        });
+    //     // Make the POST request to the backend
+    //     const response = await axios.post(`${baseUrl}/send-sms`, {
+    //         phoneNumbers,
+    //         message,
+    //         createdBy,
+    //         broadcastType
+    //     });
 
-        // Return the server's response
-        return response.data;
-    } catch (error) {
-        console.error('Error sending SMS:', error);
-        throw error; // Re-throw the error for handling in the calling function
-    }
+    //     // Return the server's response
+    //     return response.data;
+    // } catch (error) {
+    //     console.error('Error sending SMS:', error);
+    //     throw error; // Re-throw the error for handling in the calling function
+    // }
 };
 
 const getBroadcastHistory = async () => {

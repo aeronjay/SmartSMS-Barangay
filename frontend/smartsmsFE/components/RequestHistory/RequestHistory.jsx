@@ -198,14 +198,6 @@ export default function RequestHistory() {
                                     </tbody>
                                 </table>
                             </div>
-                            <div className="action-container">
-                                <button
-                                    onClick={fetchRequests}
-                                    className="refresh-button"
-                                >
-                                    Refresh History
-                                </button>
-                            </div>
                         </>
                     )}
                 </div>

@@ -1,3 +1,11 @@
+/* Broadcast specific layout */
+.broadcast-layout {
+    display: flex;
+    flex-direction: row;
+    height: 100%;
+    min-height: 500px;
+}
+
 .broadcast-category{
     flex: 2;
     padding: 10px 20px;
@@ -28,7 +36,7 @@ h6{
     flex: 4;
     border-left: 1px solid var(--border-color);
     border-right: 1px solid var(--border-color);    
-
+    display: flex;
     flex-direction: column; /* Stack child elements vertically */
     height: 100%; /* Ensure it takes full height */
 }

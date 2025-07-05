@@ -144,7 +144,7 @@ export default function DocumentRequest() {
     return (
         <>
             <MainTemplate headerName={"Document Request"} cardHeader={"Document Request Management"}>
-                <div className="document-request-container">
+                <div className="main-container">
                     {loading ? (
                         <div className="loading-container">
                             <div className="loading-spinner"></div>
@@ -165,39 +165,41 @@ export default function DocumentRequest() {
                                     />
                                 </div>
 
-                                <div className="filter-group">
-                                    <label htmlFor="documentTypeFilter">Document Type:</label>
-                                    <select
-                                        id="documentTypeFilter"
-                                        value={documentTypeFilter}
-                                        onChange={(e) => setDocumentTypeFilter(e.target.value)}
-                                        className="filter-select"
+                                <div className="filter-controls">
+                                    <div className="filter-group">
+                                        <label htmlFor="documentTypeFilter">Document Type:</label>
+                                        <select
+                                            id="documentTypeFilter"
+                                            value={documentTypeFilter}
+                                            onChange={(e) => setDocumentTypeFilter(e.target.value)}
+                                            className="filter-select"
+                                        >
+                                            <option value="">All Types</option>
+                                            {getUniqueDocumentTypes().map(type => (
+                                                <option key={type} value={type}>{type}</option>
+                                            ))}
+                                        </select>
+                                    </div>
+
+                                    <div className="filter-group">
+                                        <label htmlFor="dateFilter">Date:</label>
+                                        <input
+                                            type="date"
+                                            id="dateFilter"
+                                            value={dateFilter}
+                                            onChange={(e) => setDateFilter(e.target.value)}
+                                            className="filter-date"
+                                        />
+                                    </div>
+
+                                    <button
+                                        onClick={clearFilters}
+                                        className="clear-filters-btn"
+                                        title="Clear all filters"
                                     >
-                                        <option value="">All Types</option>
-                                        {getUniqueDocumentTypes().map(type => (
-                                            <option key={type} value={type}>{type}</option>
-                                        ))}
-                                    </select>
+                                        <i className="fas fa-times"></i> Clear
+                                    </button>
                                 </div>
-
-                                <div className="filter-group">
-                                    <label htmlFor="dateFilter">Date:</label>
-                                    <input
-                                        type="date"
-                                        id="dateFilter"
-                                        value={dateFilter}
-                                        onChange={(e) => setDateFilter(e.target.value)}
-                                        className="filter-date"
-                                    />
-                                </div>
-
-                                <button
-                                    onClick={clearFilters}
-                                    className="clear-filters-btn"
-                                    title="Clear all filters"
-                                >
-                                    <i className="fas fa-times"></i> Clear
-                                </button>
                             </div>
 
                             {/* Results Summary */}
@@ -205,77 +207,79 @@ export default function DocumentRequest() {
                                 Showing {filteredRequests.length} of {requests.length} requests
                             </div>
 
-                            <div className="table-container">
-                                <table className="requests-table">
-                                    <thead>
-                                        <tr>
-                                            <th>Name</th>
-                                            <th>Document Type</th>
-                                            <th>Purpose</th>
-                                            <th>Address</th>
-                                            <th>Status</th>
-                                            <th>Date</th>
-                                            <th>Actions</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {filteredRequests.length > 0 ? (
-                                            filteredRequests.map((request) => (
-                                                <tr key={request._id || request.id || Math.random().toString()}>
-                                                    <td>
-                                                        <div className="requester-name">{request.fullName}</div>
-                                                        <div className="requester-email">{request.email}</div>
-                                                        <div className="requester-phone">{request.phoneNumber}</div>
-                                                    </td>
-                                                    <td>{request.documentType}</td>
-                                                    <td>{request.purpose}</td>
-                                                    <td>{request.address}</td>
-                                                    <td>
-                                                        <span className={`status-badge ${getStatusClass(request.status)}`}>
-                                                            {request.status || 'unknown'}
-                                                        </span>
-                                                    </td>
-                                                    <td>{new Date(new Date(request.createdAt).getTime() - 8 * 60 * 60 * 1000).toLocaleString('en-PH', {
-                                                        timeZone: 'Asia/Manila',
-                                                        year: 'numeric',
-                                                        month: '2-digit',
-                                                        day: '2-digit',
-                                                        hour: 'numeric',
-                                                        minute: '2-digit',
-                                                        hour12: true,
-                                                    })}</td>
-                                                    <td>
-                                                        {request.status === 'pending' && (
-                                                            <div className="action-buttons">
-                                                                <button
-                                                                    onClick={() => openApprovalModal(request)}
-                                                                    className="approve-button"
-                                                                >
-                                                                    Approve
-                                                                </button>
-                                                                <button
-                                                                    onClick={() => openRejectionModal(request)}
-                                                                    className="reject-button"
-                                                                >
-                                                                    Reject
-                                                                </button>
-                                                            </div>
-                                                        )}
-                                                        {request.status !== 'pending' && (
-                                                            <span className="no-actions">No actions available</span>
-                                                        )}
+                            <div className="table-wrapper">
+                                <div className="table-scroll-container">
+                                    <table className="requests-table">
+                                        <thead>
+                                            <tr>
+                                                <th>Requester Info</th>
+                                                <th>Document Type</th>
+                                                <th>Status</th>
+                                                <th>Date</th>
+                                                <th>Purpose</th>
+                                                <th>Actions</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {filteredRequests.length > 0 ? (
+                                                filteredRequests.map((request) => (
+                                                    <tr key={request._id || request.id || Math.random().toString()}>
+                                                        <td>
+                                                            <div className="requester-name">{request.fullName}</div>
+                                                            <div className="requester-email">{request.email}</div>
+                                                            <div className="requester-phone">{request.phoneNumber}</div>
+                                                        </td>
+                                                        <td>{request.documentType}</td>
+                                                        <td>
+                                                            <span className={`status-badge ${getStatusClass(request.status)}`}>
+                                                                {request.status || 'unknown'}
+                                                            </span>
+                                                        </td>
+                                                        <td>{new Date(new Date(request.createdAt).getTime() - 8 * 60 * 60 * 1000).toLocaleString('en-PH', {
+                                                            timeZone: 'Asia/Manila',
+                                                            year: 'numeric',
+                                                            month: '2-digit',
+                                                            day: '2-digit',
+                                                            hour: 'numeric',
+                                                            minute: '2-digit',
+                                                            hour12: true,
+                                                        })}</td>
+                                                        <td>{request.purpose}</td>
+                                                        <td>
+                                                            {request.status === 'pending' && (
+                                                                <div className="action-buttons">
+                                                                    <button
+                                                                        onClick={() => openApprovalModal(request)}
+                                                                        className="approve-button"
+                                                                    >
+                                                                        Approve
+                                                                    </button>
+                                                                    <button
+                                                                        onClick={() => openRejectionModal(request)}
+                                                                        className="reject-button"
+                                                                    >
+                                                                        Reject
+                                                                    </button>
+                                                                </div>
+                                                            )}
+                                                            {request.status !== 'pending' && (
+                                                                <span className="no-actions">No actions available</span>
+                                                            )}
+                                                        </td>
+                                                    </tr>
+                                                ))
+                                            ) : (
+                                                <tr>
+                                                    <td colSpan="6">
+                                                        <div className="no-requests-message">
+                                                            No document requests found
+                                                        </div>
                                                     </td>
                                                 </tr>
-                                            ))
-                                        ) : (
-                                            <tr>
-                                                <td colSpan="6" className="no-requests-message">
-                                                    No document requests found
-                                                </td>
-                                            </tr>
-                                        )}
-                                    </tbody>
-                                </table>
+                                            )}
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
                         </>
                     )}
