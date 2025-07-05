@@ -123,21 +123,25 @@ const ResidentOptions = ({ search, setSearch, handleOpenDialog }) => {
 const ResidentsTable = ({ residents, search, onDeleteClick, onEditClick }) => {
     return (
         <div className='residents'>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Contact Number</th>
-                        <th>Email</th>
-                        <th>Address</th>
-                        <th>Household ID</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {displayResidents(residents, search, onDeleteClick, onEditClick)}
-                </tbody>
-            </table>
+            <div className='table-container'>
+                <div style={{ height: '100%', overflow: 'auto' }}>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Contact Number</th>
+                                <th>Email</th>
+                                <th>Address</th>
+                                <th>Household ID</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {displayResidents(residents, search, onDeleteClick, onEditClick)}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
     )
 }
