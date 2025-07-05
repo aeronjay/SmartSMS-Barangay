@@ -12,7 +12,7 @@ export default function DocumentRequest() {
     const [error, setError] = useState(null);
     const [approvalModal, setApprovalModal] = useState({ isOpen: false, requestData: null });
     const [rejectionModal, setRejectionModal] = useState({ isOpen: false, requestData: null });
-      // Filter and search states
+    // Filter and search states
     const [searchTerm, setSearchTerm] = useState('');
     const [dateFilter, setDateFilter] = useState('');
     const [documentTypeFilter, setDocumentTypeFilter] = useState('');
@@ -28,7 +28,7 @@ export default function DocumentRequest() {
 
         // Search filter
         if (searchTerm) {
-            filtered = filtered.filter(request => 
+            filtered = filtered.filter(request =>
                 request.fullName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
                 request.email?.toLowerCase().includes(searchTerm.toLowerCase()) ||
                 request.address?.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -38,7 +38,7 @@ export default function DocumentRequest() {
 
         // Document type filter
         if (documentTypeFilter) {
-            filtered = filtered.filter(request => 
+            filtered = filtered.filter(request =>
                 request.documentType === documentTypeFilter
             );
         }
@@ -53,7 +53,7 @@ export default function DocumentRequest() {
         }
 
         setFilteredRequests(filtered);
-    }, [requests, searchTerm, documentTypeFilter, dateFilter]);    const fetchRequests = async () => {
+    }, [requests, searchTerm, documentTypeFilter, dateFilter]); const fetchRequests = async () => {
         try {
             setLoading(true);
             const response = await apiService.getPendingDocumentRequests();
@@ -150,8 +150,9 @@ export default function DocumentRequest() {
                             <div className="loading-spinner"></div>
                         </div>
                     ) : error ? (
-                        <div className="error-message">{error}</div>                    ) : (
-                        <>                            {/* Filter and Search Controls */}
+                        <div className="error-message">{error}</div>) : (
+                        <>
+                            {/* Filter and Search Controls */}
                             <div className="filters-container">
                                 <div className="search-box">
                                     <i className="fas fa-search"></i>
@@ -163,7 +164,7 @@ export default function DocumentRequest() {
                                         className="search-input"
                                     />
                                 </div>
-                                
+
                                 <div className="filter-group">
                                     <label htmlFor="documentTypeFilter">Document Type:</label>
                                     <select
@@ -178,7 +179,7 @@ export default function DocumentRequest() {
                                         ))}
                                     </select>
                                 </div>
-                                
+
                                 <div className="filter-group">
                                     <label htmlFor="dateFilter">Date:</label>
                                     <input
@@ -189,8 +190,8 @@ export default function DocumentRequest() {
                                         className="filter-date"
                                     />
                                 </div>
-                                
-                                <button 
+
+                                <button
                                     onClick={clearFilters}
                                     className="clear-filters-btn"
                                     title="Clear all filters"
@@ -216,7 +217,8 @@ export default function DocumentRequest() {
                                             <th>Date</th>
                                             <th>Actions</th>
                                         </tr>
-                                    </thead>                                    <tbody>
+                                    </thead>
+                                    <tbody>
                                         {filteredRequests.length > 0 ? (
                                             filteredRequests.map((request) => (
                                                 <tr key={request._id || request.id || Math.random().toString()}>
@@ -242,7 +244,8 @@ export default function DocumentRequest() {
                                                         minute: '2-digit',
                                                         hour12: true,
                                                     })}</td>
-                                                    <td>                                                        {request.status === 'pending' && (
+                                                    <td>
+                                                        {request.status === 'pending' && (
                                                             <div className="action-buttons">
                                                                 <button
                                                                     onClick={() => openApprovalModal(request)}
@@ -273,10 +276,11 @@ export default function DocumentRequest() {
                                         )}
                                     </tbody>
                                 </table>
-                            </div>                        </>
+                            </div>
+                        </>
                     )}
                 </div>
-                
+
                 {/* Modals */}
                 <ApprovalModal
                     isOpen={approvalModal.isOpen}
@@ -284,7 +288,7 @@ export default function DocumentRequest() {
                     onApprove={handleApprove}
                     requestData={approvalModal.requestData}
                 />
-                
+
                 <RejectionModal
                     isOpen={rejectionModal.isOpen}
                     onClose={closeRejectionModal}
