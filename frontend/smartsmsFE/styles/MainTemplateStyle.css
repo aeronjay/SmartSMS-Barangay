@@ -19,10 +19,11 @@ div.main {
     display: flex;
     align-items: center;
     font-size: var(--HeaderFontSize);
+    background-color: white;
+    width: 100%;
 }
 
 div.main-header h2 {
-    background-color: white;
     padding: 20px 35px;
     margin: 0;
     color: rgba(0, 0, 0, .75);
