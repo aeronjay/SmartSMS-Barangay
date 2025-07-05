@@ -106,31 +106,7 @@ export default function RequestHistory() {
     return (
         <>
             <MainTemplate headerName={"Request History"} cardHeader={"Request History"}>
-                <div className="document-request-container">
-                    <div className="filter-container">
-                        <div className="filter-label">Filter by status:</div>
-                        <div className="filter-options">
-                            <button
-                                className={`filter-button ${filterStatus === 'all' ? 'active' : ''}`}
-                                onClick={() => setFilterStatus('all')}
-                            >
-                                All
-                            </button>
-                            <button
-                                className={`filter-button ${filterStatus === 'approved' ? 'active' : ''}`}
-                                onClick={() => setFilterStatus('approved')}
-                            >
-                                Approved
-                            </button>
-                            <button
-                                className={`filter-button ${filterStatus === 'rejected' ? 'active' : ''}`}
-                                onClick={() => setFilterStatus('rejected')}
-                            >
-                                Rejected
-                            </button>
-                        </div>
-                    </div>
-
+                <div className="main-container">
                     {loading ? (
                         <div className="loading-container">
                             <div className="loading-spinner"></div>
@@ -139,64 +115,94 @@ export default function RequestHistory() {
                         <div className="error-message">{error}</div>
                     ) : (
                         <>
-                            <div className="table-container">
-                                <table className="requests-table">
-                                    <thead>
-                                        <tr>
-                                            <th>Name</th>
-                                            <th>Document Type</th>
-                                            <th>Purpose</th>
-                                            <th>Status</th>
-                                            <th>Date</th>
-                                            {/* <th>Actions</th> */}
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {filteredRequests.length > 0 ? (
-                                            filteredRequests.map((request) => (
-                                                <tr key={request._id || request.id || Math.random().toString()}>
-                                                    <td>
-                                                        <div className="requester-name">{request.fullName}</div>
-                                                        <div className="requester-email">{request.email}</div>
-                                                        <div className="requester-phone">{request.phoneNumber}</div>
-                                                    </td>
-                                                    <td>{request.documentType}</td>
-                                                    <td>{request.purpose}</td>
-                                                    <td>
-                                                        <span className={`status-badge ${getStatusClass(request.status)}`}>
-                                                            {request.status || 'unknown'}
-                                                        </span>
-                                                    </td>
-                                                    <td>{new Date(new Date(request.createdAt).getTime() - 8 * 60 * 60 * 1000).toLocaleString('en-PH', {
-                                                        timeZone: 'Asia/Manila',
-                                                        year: 'numeric',
-                                                        month: '2-digit',
-                                                        day: '2-digit',
-                                                        hour: 'numeric',
-                                                        minute: '2-digit',
-                                                        hour12: true,
-                                                    })}</td>
-                                                    {/* <td>
-                                                        <div className="action-buttons">
-                                                            <button
-                                                                onClick={() => handleView(request)}
-                                                                className="view-button"
-                                                            >
-                                                                View
-                                                            </button>
-                                                        </div>
-                                                    </td> */}
-                                                </tr>
-                                            ))
-                                        ) : (
+                            {/* Filter Controls */}
+                            <div className="filters-container">
+                                <div className="filter-controls">
+                                    <div className="filter-group">
+                                        <label htmlFor="statusFilter">Status:</label>
+                                        <select
+                                            id="statusFilter"
+                                            value={filterStatus}
+                                            onChange={(e) => setFilterStatus(e.target.value)}
+                                            className="filter-select"
+                                        >
+                                            <option value="all">All</option>
+                                            <option value="approved">Approved</option>
+                                            <option value="rejected">Rejected</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Results Summary */}
+                            <div className="results-summary">
+                                Showing {filteredRequests.length} of {requests.length} requests
+                            </div>
+
+                            <div className="table-wrapper">
+                                <div className="table-scroll-container">
+                                    <table className="requests-table">
+                                        <thead>
                                             <tr>
-                                                <td colSpan="6" className="no-requests-message">
-                                                    No document requests found
-                                                </td>
+                                                <th>Requester Info</th>
+                                                <th>Document Type</th>
+                                                <th>Purpose</th>
+                                                <th>Status</th>
+                                                <th>Date</th>
+                                                <th>Actions</th>
                                             </tr>
-                                        )}
-                                    </tbody>
-                                </table>
+                                        </thead>
+                                        <tbody>
+                                            {filteredRequests.length > 0 ? (
+                                                filteredRequests.map((request) => (
+                                                    <tr key={request._id || request.id || Math.random().toString()}>
+                                                        <td>
+                                                            <div className="requester-info">
+                                                                <div className="requester-name">{request.fullName}</div>
+                                                                <div className="requester-email">{request.email}</div>
+                                                                <div className="requester-phone">{request.phoneNumber}</div>
+                                                            </div>
+                                                        </td>
+                                                        <td>{request.documentType}</td>
+                                                        <td>
+                                                            <div className="purpose-text">{request.purpose}</div>
+                                                        </td>
+                                                        <td>
+                                                            <span className={`status-badge ${getStatusClass(request.status)}`}>
+                                                                {request.status || 'unknown'}
+                                                            </span>
+                                                        </td>
+                                                        <td>{new Date(new Date(request.createdAt).getTime() - 8 * 60 * 60 * 1000).toLocaleString('en-PH', {
+                                                            timeZone: 'Asia/Manila',
+                                                            year: 'numeric',
+                                                            month: '2-digit',
+                                                            day: '2-digit',
+                                                            hour: 'numeric',
+                                                            minute: '2-digit',
+                                                            hour12: true,
+                                                        })}</td>
+                                                        <td>
+                                                            <div className="action-buttons">
+                                                                <button
+                                                                    onClick={() => handleView(request)}
+                                                                    className="view-button"
+                                                                >
+                                                                    <i className="fas fa-eye"></i> View
+                                                                </button>
+                                                            </div>
+                                                        </td>
+                                                    </tr>
+                                                ))
+                                            ) : (
+                                                <tr>
+                                                    <td colSpan="6" className="no-requests-message">
+                                                        No document requests found
+                                                    </td>
+                                                </tr>
+                                            )}
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
                         </>
                     )}
