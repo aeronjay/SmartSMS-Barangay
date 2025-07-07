@@ -39,7 +39,7 @@ export default function CustomSidebar() {
     ...(role === 'superadmin' ? [
       { path: 'admin-accounts', icon: <AdminPanelSettings />, label: 'Admin Accounts' },
       { path: 'admin-history', icon: <FaHistory />, label: 'Admin History' },
-      { path: 'settings', icon: <FaExclamationTriangle />, label: 'Settings' }
+      // { path: 'settings', icon: <FaExclamationTriangle />, label: 'Settings' }
     ] : [])
   ];
 
