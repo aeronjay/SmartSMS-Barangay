@@ -47,73 +47,73 @@ module.exports = () => {
 
     // Send bulk SMS
     apiRouter.post('/send-sms', authMiddleware, async (req, res) => {
-        const { phoneNumbers, message, createdBy, broadcastType } = req.body;
+        // const { phoneNumbers, message, createdBy, broadcastType } = req.body;
 
-        // Validate input
-        if (!phoneNumbers || !Array.isArray(phoneNumbers) || phoneNumbers.length === 0) {
-            return res.status(400).json({ error: 'Phone numbers must be a non-empty array' });
-        }
-        if (!message || typeof message !== 'string' || message.trim() === '') {
-            return res.status(400).json({ error: 'Message is required and must be a non-empty string' });
-        }
-        if (!createdBy || typeof createdBy !== 'string' || createdBy.trim() === '') {
-            return res.status(400).json({ error: 'Created by field is required and must be a non-empty string' });
-        }
+        // // Validate input
+        // if (!phoneNumbers || !Array.isArray(phoneNumbers) || phoneNumbers.length === 0) {
+        //     return res.status(400).json({ error: 'Phone numbers must be a non-empty array' });
+        // }
+        // if (!message || typeof message !== 'string' || message.trim() === '') {
+        //     return res.status(400).json({ error: 'Message is required and must be a non-empty string' });
+        // }
+        // if (!createdBy || typeof createdBy !== 'string' || createdBy.trim() === '') {
+        //     return res.status(400).json({ error: 'Created by field is required and must be a non-empty string' });
+        // }
 
-        try {
-            const smsData = {
-                phoneNumbers: phoneNumbers.map(num => num.trim()),
-                message: message.trim(),
-                simNumber: Number(process.env.SIM_NUMBER)
-            };
+        // try {
+        //     const smsData = {
+        //         phoneNumbers: phoneNumbers.map(num => num.trim()),
+        //         message: message.trim(),
+        //         simNumber: Number(process.env.SIM_NUMBER)
+        //     };
 
-            const result = await apiClient.send(smsData);
+        //     const result = await apiClient.send(smsData);
 
-            const messageId = result.id;
+        //     const messageId = result.id;
 
-            const historyRecord = new History({
-                phoneNumbers: smsData.phoneNumbers,
-                message: smsData.message,
-                messageId: messageId || null, // Store the messageId if available
-                createdBy: createdBy.trim(),
-                status: 'Pending',
-                broadcastType: broadcastType || null // Default status
-            });            await historyRecord.save();
+        //     const historyRecord = new History({
+        //         phoneNumbers: smsData.phoneNumbers,
+        //         message: smsData.message,
+        //         messageId: messageId || null, // Store the messageId if available
+        //         createdBy: createdBy.trim(),
+        //         status: 'Pending',
+        //         broadcastType: broadcastType || null // Default status
+        //     });            await historyRecord.save();
 
-            // Log admin action for SMS broadcast
-            if (req.user && req.user.userId && req.user.username) {
-                await AdminActionHistory.create({
-                    adminId: req.user.userId,
-                    adminUsername: req.user.username,
-                    action: 'sent SMS broadcast',
-                    target: `${phoneNumbers.length} recipients`,
-                    details: {
-                        broadcastType: broadcastType || 'General',
-                        recipientCount: phoneNumbers.length,
-                        messageLength: message.trim().length,
-                        messagePreview: message.trim().substring(0, 50) + (message.trim().length > 50 ? '...' : ''),
-                        messageId: messageId || null
-                    }
-                });
-            }
+        //     // Log admin action for SMS broadcast
+        //     if (req.user && req.user.userId && req.user.username) {
+        //         await AdminActionHistory.create({
+        //             adminId: req.user.userId,
+        //             adminUsername: req.user.username,
+        //             action: 'sent SMS broadcast',
+        //             target: `${phoneNumbers.length} recipients`,
+        //             details: {
+        //                 broadcastType: broadcastType || 'General',
+        //                 recipientCount: phoneNumbers.length,
+        //                 messageLength: message.trim().length,
+        //                 messagePreview: message.trim().substring(0, 50) + (message.trim().length > 50 ? '...' : ''),
+        //                 messageId: messageId || null
+        //             }
+        //         });
+        //     }
 
-            res.status(200).json({ success: true, data: result });
-        } catch (error) {
-            console.error('Error sending SMS:', error);
+        //     res.status(200).json({ success: true, data: result });
+        // } catch (error) {
+        //     console.error('Error sending SMS:', error);
 
-            const historyRecord = new History({
-                phoneNumbers: phoneNumbers.map(num => num.trim()),
-                message: message.trim(),
-                createdBy: createdBy.trim(),
-                status: 'Failed',
-                error: error.message || 'Unknown error',
-                broadcastType: broadcastType || null
-            });
+        //     const historyRecord = new History({
+        //         phoneNumbers: phoneNumbers.map(num => num.trim()),
+        //         message: message.trim(),
+        //         createdBy: createdBy.trim(),
+        //         status: 'Failed',
+        //         error: error.message || 'Unknown error',
+        //         broadcastType: broadcastType || null
+        //     });
 
-            await historyRecord.save();
+        //     await historyRecord.save();
 
-            res.status(500).json({ error: 'Failed to send SMS', details: error.message });
-        }
+        //     res.status(500).json({ error: 'Failed to send SMS', details: error.message });
+        // }
     });
 
     // Get message status
