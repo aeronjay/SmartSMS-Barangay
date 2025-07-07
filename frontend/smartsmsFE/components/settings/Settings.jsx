@@ -1,10 +1,13 @@
+import MainTemplate from '../MainTemplate'
+
+
 function Settings() {
   return (
-    <div className="settings">
-      <h1>Settings</h1>
-      <p>Settings page is under construction.</p>
-      <p>Stay tuned for updates!</p>
-    </div>
+    <MainTemplate headerName="Settings" cardHeader="Manage Settings">
+      <div>
+        This is the settings page. Under construction.
+      </div>
+    </MainTemplate>
   );
 }
 
