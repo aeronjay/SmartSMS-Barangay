@@ -38,7 +38,8 @@ export default function CustomSidebar() {
     // Only show Admin Accounts and Admin History if superadmin
     ...(role === 'superadmin' ? [
       { path: 'admin-accounts', icon: <AdminPanelSettings />, label: 'Admin Accounts' },
-      { path: 'admin-history', icon: <FaHistory />, label: 'Admin History' }
+      { path: 'admin-history', icon: <FaHistory />, label: 'Admin History' },
+      { path: 'settings', icon: <FaExclamationTriangle />, label: 'Settings' }
     ] : [])
   ];
 

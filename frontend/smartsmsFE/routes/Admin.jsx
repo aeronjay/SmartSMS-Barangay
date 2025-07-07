@@ -10,9 +10,10 @@ import Residents from '../components/Residents/Residents';
 import AdminAccounts from '../components/AdminAccounts/AdminAccounts';
 import AdminHistory from '../components/AdminAccounts/AdminHistory';
 import Households from '../components/Households/Households';
+import Settings from '../components/settings/Settings';
 
 function AdminDashboard() {
-    return(
+    return (
         <div style={{
             display: 'flex',
             width: '100vw',
@@ -21,17 +22,19 @@ function AdminDashboard() {
             overflow: 'hidden'
         }}>
             <CustomSidebar />
-            <div style={{flex: '1', background: '#eee'}}>                <Routes>
+            <div style={{ flex: '1', background: '#eee' }}>
+                <Routes>
                     <Route path="/" element={<Navigate to="dashboard" />} />
-                    <Route path="dashboard" element={<Dashboard />}/>
-                    <Route path="announcements" element={<Broadcast />}/>
-                    <Route path="broadcast-history" element={<BroadcastHistory />}/>
-                    <Route path="document-request" element={<DocumentRequest />}/>
-                    <Route path="request-history" element={<RequestHistory />}/>
-                    <Route path="residents" element={<Residents />}/>
-                    <Route path="households" element={<Households />}/>
-                    <Route path="admin-accounts" element={<AdminAccounts />}/>
-                    <Route path="admin-history" element={<AdminHistory />}/>
+                    <Route path="dashboard" element={<Dashboard />} />
+                    <Route path="announcements" element={<Broadcast />} />
+                    <Route path="broadcast-history" element={<BroadcastHistory />} />
+                    <Route path="document-request" element={<DocumentRequest />} />
+                    <Route path="request-history" element={<RequestHistory />} />
+                    <Route path="residents" element={<Residents />} />
+                    <Route path="households" element={<Households />} />
+                    <Route path="admin-accounts" element={<AdminAccounts />} />
+                    <Route path="admin-history" element={<AdminHistory />} />
+                    <Route path="settings" element={<Settings />} />
                 </Routes>
             </div>
         </div>
