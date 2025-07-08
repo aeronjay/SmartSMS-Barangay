@@ -25,9 +25,20 @@ A modern, full-stack web application for efficient barangay management, resident
 
 ## Screenshots
 
-| Dashboard Broadcast | Residents | Households | Homepage | Barangay Form Request |
-|--------------------|-----------|------------|----------|----------------------|
-| ![Dashboard-Broadcast](./pics/Dashboard-Broadcast.png) | ![Residents](./pics/Residents.png) | ![Households](./pics/Households.png) | ![Homepage](./pics/Homepage.png) | ![BarangayFormRequest](./pics/BarangayFormRequest.png) |
+### Dashboard Broadcast
+![Dashboard-Broadcast](./pics/Dashboard-Broadcast.png)
+
+### Residents
+![Residents](./pics/Residents.png)
+
+### Households
+![Households](./pics/Households.png)
+
+### Homepage
+![Homepage](./pics/Homepage.png)
+
+### Barangay Form Request
+![BarangayFormRequest](./pics/BarangayFormRequest.png)
 
 ---
 
@@ -52,6 +63,7 @@ A modern, full-stack web application for efficient barangay management, resident
 ## Email Functionality
 
 - Uses SMTP client for sending emails (e.g., document requests, notifications).
+- Configure SMTP credentials in your `.env` file.
 
 ---
 
